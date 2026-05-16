@@ -26,7 +26,7 @@
 
   // ─── Read Config ─────────────────────────────────────────────────────────
   const cfg = window.BotConfig || {
-      workerUrl: 'https://bolneedemovercel.vercel.app/chat-worker.js',
+      workerUrl: 'https://bolneedemovercel.vercel.app/chat-worker.js'
   };
   const ACCENT      = cfg.accentColor  || '#6366f1';
   const BOT_NAME    = cfg.botName      || 'AI Assistant';
