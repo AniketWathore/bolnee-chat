@@ -1,413 +1,364 @@
 /**
- * chatbot-widget.js  (v2 — Hybrid Engine)
- * ─────────────────────────────────────────────────────────────────────────────
- * Embeddable chat widget. Paste these two tags into any website <body>:
+ * chatbot-widget.js  — self-contained, zero-dependency embeddable AI chatbot
  *
+ * HOW TO EMBED ON ANY WEBSITE:
+ * ─────────────────────────────
  *   <script>
  *     window.BotConfig = {
- *       // Required for low-end mobile fallback:
- *       groqApiKey:   'gsk_xxxxxxxxxxxxxxxxxxxx',   // free at console.groq.com
- *
- *       // Optional:
- *       modelId:      'onnx-community/SmolLM2-135M-Instruct-ONNX',
- *       groqModel:    'llama-3.1-8b-instant',       // or 'gemma2-9b-it' etc.
- *       botName:      'Aria',
- *       accentColor:  '#6366f1',
- *       greeting:     'Hi! How can I help?',
- *       systemPrompt: 'You are a helpful assistant.',
- *       workerUrl:    'https://cdn.yourdomain.com/chat-worker.js',
+ *       botName:      'Aria',           // optional
+ *       accentColor:  '#6366f1',        // optional
+ *       greeting:     'Hi! How can I help?', // optional
+ *       systemPrompt: 'You are a helpful assistant.', // optional
+ *       modelId:      'onnx-community/SmolLM2-135M-Instruct-ONNX', // optional
  *     };
  *   </script>
- *   <script src="https://cdn.yourdomain.com/chatbot-widget.js" async></script>
- * ─────────────────────────────────────────────────────────────────────────────
+ *   <script src="https://bolneedemovercel.vercel.app/chatbot-widget.js" async></script>
  */
 
 (function () {
   'use strict';
 
-  // ─── Read config ─────────────────────────────────────────────────────────
-  const cfg = window.BotConfig || {};
-  const ACCENT      = cfg.accentColor  || '#6366f1';
-  const BOT_NAME    = cfg.botName      || 'AI Assistant';
-  const GREETING    = cfg.greeting     || "Hello! I'm your in-browser AI assistant. How can I help?";
-  const SYSTEM      = cfg.systemPrompt || 'You are a friendly, concise AI assistant.';
-  const WORKER_URL  = cfg.workerUrl    || 'chat-worker.js';
-  const MODEL_ID    = cfg.modelId      || 'onnx-community/SmolLM2-135M-Instruct-ONNX';
-  const GROQ_KEY    = cfg.groqApiKey   || '';
-  const GROQ_MODEL  = cfg.groqModel    || 'llama-3.1-8b-instant';
+  /* ── Config ────────────────────────────────────────────────────────────── */
+  const cfg        = window.BotConfig || {};
+  const ACCENT     = cfg.accentColor  || '#6366f1';
+  const BOT_NAME   = cfg.botName      || 'AI Assistant';
+  const GREETING   = cfg.greeting     || "Hi! I'm running entirely in your browser — no server needed. How can I help?";
+  const SYSTEM     = cfg.systemPrompt || 'You are a friendly, concise AI assistant. Keep answers short and helpful.';
+  const MODEL_ID   = cfg.modelId      || 'onnx-community/SmolLM2-135M-Instruct-ONNX';
+  const TF_VERSION = '3.1.0';  // pinned — known working release
 
-  // ─── Inject styles ───────────────────────────────────────────────────────
-  const STYLES = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+  /* ── Styles ─────────────────────────────────────────────────────────────── */
+  const css = `
+    #_cw * { box-sizing:border-box; margin:0; padding:0; font-family:system-ui,sans-serif; }
 
-    #_aicw_root * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', system-ui, sans-serif; }
-
-    #_aicw_bubble {
-      position: fixed; bottom: 24px; right: 24px;
-      width: 58px; height: 58px; background: ${ACCENT};
-      border-radius: 50%; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px ${ACCENT}66;
-      z-index: 2147483647; border: none; outline: none;
-      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+    #_cw_bubble {
+      position:fixed; bottom:24px; right:24px; width:56px; height:56px;
+      background:${ACCENT}; border-radius:50%; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 20px ${ACCENT}55; z-index:2147483647;
+      transition:transform .2s, box-shadow .2s;
     }
-    #_aicw_bubble:hover { transform: scale(1.1); box-shadow: 0 6px 28px ${ACCENT}88; }
-    #_aicw_bubble svg { width: 26px; height: 26px; fill: #fff; transition: transform .3s; }
-    #_aicw_bubble.open svg { transform: rotate(45deg); }
+    #_cw_bubble:hover { transform:scale(1.08); box-shadow:0 6px 28px ${ACCENT}88; }
+    #_cw_bubble svg { width:24px; height:24px; fill:#fff; transition:transform .25s; }
+    #_cw_bubble.open svg { transform:rotate(45deg); }
 
-    #_aicw_window {
-      position: fixed; bottom: 96px; right: 24px;
-      width: 360px; height: 520px;
-      background: #fff; border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.18);
-      display: flex; flex-direction: column;
-      z-index: 2147483646; overflow: hidden;
-      opacity: 0; pointer-events: none;
-      transform: translateY(16px) scale(.97);
-      transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
+    #_cw_win {
+      position:fixed; bottom:92px; right:24px; width:360px; height:500px;
+      background:#fff; border-radius:18px; overflow:hidden; display:flex; flex-direction:column;
+      box-shadow:0 16px 48px rgba(0,0,0,.18); z-index:2147483646;
+      opacity:0; pointer-events:none; transform:translateY(12px) scale(.97);
+      transition:opacity .22s, transform .22s cubic-bezier(.34,1.56,.64,1);
     }
-    #_aicw_window.open { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    #_cw_win.open { opacity:1; pointer-events:all; transform:none; }
 
-    #_aicw_header {
-      background: ${ACCENT}; padding: 14px 16px;
-      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    #_cw_head {
+      background:${ACCENT}; padding:14px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0;
     }
-    #_aicw_avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,.25);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
+    #_cw_avatar {
+      width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.2);
+      display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
     }
-    #_aicw_header_info { flex: 1; min-width: 0; }
-    #_aicw_header_name  { color:#fff; font-weight:600; font-size:15px; line-height:1.2; }
-    #_aicw_header_status { color:rgba(255,255,255,.75); font-size:11px; margin-top:2px; display:flex; align-items:center; gap:5px; }
+    #_cw_hname { color:#fff; font-weight:600; font-size:14px; }
+    #_cw_hstatus { color:rgba(255,255,255,.7); font-size:11px; margin-top:1px; }
 
-    /* Engine badge */
-    #_aicw_engine_badge {
-      font-size:10px; font-weight:600; padding:2px 7px; border-radius:99px;
-      background:rgba(255,255,255,.2); color:#fff; letter-spacing:.03em;
-      flex-shrink:0;
+    #_cw_dl {
+      background:#f5f5fa; border-bottom:1px solid #eee; padding:8px 14px;
+      font-size:12px; color:#555; display:none; align-items:center; gap:8px; flex-shrink:0;
     }
+    #_cw_dl.on { display:flex; }
+    #_cw_dlbar { flex:1; height:4px; background:#ddd; border-radius:99px; overflow:hidden; }
+    #_cw_dlfill { height:100%; background:${ACCENT}; width:0%; transition:width .3s; border-radius:99px; }
 
-    /* Progress bar */
-    #_aicw_status_bar {
-      background:#f8f8fc; padding:10px 16px; font-size:12px; color:#666;
-      display:none; align-items:center; gap:10px;
-      border-bottom:1px solid #eee; flex-shrink:0;
+    #_cw_msgs {
+      flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column;
+      gap:10px; scroll-behavior:smooth;
     }
-    #_aicw_status_bar.visible { display:flex; }
-    #_aicw_progress_wrap { flex:1; height:4px; background:#e5e5ef; border-radius:99px; overflow:hidden; }
-    #_aicw_progress_bar  { height:100%; background:${ACCENT}; border-radius:99px; width:0%; transition:width .3s; }
+    #_cw_msgs::-webkit-scrollbar { width:3px; }
+    #_cw_msgs::-webkit-scrollbar-thumb { background:#ddd; border-radius:99px; }
 
-    /* Messages */
-    #_aicw_messages {
-      flex:1; overflow-y:auto; padding:14px;
-      display:flex; flex-direction:column; gap:10px; scroll-behavior:smooth;
-    }
-    #_aicw_messages::-webkit-scrollbar { width:4px; }
-    #_aicw_messages::-webkit-scrollbar-thumb { background:#ddd; border-radius:99px; }
+    ._m { display:flex; flex-direction:column; max-width:80%; animation:_pop .18s ease; }
+    @keyframes _pop { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+    ._m.b { align-self:flex-start; }
+    ._m.u { align-self:flex-end; }
+    ._mb { padding:9px 13px; border-radius:14px; font-size:13.5px; line-height:1.55; word-break:break-word; }
+    ._m.b ._mb { background:#f0f0f7; color:#111; border-bottom-left-radius:3px; }
+    ._m.u ._mb { background:${ACCENT}; color:#fff; border-bottom-right-radius:3px; }
+    ._ml { font-size:10.5px; color:#aaa; margin-bottom:3px; font-weight:500; }
+    ._m.u ._ml { text-align:right; }
 
-    ._aicw_msg { display:flex; flex-direction:column; max-width:84%; animation:_aicw_pop .2s ease; }
-    @keyframes _aicw_pop { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-    ._aicw_msg.bot  { align-self:flex-start; }
-    ._aicw_msg.user { align-self:flex-end; }
-    ._aicw_bubble_inner {
-      padding:9px 13px; border-radius:16px; font-size:14px; line-height:1.55; word-break:break-word;
-    }
-    ._aicw_msg.bot  ._aicw_bubble_inner { background:#f2f2f7; color:#1c1c1e; border-bottom-left-radius:4px; }
-    ._aicw_msg.user ._aicw_bubble_inner { background:${ACCENT}; color:#fff; border-bottom-right-radius:4px; }
-    ._aicw_label { font-size:11px; color:#aaa; margin-bottom:3px; font-weight:500; }
-    ._aicw_msg.user ._aicw_label { text-align:right; }
+    ._dots { display:inline-flex; gap:4px; padding:4px 0; }
+    ._dots span { width:6px; height:6px; border-radius:50%; background:#bbb; animation:_dot 1.1s infinite ease-in-out; }
+    ._dots span:nth-child(2){animation-delay:.18s} ._dots span:nth-child(3){animation-delay:.36s}
+    @keyframes _dot { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
 
-    ._aicw_typing { display:inline-flex; gap:4px; align-items:center; padding:4px 0; }
-    ._aicw_typing span { width:7px; height:7px; border-radius:50%; background:#aaa; animation:_aicw_dot 1.2s infinite ease-in-out; }
-    ._aicw_typing span:nth-child(2) { animation-delay:.2s; }
-    ._aicw_typing span:nth-child(3) { animation-delay:.4s; }
-    @keyframes _aicw_dot { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
-
-    /* Input */
-    #_aicw_input_area {
-      display:flex; align-items:flex-end; gap:8px;
-      padding:10px 12px; border-top:1px solid #f0f0f5; flex-shrink:0; background:#fff;
+    #_cw_inp_wrap {
+      display:flex; align-items:flex-end; gap:8px; padding:10px 12px;
+      border-top:1px solid #f0f0f5; flex-shrink:0; background:#fff;
     }
-    #_aicw_input {
-      flex:1; border:1.5px solid #e8e8f0; border-radius:12px;
-      padding:9px 12px; font-size:14px; outline:none; resize:none;
-      line-height:1.45; max-height:96px; overflow-y:auto;
-      transition:border-color .2s; font-family:inherit; color:#1c1c1e; background:#fafafd;
+    #_cw_inp {
+      flex:1; border:1.5px solid #e0e0ea; border-radius:10px; padding:8px 12px;
+      font-size:13.5px; resize:none; outline:none; max-height:90px; overflow-y:auto;
+      line-height:1.45; background:#fafafd; color:#111; transition:border-color .2s;
+      font-family:inherit;
     }
-    #_aicw_input:focus { border-color:${ACCENT}; background:#fff; }
-    #_aicw_input::placeholder { color:#bbb; }
-    #_aicw_input:disabled { opacity:.5; cursor:not-allowed; }
-    #_aicw_send {
-      width:38px; height:38px; border-radius:10px; background:${ACCENT}; border:none;
+    #_cw_inp:focus { border-color:${ACCENT}; background:#fff; }
+    #_cw_inp:disabled { opacity:.45; }
+    #_cw_inp::placeholder { color:#bbb; }
+    #_cw_send {
+      width:36px; height:36px; border-radius:9px; background:${ACCENT}; border:none;
       cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      transition:opacity .2s, transform .15s;
+      transition:opacity .2s;
     }
-    #_aicw_send:hover:not(:disabled) { opacity:.9; transform:scale(1.06); }
-    #_aicw_send:disabled { opacity:.4; cursor:not-allowed; }
-    #_aicw_send svg { width:17px; height:17px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    #_cw_send:hover:not(:disabled) { opacity:.85; }
+    #_cw_send:disabled { opacity:.35; cursor:default; }
+    #_cw_send svg { width:15px; height:15px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
 
-    #_aicw_footer { text-align:center; font-size:10px; color:#c0c0c8; padding:0 0 9px; flex-shrink:0; }
+    #_cw_footer { text-align:center; font-size:10px; color:#ccc; padding:0 0 8px; flex-shrink:0; }
 
-    @media (max-width:420px) {
-      #_aicw_window { right:0; left:0; bottom:0; width:100%; height:78vh; border-radius:24px 24px 0 0; }
-      #_aicw_bubble { bottom:16px; right:16px; }
+    @media(max-width:420px){
+      #_cw_win{right:0;left:0;bottom:0;width:100%;height:72vh;border-radius:20px 20px 0 0;}
+      #_cw_bubble{bottom:16px;right:16px;}
     }
   `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
 
-  const styleEl = document.createElement('style');
-  styleEl.textContent = STYLES;
-  document.head.appendChild(styleEl);
-
-  // ─── Inject HTML ─────────────────────────────────────────────────────────
+  /* ── HTML ───────────────────────────────────────────────────────────────── */
   const root = document.createElement('div');
-  root.id = '_aicw_root';
+  root.id = '_cw';
   root.innerHTML = `
-    <button id="_aicw_bubble" aria-label="Open chat">
-      <svg viewBox="0 0 24 24"><path d="M12 3C6.477 3 2 6.925 2 11.8c0 2.198.87 4.207 2.318 5.74L3 21l4.13-1.586A11.054 11.054 0 0012 20.6c5.523 0 10-3.925 10-8.8S17.523 3 12 3z"/></svg>
+    <button id="_cw_bubble" aria-label="Open chat">
+      <svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>
     </button>
-    <div id="_aicw_window" role="dialog" aria-label="${BOT_NAME}">
-      <div id="_aicw_header">
-        <div id="_aicw_avatar">🤖</div>
-        <div id="_aicw_header_info">
-          <div id="_aicw_header_name">${BOT_NAME}</div>
-          <div id="_aicw_header_status">
-            <span id="_aicw_status_dot">Initialising…</span>
-          </div>
+    <div id="_cw_win">
+      <div id="_cw_head">
+        <div id="_cw_avatar">🤖</div>
+        <div>
+          <div id="_cw_hname">${BOT_NAME}</div>
+          <div id="_cw_hstatus">Runs in your browser · No server</div>
         </div>
-        <div id="_aicw_engine_badge" style="display:none"></div>
       </div>
-      <div id="_aicw_status_bar">
-        <span id="_aicw_status_text">Loading…</span>
-        <div id="_aicw_progress_wrap"><div id="_aicw_progress_bar"></div></div>
-        <span id="_aicw_pct_text">0%</span>
+      <div id="_cw_dl">
+        <span id="_cw_dltext">Downloading model…</span>
+        <div id="_cw_dlbar"><div id="_cw_dlfill"></div></div>
+        <span id="_cw_dlpct">0%</span>
       </div>
-      <div id="_aicw_messages"></div>
-      <div id="_aicw_input_area">
-        <textarea id="_aicw_input" placeholder="Message…" rows="1" disabled></textarea>
-        <button id="_aicw_send" disabled>
+      <div id="_cw_msgs"></div>
+      <div id="_cw_inp_wrap">
+        <textarea id="_cw_inp" placeholder="Message…" rows="1" disabled></textarea>
+        <button id="_cw_send" disabled>
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-      <div id="_aicw_footer">Powered by Transformers.js &amp; Groq · Zero-server AI</div>
-    </div>
-  `;
+      <div id="_cw_footer">Powered by Transformers.js · 100% in-browser</div>
+    </div>`;
   document.body.appendChild(root);
 
-  // ─── DOM refs ────────────────────────────────────────────────────────────
-  const bubbleBtn    = document.getElementById('_aicw_bubble');
-  const windowEl     = document.getElementById('_aicw_window');
-  const statusBar    = document.getElementById('_aicw_status_bar');
-  const statusText   = document.getElementById('_aicw_status_text');
-  const progressBar  = document.getElementById('_aicw_progress_bar');
-  const pctText      = document.getElementById('_aicw_pct_text');
-  const messagesEl   = document.getElementById('_aicw_messages');
-  const inputEl      = document.getElementById('_aicw_input');
-  const sendBtn      = document.getElementById('_aicw_send');
-  const statusDot    = document.getElementById('_aicw_status_dot');
-  const engineBadge  = document.getElementById('_aicw_engine_badge');
+  /* ── DOM refs ───────────────────────────────────────────────────────────── */
+  const bubble  = document.getElementById('_cw_bubble');
+  const win     = document.getElementById('_cw_win');
+  const dlBar   = document.getElementById('_cw_dl');
+  const dlText  = document.getElementById('_cw_dltext');
+  const dlFill  = document.getElementById('_cw_dlfill');
+  const dlPct   = document.getElementById('_cw_dlpct');
+  const msgs    = document.getElementById('_cw_msgs');
+  const inp     = document.getElementById('_cw_inp');
+  const sendBtn = document.getElementById('_cw_send');
 
-  // ─── State ───────────────────────────────────────────────────────────────
-  let worker          = null;
-  let isOpen          = false;
-  let isModelReady    = false;
-  let isGenerating    = false;
-  let chatHistory     = [{ role: 'system', content: SYSTEM }];
-  let currentBotMsgEl = null;
+  /* ── State ──────────────────────────────────────────────────────────────── */
+  let worker       = null;
+  let isOpen       = false;
+  let ready        = false;
+  let generating   = false;
+  let history      = [{ role: 'system', content: SYSTEM }];
+  let streamingEl  = null;
 
-  // ─── Toggle ───────────────────────────────────────────────────────────────
-  bubbleBtn.addEventListener('click', () => {
+  /* ── Bubble toggle ──────────────────────────────────────────────────────── */
+  bubble.addEventListener('click', () => {
     isOpen = !isOpen;
-    windowEl.classList.toggle('open', isOpen);
-    bubbleBtn.classList.toggle('open', isOpen);
-    if (isOpen && !worker) initWorker();
-    if (isOpen && isModelReady) inputEl.focus();
+    win.classList.toggle('open', isOpen);
+    bubble.classList.toggle('open', isOpen);
+    if (isOpen && !worker) startWorker();
+    if (isOpen && ready)   inp.focus();
   });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) bubbleBtn.click(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen) bubble.click(); });
 
-  // ─── Worker init ─────────────────────────────────────────────────────────
-  function initWorker() {
-    appendBotMessage(GREETING);
-    statusDot.textContent = 'Starting AI engine…';
+  /* ── Inline worker code ─────────────────────────────────────────────────── */
+  // The worker code lives HERE as a template literal, avoiding all
+  // cross-origin Worker restrictions — no separate file fetch needed.
+  const WORKER_CODE = `
+import { pipeline, env, TextStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@${TF_VERSION}';
 
-    try {
-      // Browsers block `new Worker('https://other-domain.com/...')` (cross-origin).
-      // Fix: create a tiny same-origin blob that does ONE absolute ES import.
-      const bootstrap = `import '${WORKER_URL}';`;
-      const blob      = new Blob([bootstrap], { type: 'application/javascript' });
-      const blobUrl   = URL.createObjectURL(blob);
-      worker          = new Worker(blobUrl, { type: 'module' });
-      URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      showError('Could not start AI engine: ' + err.message);
-      return;
-    }
+env.allowRemoteModels = true;
+env.useBrowserCache   = true;
 
-    // Catch silent worker crashes (import failed, syntax error, etc.)
-    worker.addEventListener('error', (e) => {
-      showError('Worker crashed: ' + (e.message || 'unknown error'));
-      statusDot.textContent = '⚠ Failed';
-      console.error('[Widget] Worker error:', e);
-    });
+let pipe = null;
 
-    worker.addEventListener('message', onWorkerMessage);
+self.addEventListener('message', async ({ data }) => {
+  if (data.type === 'LOAD') await loadModel(data.modelId);
+  if (data.type === 'GEN')  await generate(data.messages, data.config);
+});
 
-    // DON'T send LOAD_MODEL yet - wait for WORKER_READY from the worker.
-    // The worker module loads async; messages sent too early are dropped.
-  }
-
-  // ─── Worker messages ─────────────────────────────────────────────────────
-  function onWorkerMessage({ data }) {
-    const { type, payload } = data;
-
-    // Worker signals it has finished loading its module and is ready
-    if (type === 'WORKER_READY') {
-      statusDot.textContent = 'Downloading model…';
-      worker.postMessage({
-        type: 'LOAD_MODEL',
-        payload: { modelId: MODEL_ID },
-      });
-    }
-
-    if (type === 'STATUS') {
-      if (payload.status === 'loading') {
-        statusBar.classList.add('visible');
-        statusText.textContent = payload.message || 'Loading…';
-        statusDot.textContent  = payload.message || 'Loading…';
-      }
-      if (payload.status === 'ready') {
-        isModelReady = true;
-        statusBar.classList.remove('visible');
-        inputEl.disabled = false;
-        sendBtn.disabled = false;
-        inputEl.focus();
-
-        // Show engine badge
-        const engine = payload.engine || 'wasm';
-        const labels  = { webgpu: '⚡ WebGPU', wasm: '🧠 CPU', cloud: '☁ Cloud' };
-        engineBadge.textContent  = labels[engine] || engine;
-        engineBadge.style.display = '';
-        statusDot.textContent    = engine === 'cloud'
-          ? '☁ Cloud AI · Fast responses'
-          : engine === 'webgpu'
-          ? '⚡ GPU accelerated · In-browser'
-          : '🧠 CPU · In-browser';
-        statusDot.style.color = 'rgba(255,255,255,.8)';
-      }
-      if (payload.status === 'error') {
-        statusBar.classList.remove('visible');
-        showError(payload.message);
-        statusDot.textContent = '⚠ Error';
-      }
-    }
-
-    if (type === 'DOWNLOAD_PROGRESS') {
-      if (payload.percent != null) {
-        progressBar.style.width  = payload.percent + '%';
-        pctText.textContent      = payload.percent + '%';
-        statusText.textContent   = `Downloading model… ${payload.percent}%`;
-        statusDot.textContent    = `Downloading… ${payload.percent}%`;
-      }
-    }
-
-    if (type === 'TOKEN') {
-      if (!currentBotMsgEl) currentBotMsgEl = appendBotMessage('');
-      removeTypingIndicator();
-      const inner = currentBotMsgEl.querySelector('._aicw_bubble_inner');
-      inner.textContent += payload.token;
-      scrollToBottom();
-    }
-
-    if (type === 'GENERATION_COMPLETE') {
-      isGenerating = false;
-      if (currentBotMsgEl) {
-        const text = currentBotMsgEl.querySelector('._aicw_bubble_inner').textContent;
-        chatHistory.push({ role: 'assistant', content: text });
-        currentBotMsgEl = null;
-      }
-      removeTypingIndicator();
-      sendBtn.disabled = false;
-      inputEl.disabled = false;
-      inputEl.focus();
-    }
-
-    if (type === 'ERROR') {
-      isGenerating = false;
-      showError(payload.message);
-      removeTypingIndicator();
-      sendBtn.disabled = false;
-      inputEl.disabled = false;
-    }
-  }
-
-  // ─── Send ─────────────────────────────────────────────────────────────────
-  function handleSend() {
-    const text = inputEl.value.trim();
-    if (!text || !isModelReady || isGenerating) return;
-
-    isGenerating = true;
-    inputEl.value = '';
-    autoResize();
-    appendUserMessage(text);
-    chatHistory.push({ role: 'user', content: text });
-    showTypingIndicator();
-    inputEl.disabled = true;
-    sendBtn.disabled = true;
-
-    worker.postMessage({
-      type: 'GENERATE',
-      payload: {
-        messages: chatHistory,
-        config: { max_new_tokens: 200, temperature: 0.7, do_sample: true, top_p: 0.9, repetition_penalty: 1.1 },
+async function loadModel(modelId) {
+  self.postMessage({ type: 'STATUS', text: 'Downloading model…' });
+  try {
+    pipe = await pipeline('text-generation', modelId, {
+      device: 'wasm',
+      dtype:  'q4',
+      progress_callback(p) {
+        if (p.status === 'progress' && p.total) {
+          const pct = Math.round((p.loaded / p.total) * 100);
+          self.postMessage({ type: 'DL', pct, file: p.file });
+        }
       },
     });
+    self.postMessage({ type: 'READY' });
+  } catch (err) {
+    self.postMessage({ type: 'ERR', msg: err.message });
+  }
+}
+
+async function generate(messages, config) {
+  if (!pipe) { self.postMessage({ type: 'ERR', msg: 'Model not loaded.' }); return; }
+  try {
+    const streamer = new TextStreamer(pipe.tokenizer, {
+      skip_prompt: true,
+      skip_special_tokens: true,
+      callback_function(token) {
+        self.postMessage({ type: 'TOKEN', token });
+      },
+    });
+    await pipe(messages, {
+      max_new_tokens:     config.max_new_tokens || 200,
+      temperature:        config.temperature    || 0.7,
+      do_sample:          true,
+      repetition_penalty: 1.1,
+      streamer,
+    });
+    self.postMessage({ type: 'DONE' });
+  } catch (err) {
+    self.postMessage({ type: 'ERR', msg: err.message });
+  }
+}
+`;
+
+  /* ── Start worker ───────────────────────────────────────────────────────── */
+  function startWorker() {
+    addMsg('bot', GREETING);
+
+    const blob    = new Blob([WORKER_CODE], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    worker        = new Worker(blobUrl, { type: 'module' });
+    URL.revokeObjectURL(blobUrl);
+
+    worker.onerror = e => {
+      addErr('Engine failed to start. Your browser may not support WebAssembly modules. Error: ' + (e.message || 'unknown'));
+      console.error('[chatbot]', e);
+    };
+
+    worker.onmessage = ({ data }) => {
+      if (data.type === 'STATUS') {
+        dlText.textContent = data.text;
+        dlBar.classList.add('on');
+      }
+      if (data.type === 'DL') {
+        dlFill.style.width  = data.pct + '%';
+        dlPct.textContent   = data.pct + '%';
+        dlText.textContent  = 'Downloading… ' + data.pct + '%';
+      }
+      if (data.type === 'READY') {
+        ready = true;
+        dlBar.classList.remove('on');
+        document.getElementById('_cw_hstatus').textContent = '● Online · In-browser AI';
+        document.getElementById('_cw_hstatus').style.color = 'rgba(255,255,255,.9)';
+        inp.disabled    = false;
+        sendBtn.disabled = false;
+        inp.focus();
+      }
+      if (data.type === 'TOKEN') {
+        if (!streamingEl) {
+          removeTyping();
+          streamingEl = addMsg('bot', '');
+        }
+        streamingEl.querySelector('._mb').textContent += data.token;
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+      if (data.type === 'DONE') {
+        generating = false;
+        if (streamingEl) {
+          history.push({ role: 'assistant', content: streamingEl.querySelector('._mb').textContent });
+          streamingEl = null;
+        }
+        removeTyping();
+        inp.disabled     = false;
+        sendBtn.disabled = false;
+        inp.focus();
+      }
+      if (data.type === 'ERR') {
+        addErr(data.msg);
+        generating       = false;
+        streamingEl      = null;
+        inp.disabled     = false;
+        sendBtn.disabled = false;
+        removeTyping();
+      }
+    };
+
+    worker.postMessage({ type: 'LOAD', modelId: MODEL_ID });
   }
 
-  sendBtn.addEventListener('click', handleSend);
-  inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
-  inputEl.addEventListener('input', autoResize);
-  function autoResize() { inputEl.style.height = 'auto'; inputEl.style.height = Math.min(inputEl.scrollHeight, 96) + 'px'; }
-
-  // ─── UI helpers ───────────────────────────────────────────────────────────
-  function appendBotMessage(text) {
-    removeTypingIndicator();
-    const el = document.createElement('div');
-    el.className = '_aicw_msg bot';
-    el.innerHTML = `<span class="_aicw_label">${BOT_NAME}</span><div class="_aicw_bubble_inner">${esc(text)}</div>`;
-    messagesEl.appendChild(el);
-    scrollToBottom();
-    return el;
+  /* ── Send ───────────────────────────────────────────────────────────────── */
+  function send() {
+    const text = inp.value.trim();
+    if (!text || !ready || generating) return;
+    generating = true;
+    inp.value  = '';
+    resize();
+    addMsg('user', text);
+    history.push({ role: 'user', content: text });
+    addTyping();
+    inp.disabled     = true;
+    sendBtn.disabled = true;
+    worker.postMessage({ type: 'GEN', messages: history, config: { max_new_tokens: 200, temperature: 0.7 } });
   }
 
-  function appendUserMessage(text) {
-    const el = document.createElement('div');
-    el.className = '_aicw_msg user';
-    el.innerHTML = `<span class="_aicw_label">You</span><div class="_aicw_bubble_inner">${esc(text)}</div>`;
-    messagesEl.appendChild(el);
-    scrollToBottom();
+  sendBtn.addEventListener('click', send);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+  inp.addEventListener('input', resize);
+
+  function resize() {
+    inp.style.height = 'auto';
+    inp.style.height = Math.min(inp.scrollHeight, 90) + 'px';
   }
 
-  function showTypingIndicator() {
-    if (document.getElementById('_aicw_typing')) return;
-    const el = document.createElement('div');
-    el.className = '_aicw_msg bot'; el.id = '_aicw_typing';
-    el.innerHTML = `<span class="_aicw_label">${BOT_NAME}</span><div class="_aicw_bubble_inner"><div class="_aicw_typing"><span></span><span></span><span></span></div></div>`;
-    messagesEl.appendChild(el);
-    scrollToBottom();
+  /* ── UI helpers ─────────────────────────────────────────────────────────── */
+  function addMsg(who, text) {
+    const d = document.createElement('div');
+    d.className = '_m ' + (who === 'bot' ? 'b' : 'u');
+    d.innerHTML = `<div class="_ml">${who === 'bot' ? BOT_NAME : 'You'}</div><div class="_mb">${esc(text)}</div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+    return d;
   }
-
-  function removeTypingIndicator() { document.getElementById('_aicw_typing')?.remove(); }
-
-  function showError(msg) {
-    const el = document.createElement('div');
-    el.className = '_aicw_msg bot';
-    el.innerHTML = `<div class="_aicw_bubble_inner" style="background:#fee2e2;color:#991b1b;">⚠ ${esc(msg)}</div>`;
-    messagesEl.appendChild(el);
-    scrollToBottom();
+  function addTyping() {
+    if (document.getElementById('_cw_typing')) return;
+    const d = document.createElement('div');
+    d.className = '_m b'; d.id = '_cw_typing';
+    d.innerHTML = `<div class="_ml">${BOT_NAME}</div><div class="_mb"><div class="_dots"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
   }
-
-  function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
-  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function removeTyping() { const t = document.getElementById('_cw_typing'); if (t) t.remove(); }
+  function addErr(msg) {
+    const d = document.createElement('div');
+    d.className = '_m b';
+    d.innerHTML = `<div class="_mb" style="background:#fee2e2;color:#991b1b;">⚠ ${esc(msg)}</div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
 })();
