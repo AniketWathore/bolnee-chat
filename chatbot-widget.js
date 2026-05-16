@@ -232,9 +232,16 @@
     statusDot.textContent = 'Detecting device…';
 
     try {
-      worker = new Worker(WORKER_URL, { type: 'module' });
-    } catch {
-      showError('Could not start Web Worker. Serve the page over HTTP (not file://).');
+      // Browsers block `new Worker('https://other-domain.com/...')` (cross-origin).
+      // Fix: create a tiny same-origin blob that does ONE absolute ES import
+      // pointing at our CDN worker. Absolute imports always work from blob URLs.
+      const bootstrap = `import '${WORKER_URL}';`;
+      const blob      = new Blob([bootstrap], { type: 'application/javascript' });
+      const blobUrl   = URL.createObjectURL(blob);
+      worker          = new Worker(blobUrl, { type: 'module' });
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      showError('Could not start AI engine: ' + err.message);
       return;
     }
 
