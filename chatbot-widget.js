@@ -229,12 +229,11 @@
   // ─── Worker init ─────────────────────────────────────────────────────────
   function initWorker() {
     appendBotMessage(GREETING);
-    statusDot.textContent = 'Detecting device…';
+    statusDot.textContent = 'Starting AI engine…';
 
     try {
       // Browsers block `new Worker('https://other-domain.com/...')` (cross-origin).
-      // Fix: create a tiny same-origin blob that does ONE absolute ES import
-      // pointing at our CDN worker. Absolute imports always work from blob URLs.
+      // Fix: create a tiny same-origin blob that does ONE absolute ES import.
       const bootstrap = `import '${WORKER_URL}';`;
       const blob      = new Blob([bootstrap], { type: 'application/javascript' });
       const blobUrl   = URL.createObjectURL(blob);
@@ -245,19 +244,30 @@
       return;
     }
 
-    worker.addEventListener('message', onWorkerMessage);
-    worker.postMessage({
-      type: 'LOAD_MODEL',
-      payload: { modelId: MODEL_ID, groqApiKey: GROQ_KEY, groqModel: GROQ_MODEL },
+    // Catch silent worker crashes (import failed, syntax error, etc.)
+    worker.addEventListener('error', (e) => {
+      showError('Worker crashed: ' + (e.message || 'unknown error'));
+      statusDot.textContent = '⚠ Failed';
+      console.error('[Widget] Worker error:', e);
     });
+
+    worker.addEventListener('message', onWorkerMessage);
+
+    // DON'T send LOAD_MODEL yet - wait for WORKER_READY from the worker.
+    // The worker module loads async; messages sent too early are dropped.
   }
 
   // ─── Worker messages ─────────────────────────────────────────────────────
   function onWorkerMessage({ data }) {
     const { type, payload } = data;
 
-    if (type === 'DEVICE_SCORE') {
-      statusDot.textContent = `Device: ${payload.score} (${payload.cores} cores, ${payload.ram}GB RAM)`;
+    // Worker signals it has finished loading its module and is ready
+    if (type === 'WORKER_READY') {
+      statusDot.textContent = 'Downloading model…';
+      worker.postMessage({
+        type: 'LOAD_MODEL',
+        payload: { modelId: MODEL_ID },
+      });
     }
 
     if (type === 'STATUS') {
