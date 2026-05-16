@@ -25,7 +25,9 @@
   'use strict';
 
   // ─── Read Config ─────────────────────────────────────────────────────────
-  const cfg = window.BotConfig || {};
+  const cfg = window.BotConfig || {
+      workerUrl: 'https://bolneedemovercel.vercel.app/chat-worker.js',
+  };
   const ACCENT      = cfg.accentColor  || '#6366f1';
   const BOT_NAME    = cfg.botName      || 'AI Assistant';
   const GREETING    = cfg.greeting     || 'Hello! I\'m running entirely in your browser — no server needed. How can I help?';
