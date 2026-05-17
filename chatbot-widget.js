@@ -21,7 +21,7 @@
   const BOT_NAME = cfg.botName      || 'AI Assistant';
   const GREETING = cfg.greeting     || "Hi! I'm running entirely in your browser. How can I help?";
   const SYSTEM   = cfg.systemPrompt || 'You are a friendly, concise AI assistant.';
-  const MODEL_ID = cfg.modelId      || 'onnx-community/Qwen3-0.6B-ONNX'; //onnx-community/SmolLM2-135M-Instruct-ONNX
+  const MODEL_ID = cfg.modelId      || 'onnx-community/SmolLM2-135M-Instruct-ONNX';
   const TF_URL   = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.1.0';
 
   /* ── Styles ── */
