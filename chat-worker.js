@@ -18,7 +18,8 @@ let generator  = null;        // Transformers.js pipeline (local only)
 let engineMode = null;        // 'webgpu' | 'wasm' | 'cloud'
 let groqApiKey = null;
 let groqModel  = 'llama-3.1-8b-instant';   // Fast Groq model, free tier
-let modelId    = 'onnx-community/SmolLM2-135M-Instruct-ONNX';
+let modelId    = 'onnx-community/Qwen3-0.6B-ONNX'; //onnx-community/SmolLM2-135M-Instruct-ONNX
+
 
 // ─── Message router ────────────────────────────────────────────────────────
 // Signal to the main thread that this module finished loading.
