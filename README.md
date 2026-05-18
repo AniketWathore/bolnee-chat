@@ -1,20 +1,59 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Bolnee Chat Application
 
-# Run and deploy your AI Studio app
+This is a full-stack React application powered by Vite, Express, and Tailwind CSS.
 
-This contains everything you need to run your app locally.
+## Prerequisites
 
-View your app in AI Studio: https://ai.studio/apps/4a260bbc-82dc-4579-bc2e-7dda1d1ee2f6
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-## Run Locally
+## Installation
 
-**Prerequisites:**  Node.js
+1. Navigate to the project directory:
+   ```bash
+   cd bolnee
+   ```
+2. Install the necessary dependencies:
+   ```bash
+   npm install
+   ```
 
+## Running the Application
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Development Mode
+
+To start the development server, which runs both the Vite frontend and the Express backend (via `tsx server.ts`):
+
+```bash
+npm run dev
+```
+
+The frontend will typically be available at `http://localhost:5173`.
+
+### Production Build
+
+To build the application for production (bundles both the Vite frontend and the Express server):
+
+```bash
+npm run build
+```
+
+To start the production server after building:
+
+```bash
+npm run start
+```
+
+### Other Available Scripts
+
+- **`npm run preview`**: Preview the production build locally.
+- **`npm run clean`**: Remove the `dist` directory and built files.
+- **`npm run lint`**: Run TypeScript type checking.
+
+## Technologies Used
+- React 19
+- Vite 6
+- Express
+- Tailwind CSS 4
+- Lucide React (Icons)
+- Framer Motion (Animations)
