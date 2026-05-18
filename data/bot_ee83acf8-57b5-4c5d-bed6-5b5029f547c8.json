@@ -1,0 +1,24 @@
+{
+  "chatbotId": "bot_ee83acf8-57b5-4c5d-bed6-5b5029f547c8",
+  "userId": "user_3c39c715",
+  "about": "demo",
+  "products": [
+    {
+      "productId": "0twvx40np",
+      "name": "demo",
+      "tags": [
+        "demo tag"
+      ],
+      "price": "1111",
+      "inStock": true
+    }
+  ],
+  "policy": "demo policy",
+  "contact": {
+    "mobile": "00000",
+    "email": "demo@support.com",
+    "address": "demo, demo.",
+    "website": "www.demo.com"
+  },
+  "faqs": []
+}

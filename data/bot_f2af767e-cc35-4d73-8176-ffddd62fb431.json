@@ -1,0 +1,33 @@
+{
+  "chatbotId": "bot_f2af767e-cc35-4d73-8176-ffddd62fb431",
+  "userId": "user_f81c6f45",
+  "about": "shoemart is a online shoe store",
+  "products": [
+    {
+      "productId": "bcae4mjmd",
+      "name": "nike air force",
+      "tags": [
+        "snearkers"
+      ],
+      "price": "10000",
+      "inStock": true
+    },
+    {
+      "productId": "1fo3i1t3t",
+      "name": "adidas runner",
+      "tags": [
+        "running shoes"
+      ],
+      "price": "9999",
+      "inStock": true
+    }
+  ],
+  "policy": "30 days return policy, offers\n",
+  "contact": {
+    "mobile": "9090909090",
+    "email": "support@shoemart.com",
+    "address": "shoemart, mumbai.",
+    "website": "www.shoemart.com"
+  },
+  "faqs": []
+}

@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #E4E3E0;
+  --color-ink: #141414;
+  --color-line: #141414;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@utility brutal-border {
+  border: 1px solid var(--color-line);
+}
+
+@utility brutal-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-line);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+  }
+}
+
+@utility brutal-card {
+  border: 1px solid var(--color-line);
+  padding: 1.5rem;
+  background-color: white;
+}
+
+@utility brutal-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-line);
+  background-color: white;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--color-ink);
+  }
+}
+
+@utility sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  &.active {
+    background-color: white;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    margin-left: -1px;
+    margin-right: -1px;
+    font-weight: 700;
+  }
+}

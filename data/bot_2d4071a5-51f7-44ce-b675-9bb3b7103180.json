@@ -1,0 +1,51 @@
+{
+  "chatbotId": "bot_2d4071a5-51f7-44ce-b675-9bb3b7103180",
+  "userId": "user_3c39c715",
+  "about": "online shoe ecommerce mart",
+  "products": [
+    {
+      "productId": "cm0e4l0v2",
+      "name": "nike air force",
+      "tags": [
+        "snearkers"
+      ],
+      "price": "70000",
+      "inStock": true
+    },
+    {
+      "productId": "aa78c6yyg",
+      "name": "adidas superstar",
+      "tags": [
+        "snearkers"
+      ],
+      "price": "11000",
+      "inStock": true
+    },
+    {
+      "productId": "3t8dts9jg",
+      "name": "sparx runner",
+      "tags": [
+        "running"
+      ],
+      "price": "1000",
+      "inStock": true
+    },
+    {
+      "productId": "z0yoca733",
+      "name": "jordan max 1",
+      "tags": [
+        "sneakers"
+      ],
+      "price": "80000",
+      "inStock": true
+    }
+  ],
+  "policy": "20 days return policy",
+  "contact": {
+    "mobile": "9090909090",
+    "email": "support@shoemart.com",
+    "address": "shoemart, mumbai west.",
+    "website": "www.shoemart.com"
+  },
+  "faqs": []
+}

@@ -1,0 +1,24 @@
+{
+  "chatbotId": "bot_a31c2d58-d7c7-42dd-bf3e-bab530322a14",
+  "userId": "user_3c39c715",
+  "about": "asfa",
+  "products": [
+    {
+      "productId": "z5bnloqd7",
+      "name": "daf",
+      "tags": [
+        "dadd"
+      ],
+      "price": "222",
+      "inStock": true
+    }
+  ],
+  "policy": "dadasf",
+  "contact": {
+    "mobile": "00009099",
+    "email": "sfsa@gmail.com",
+    "address": "sfasa",
+    "website": "www.lgalf.com"
+  },
+  "faqs": []
+}
