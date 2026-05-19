@@ -1,13 +1,13 @@
 {
   "chatbotId": "bot_2d4071a5-51f7-44ce-b675-9bb3b7103180",
   "userId": "user_3c39c715",
-  "about": "online shoe ecommerce mart",
+  "about": "ShoeMart is an online shoe ecommerce store based in Mumbai, India. We offer a wide range of premium footwear including casual sneakers, running shoes, and sports shoes from top brands like Nike, Adidas, Sparx, and Jordan.",
   "products": [
     {
       "productId": "xowlrx8jg",
       "name": "nike air force",
       "tags": [
-        "snearkers"
+        "sneakers"
       ],
       "price": "70000",
       "inStock": true
@@ -16,7 +16,7 @@
       "productId": "gl5q77doi",
       "name": "adidas superstar",
       "tags": [
-        "snearkers"
+        "sneakers"
       ],
       "price": "11000",
       "inStock": true
@@ -40,12 +40,28 @@
       "inStock": true
     }
   ],
-  "policy": "20 days return policy",
+  "hours": "We are open Monday to Saturday, 10:00 AM to 8:00 PM. We remain closed on Sundays.",
+  "policyReturn": "We offer a 20-day easy return policy. Items must be unused and in original packaging. Refunds are processed within 5-7 business days after we receive the returned item.",
+  "policyShipping": "We offer free shipping on orders above ₹500. Standard delivery takes 3-5 business days. Express delivery is available for an additional ₹150 and takes 1-2 business days.",
+  "policyWarranty": "All our products come with a 6-month manufacturer warranty against manufacturing defects. The warranty does not cover wear and tear from normal use.",
   "contact": {
     "mobile": "9090909090",
     "email": "support@shoemart.com",
-    "address": "shoemart, mumbai west.",
+    "address": "ShoeMart, Mumbai West, Maharashtra, India.",
     "website": "www.shoemart.com"
   },
-  "faqs": []
+  "faqs": [
+    {
+      "question": "Do you offer exchange?",
+      "answer": "Yes, we offer size exchange within 20 days of delivery. The product must be in original condition with tags."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept all major credit cards, debit cards, UPI (Google Pay, PhonePe, Paytm), and Cash on Delivery."
+    },
+    {
+      "question": "How can I track my order?",
+      "answer": "Once your order is shipped, you will receive a tracking link via email and SMS. You can also track your order from the 'Track Order' section on our website."
+    }
+  ]
 }
