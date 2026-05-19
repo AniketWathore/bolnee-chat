@@ -6,7 +6,8 @@ import {
   Settings, 
   LogOut,
   Plus,
-  Bot
+  Bot,
+  Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -135,6 +136,30 @@ export default function App() {
     }
   };
 
+  const deleteChatbot = async (botId: string) => {
+    if (!window.confirm('Are you sure you want to remove this chatbot?')) return;
+
+    try {
+      const response = await fetch(`/api/chatbots/${botId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        alert(`Delete failed (${response.status}): ${data.error || 'Unknown error'}`);
+        return;
+      }
+      setChatbots(chatbots.filter(bot => bot._id !== botId));
+      if (activeBotId === botId) {
+        const remaining = chatbots.filter(bot => bot._id !== botId);
+        setActiveBotId(remaining.length > 0 ? remaining[0]._id : null);
+      }
+    } catch (error) {
+      console.error("Failed to delete chatbot", error);
+      alert('Network error — could not reach server. Make sure the server is running.');
+    }
+  };
+
   const handleLoginSuccess = (userData: any, userToken: string) => {
     setUser(userData);
     setToken(userToken);
@@ -248,6 +273,7 @@ export default function App() {
                   chatbots={chatbots} 
                   onCreateRequest={() => setShowCreateBot(true)} 
                   onSelectBot={(id) => { setActiveBotId(id); setActiveSection('knowledge'); }}
+                  onViewAll={() => setActiveSection('chatbots')}
                 />
               )}
               {activeSection === 'knowledge' && (
@@ -255,6 +281,7 @@ export default function App() {
                   <KnowledgeSection 
                     data={knowledge} 
                     onSave={handleSaveKnowledge} 
+                    onDashboard={() => setActiveSection('overview')}
                   />
                 ) : (
                   <div className="brutal-card text-center py-20">
@@ -265,22 +292,31 @@ export default function App() {
               {activeSection === 'chatbots' && (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                    {chatbots.map(bot => (
-                     <div key={bot._id} className="brutal-card p-8 flex flex-col justify-between group h-64">
-                       <div className="space-y-4">
-                          <div className="w-10 h-10 brutal-border flex items-center justify-center bg-ink text-bg">
-                            <Bot className="w-5 h-5" />
-                          </div>
-                          <div>
-                             <h3 className="font-mono text-lg font-black uppercase">{bot.name}</h3>
-                             <p className="font-mono text-[10px] opacity-50 uppercase mt-1">ID: {bot._id.substr(-8)}</p>
-                          </div>
-                       </div>
-                       <button 
-                         onClick={() => { setActiveBotId(bot._id); setActiveSection('knowledge'); }}
-                         className="w-full brutal-btn group-hover:bg-ink group-hover:text-bg mt-6"
-                       >
-                         Manage Bot
-                       </button>
+                       <div key={bot._id} className="brutal-card p-8 flex flex-col justify-between group">
+                        <div className="space-y-4">
+                           <div className="w-10 h-10 brutal-border flex items-center justify-center bg-ink text-bg">
+                             <Bot className="w-5 h-5" />
+                           </div>
+                           <div>
+                              <h3 className="font-mono text-lg font-black uppercase">{bot.name}</h3>
+                              <p className="font-mono text-[10px] opacity-50 uppercase mt-1">ID: {bot._id.substr(-8)}</p>
+                           </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                          <button 
+                            onClick={() => { setActiveBotId(bot._id); setActiveSection('knowledge'); }}
+                            className="flex-1 brutal-btn group-hover:bg-ink group-hover:text-bg"
+                          >
+                            Manage Bot
+                          </button>
+                          <button 
+                            onClick={() => deleteChatbot(bot._id)}
+                            className="brutal-btn border-red-200 text-red-500 hover:bg-red-500 hover:text-white px-3"
+                            title="Remove chatbot"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                      </div>
                    ))}
                    <button 
@@ -367,13 +403,6 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* Footer Accent */}
-        <div className="fixed bottom-6 right-6">
-          <div className="flex items-center gap-3 bg-ink text-bg px-4 py-2 rounded-full shadow-xl">
-             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-             <span className="font-mono text-[10px] uppercase font-bold tracking-widest leading-none">System Live</span>
-          </div>
-        </div>
       </main>
     </div>
   );

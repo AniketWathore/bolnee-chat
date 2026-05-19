@@ -1,0 +1,60 @@
+{
+  "chatbotId": "bot_1e58d6e7-af04-445f-92c0-bc6764691184",
+  "userId": "user_3c39c715",
+  "about": "shoemart is a online ecommerce website for buying and selling authentic shoes.",
+  "products": [
+    {
+      "productId": "3h9xh8zl1",
+      "name": "nike air force",
+      "tags": [
+        "snearker"
+      ],
+      "price": "7599",
+      "inStock": true
+    },
+    {
+      "productId": "w754lj79g",
+      "name": "adidas superstar",
+      "tags": [
+        "snearker"
+      ],
+      "price": "9999",
+      "inStock": true
+    },
+    {
+      "productId": "qubfxkyil",
+      "name": "nike jordan 4",
+      "tags": [
+        "snearker"
+      ],
+      "price": "14000",
+      "inStock": true
+    },
+    {
+      "productId": "gfi0hh3lb",
+      "name": "new balance 546",
+      "tags": [
+        "running"
+      ],
+      "price": "50000",
+      "inStock": true
+    },
+    {
+      "productId": "k00vuki2g",
+      "name": "sparx runner max",
+      "tags": [
+        "running"
+      ],
+      "price": "999",
+      "inStock": true
+    }
+  ],
+  "policy": "30 days return policy",
+  "contact": {
+    "mobile": "0000099999",
+    "email": "support@shoemart.com",
+    "address": "shoemart, mumbai west, mumbai.",
+    "website": "www.shoemart.com"
+  },
+  "faqs": []
+}

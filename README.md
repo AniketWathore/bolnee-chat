@@ -57,3 +57,6 @@ npm run start
 - Tailwind CSS 4
 - Lucide React (Icons)
 - Framer Motion (Animations)
+
+
+https://huggingface.co/onnx-community/Qwen3-0.6B-ONNX/tree/main/onnx

@@ -174,6 +174,37 @@ app.post("/api/chatbots", authenticate, async (req: any, res) => {
   }
 });
 
+app.delete("/api/chatbots/:id", authenticate, async (req: any, res) => {
+  try {
+    const { id } = req.params;
+    console.log(`[DELETE /api/chatbots/${id}] Request by user ${req.user.userId}`);
+
+    const chatbots = await readData(CHATBOTS_FILE);
+    const index = chatbots.findIndex((c: any) => c.id === id && c.userId === req.user.userId);
+
+    if (index === -1) {
+      console.log(`[DELETE] Chatbot ${id} not found for user ${req.user.userId}`);
+      console.log(`[DELETE] Available ids:`, chatbots.filter((c: any) => c.userId === req.user.userId).map((c: any) => c.id));
+      return res.status(404).json({ error: "Chatbot not found" });
+    }
+
+    chatbots.splice(index, 1);
+    await writeData(CHATBOTS_FILE, chatbots);
+
+    const knowledgePath = path.join(DATA_DIR, `${id}.json`);
+    if (await fs.pathExists(knowledgePath)) {
+      await fs.remove(knowledgePath);
+      console.log(`[DELETE] Deleted knowledge file for ${id}`);
+    }
+
+    console.log(`[DELETE] Successfully deleted chatbot ${id}`);
+    return res.json({ success: true });
+  } catch (error) {
+    console.error(`[DELETE] Error deleting chatbot:`, error);
+    return res.status(500).json({ error: "Failed to delete chatbot" });
+  }
+});
+
 // --- Knowledge Routes ---
 app.get("/api/knowledge", authenticate, async (req: any, res) => {
   try {
@@ -214,9 +245,65 @@ app.post("/api/knowledge", authenticate, async (req: any, res) => {
   }
 });
 
+// ── Model serving with browser cache ──────────────────────────────────────
+// Serve model files from local cache with proper headers so browser HTTP cache stores them
+app.get('/models/*', async (req: any, res) => {
+  try {
+    const modelPath = req.params[0]; // e.g., "onnx-community/Qwen3-0.5B/onnx/model.onnx"
+    const localPath = path.join(process.cwd(), 'models', modelPath);
+    
+    // Check if file exists locally
+    if (await fs.pathExists(localPath)) {
+      // Set cache headers so browser keeps file on disk for ~30 days
+      res.set('Cache-Control', 'public, max-age=2592000, immutable');
+      res.set('Content-Type', 'application/octet-stream');
+      res.sendFile(localPath);
+      return;
+    }
+    
+    // If not cached locally, stream from HuggingFace Hub
+    // This provides automatic download + browser HTTP cache
+    console.log('[models] Cache miss, streaming from HF:', modelPath);
+    const hfUrl = `https://huggingface.co/${modelPath}/resolve/main`;
+    
+    const response = await fetch(hfUrl);
+    if (!response.ok) {
+      return res.status(404).json({ error: 'Model file not found' });
+    }
+    
+    // Ensure local cache dir exists
+    const localDir = path.dirname(localPath);
+    await fs.ensureDir(localDir);
+    
+    // Stream to browser (browser HTTP cache will store it)
+    res.set('Cache-Control', 'public, max-age=2592000, immutable');
+    res.set('Content-Type', response.headers.get('content-type') || 'application/octet-stream');
+    
+    // Also save to local disk in background (don't wait for completion)
+    const fileStream = fs.createWriteStream(localPath);
+    response.body?.pipe(fileStream);
+    
+    // Stream to browser immediately
+    response.body?.pipe(res);
+  } catch (error) {
+    console.error('[models] Error:', error);
+    res.status(500).json({ error: 'Failed to fetch model' });
+  }
+});
+
 // Static files & SPA fallback (only in production — Vite dev middleware handles this locally)
 if (process.env.NODE_ENV === "production") {
   const distPath = path.join(process.cwd(), 'dist');
+  
+  // Service Worker should not be cached to allow updates
+  app.get('/sw.js', (req, res) => {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Content-Type', 'application/javascript');
+    res.sendFile(path.join(distPath, 'sw.js'));
+  });
+  
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));

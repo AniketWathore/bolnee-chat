@@ -72,10 +72,7 @@ export default function LandingPage({ onGetStarted, onLogin }: LandingPageProps)
                      alt="AI Hub"
                      className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute bottom-8 left-8 bg-white brutal-border p-4">
-                     <div className="font-mono text-[10px] uppercase opacity-50 mb-1">// systems.status</div>
-                     <div className="font-mono text-2xl font-black">STABLE_LIVE</div>
-                  </div>
+
                </div>
             </motion.div>
          </section>

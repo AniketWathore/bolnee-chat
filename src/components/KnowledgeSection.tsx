@@ -12,7 +12,8 @@ import {
   Save,
   Code,
   Copy,
-  Check
+  Check,
+  ArrowUpRight
 } from 'lucide-react';
 import { KnowledgeData, Product } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
@@ -20,9 +21,10 @@ import { motion, AnimatePresence } from 'motion/react';
 interface KnowledgeSectionProps {
   data: KnowledgeData;
   onSave: (data: any) => Promise<void>;
+  onDashboard?: () => void;
 }
 
-export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps) {
+export default function KnowledgeSection({ data, onSave, onDashboard }: KnowledgeSectionProps) {
   const ensureDefaults = (data: KnowledgeData): KnowledgeData => ({
     ...data,
     about: data.about || "",
@@ -44,25 +46,26 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
     faqs: data.faqs || []
   });
 
-  const [activeTab, setActiveTab] = useState<'about' | 'products' | 'policies' | 'contact'>('about');
+  const [activeTab, setActiveTab] = useState<'about' | 'products' | 'policies' | 'contact' | 'code'>('about');
   const [localData, setLocalData] = useState<KnowledgeData>(ensureDefaults(data));
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
   const [copied, setCopied] = useState(false);
-  const justSavedRef = React.useRef(false);
 
   const tabs = [
     { id: 'about', label: '01 Bout', icon: Building2 },
     { id: 'products', label: '02 Products', icon: ShoppingBag },
     { id: 'policies', label: '03 Policies', icon: ShieldCheck },
     { id: 'contact', label: '04 Contact', icon: Contact },
+    { id: 'code', label: '05 Code', icon: Code },
   ] as const;
 
   const getNextTab = () => {
     if (activeTab === 'about') return 'products';
     if (activeTab === 'products') return 'policies';
     if (activeTab === 'policies') return 'contact';
+    if (activeTab === 'contact') return 'code';
     return null;
   };
 
@@ -70,6 +73,7 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
     if (activeTab === 'products') return 'about';
     if (activeTab === 'policies') return 'products';
     if (activeTab === 'contact') return 'policies';
+    if (activeTab === 'code') return 'contact';
     return null;
   };
 
@@ -77,17 +81,6 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
   React.useEffect(() => {
     setLocalData(ensureDefaults(data));
   }, [data]);
-
-  // Only hide embed code when switching to a DIFFERENT bot
-  React.useEffect(() => {
-    if (justSavedRef.current) return;
-    setShowEmbed(false);
-  }, [data.chatbotId]);
-
-  const closeEmbed = React.useCallback(() => {
-    setShowEmbed(false);
-    justSavedRef.current = false;
-  }, []);
 
   const handleUpdate = (field: keyof KnowledgeData, value: any) => {
     setLocalData(prev => ({ ...prev, [field]: value }));
@@ -130,11 +123,13 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
     }));
   };
 
+  const closeEmbed = () => {
+    setShowEmbed(false);
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    setShowEmbed(false);
 
-    // Transform data to requested JSON format
     const transformedData = {
       chatbotId: localData.chatbotId,
       userId: localData.userId,
@@ -158,14 +153,14 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
 
     try {
       await onSave(transformedData);
-      justSavedRef.current = true;
-      setShowEmbed(true);
-      setTimeout(() => {
-        justSavedRef.current = false;
-      }, 2000);
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 100);
+      if (hasExistingData) {
+        setActiveTab('code');
+      } else {
+        setShowEmbed(true);
+        setTimeout(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 100);
+      }
     } catch (error) {
       console.error("Save failed", error);
     } finally {
@@ -176,7 +171,7 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
   const DEPLOY_URL = window.location.origin;
   const embedCode = `<script>
   window.BotConfig = {
-    modelId: 'onnx-community/SmolLM2-135M-Instruct-ONNX',
+      modelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
     botName: 'Bolnee',
     accentColor: '#6366f1',
     greeting: 'Hi! How can I help you today?',
@@ -187,6 +182,8 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
 </script>
 <script src="${DEPLOY_URL}/intent-detection.js"></script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;
+
+  const hasExistingData = !!(data.about || data.products.length > 0 || data.policy || data.contact?.mobile || data.contact?.email);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(embedCode);
@@ -208,7 +205,7 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
       </div>
 
       {/* Tab Navigation */}
-      <div className="grid grid-cols-4 gap-2 border-b border-line pb-4">
+      <div className="grid grid-cols-5 gap-2 border-b border-line pb-4">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -438,6 +435,51 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
               </div>
             </motion.div>
           )}
+
+          {activeTab === 'code' && (
+            <motion.div
+              key="code"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="space-y-6"
+            >
+              <div className="bg-blue-50 border border-blue-200 p-6 flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-600 text-white flex items-center justify-center brutal-border shrink-0">
+                  <Code className="w-5 h-5" />
+                </div>
+                <div>
+                  <h5 className="font-mono text-xs font-bold uppercase mb-1">Embed Code</h5>
+                  <p className="font-mono text-[10px] leading-relaxed opacity-60">
+                    Copy and paste this snippet into your website's HTML to deploy this chatbot.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="font-mono text-[10px] uppercase font-bold tracking-widest opacity-50">Snippet</label>
+                  <button
+                    onClick={copyToClipboard}
+                    className="brutal-btn bg-ink text-bg py-2 px-4 flex items-center gap-2 text-xs"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-green-300" /> : <Copy className="w-4 h-4" />}
+                    {copied ? 'Copied' : 'Copy Code'}
+                  </button>
+                </div>
+                <pre className="bg-ink text-bg p-6 font-mono text-xs overflow-x-auto brutal-border block leading-relaxed whitespace-pre-wrap break-all">
+                  {embedCode}
+                </pre>
+              </div>
+
+              <div className="brutal-card bg-ink/5 p-6 flex items-center gap-4">
+                <ArrowUpRight className="w-5 h-5 shrink-0" />
+                <p className="font-mono text-[10px] leading-relaxed opacity-60">
+                  Bot ID: {localData.chatbotId} — Your chatbot is active and ready to serve users.
+                </p>
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -449,12 +491,19 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
               onClick={() => { setActiveTab(prevTab as any); closeEmbed(); }}
               className="brutal-btn bg-white px-8"
             >
-              Back To {prevTab.toUpperCase()}
+              ← Back To {prevTab.toUpperCase()}
             </button>
           )}
         </div>
         <div>
-          {nextTab ? (
+          {activeTab === 'code' ? (
+            <button
+              onClick={() => onDashboard?.()}
+              className="brutal-btn bg-ink text-bg px-8"
+            >
+              Back to Dashboard →
+            </button>
+          ) : nextTab ? (
             <button
               onClick={() => { setActiveTab(nextTab as any); closeEmbed(); }}
               className="brutal-btn bg-ink text-bg px-8"
@@ -533,7 +582,7 @@ export default function KnowledgeSection({ data, onSave }: KnowledgeSectionProps
                 </div>
 
                 <button
-                  onClick={closeEmbed}
+                  onClick={() => { setShowEmbed(false); onDashboard?.(); }}
                   className="w-full brutal-btn bg-ink text-bg py-4 uppercase font-black"
                 >
                   Done — Back to Dashboard

@@ -13,9 +13,10 @@ interface OverviewProps {
   chatbots: Chatbot[];
   onCreateRequest: () => void;
   onSelectBot: (id: string) => void;
+  onViewAll: () => void;
 }
 
-export default function Overview({ chatbots, onCreateRequest, onSelectBot }: OverviewProps) {
+export default function Overview({ chatbots, onCreateRequest, onSelectBot, onViewAll }: OverviewProps) {
   const stats = [
     { label: 'Chatbots', value: chatbots.length.toString(), icon: Bot },
     { label: 'Total Messages', value: '0', icon: Zap },
@@ -48,7 +49,7 @@ export default function Overview({ chatbots, onCreateRequest, onSelectBot }: Ove
         <div className="flex justify-between items-end border-b border-line pb-4">
           <h2 className="font-mono text-xs font-black uppercase tracking-tight">Your Infrastructure</h2>
           <button 
-             onClick={onCreateRequest}
+             onClick={onViewAll}
              className="font-mono text-[10px] uppercase tracking-widest opacity-50 hover:opacity-100 flex items-center gap-1"
           >
             View All <ArrowUpRight className="w-3 h-3" />
@@ -77,7 +78,6 @@ export default function Overview({ chatbots, onCreateRequest, onSelectBot }: Ove
                  </div>
               </div>
             ))}
-            {chatbots.length < 4 && (
                <button 
                   onClick={onCreateRequest}
                   className="brutal-card border-dashed bg-transparent flex flex-col items-center justify-center gap-4 opacity-40 hover:opacity-100 hover:bg-white transition-all group"
@@ -85,7 +85,6 @@ export default function Overview({ chatbots, onCreateRequest, onSelectBot }: Ove
                   <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform" />
                   <span className="font-mono text-[10px] uppercase font-bold tracking-widest">Deploy New Node</span>
                </button>
-            )}
           </div>
         ) : (
           <div className="brutal-card text-center py-32 flex flex-col items-center gap-4 border-dashed bg-transparent">
