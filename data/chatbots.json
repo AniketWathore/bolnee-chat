@@ -10,17 +10,5 @@
     "userId": "user_3c39c715",
     "name": "shoemart",
     "createdAt": "2026-05-18T10:02:19.607Z"
-  },
-  {
-    "id": "bot_1e58d6e7-af04-445f-92c0-bc6764691184",
-    "userId": "user_3c39c715",
-    "name": "bolneebot",
-    "createdAt": "2026-05-18T16:20:57.111Z"
-  },
-  {
-    "id": "bot_eef7fe9a-9723-4cc2-bd6a-75984582958f",
-    "userId": "user_3c39c715",
-    "name": "supportbot",
-    "createdAt": "2026-05-19T06:56:47.392Z"
   }
 ]
