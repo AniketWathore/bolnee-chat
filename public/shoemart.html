@@ -83,8 +83,22 @@
       <p>&copy; 2026 ShoeMart. All rights reserved.</p>
     </div>
   </footer>
-
   <script src="script.js"></script>
+
+  <script>
+  window.BotConfig = {
+      modelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
+    botName: 'Bolnee',
+    accentColor: '#6366f1',
+    greeting: 'Hi! How can I help you today?',
+    systemPrompt: 'You are a helpful assistant for our store.',
+    workerUrl: 'http://localhost:3000/chat-worker.js',
+    knowledgeUrl: 'http://localhost:3000/api/public/knowledge/bot_2d4071a5-51f7-44ce-b675-9bb3b7103180',
+  };
+</script>
+<script src="http://localhost:3000/intent-detection.js"></script>
+<script src="http://localhost:3000/chatbot-widget.js" async></script>
+
 
 </body>
 
