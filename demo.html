@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot Widget — Demo Client Site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0a0a10;
+      --card:   #111118;
+      --border: #1e1e2c;
+      --accent: #6366f1;
+      --accent2:#a78bfa;
+      --text:   #e8e8f0;
+      --muted:  #6b6b80;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .4;
+    }
+
+    /* ── Glow blobs ── */
+    .blob {
+      position: fixed; border-radius: 50%; filter: blur(120px); opacity: .12;
+      pointer-events: none; z-index: 0;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -150px; }
+    .blob-2 { width: 500px; height: 500px; background: var(--accent2); bottom: -200px; left: -100px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(10,10,16,.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--text); letter-spacing: -.5px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent); color: #fff; border: none;
+      padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: opacity .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .nav-cta:hover { opacity: .9; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: 160px 48px 80px;
+      max-width: 900px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.3);
+      border-radius: 99px; padding: 5px 14px;
+      font-size: 12.5px; color: var(--accent2); font-weight: 500; letter-spacing: .03em;
+      margin-bottom: 28px;
+    }
+    .hero-tag::before { content: '●'; font-size: 8px; color: #4ade80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(42px, 7vw, 76px);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+    .hero p {
+      font-size: 18px; color: var(--muted); max-width: 600px; margin: 0 auto 40px;
+      font-weight: 300; line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #fff; border: none;
+      padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: transform .2s, box-shadow .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,.4); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--border);
+      padding: 13px 28px; border-radius: 10px; font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: border-color .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-secondary:hover { border-color: var(--muted); }
+
+    /* ── Code snippet block ── */
+    .snippet-section {
+      position: relative; z-index: 1;
+      max-width: 760px; margin: 60px auto;
+      padding: 0 24px;
+    }
+    .snippet-section h2 {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700;
+      text-align: center; margin-bottom: 8px; letter-spacing: -.5px;
+    }
+    .snippet-section .sub { text-align: center; color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+    .code-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .code-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    .dots { display: flex; gap: 6px; }
+    .dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .dots span:nth-child(1) { background: #ff5f57; }
+    .dots span:nth-child(2) { background: #febc2e; }
+    .dots span:nth-child(3) { background: #28c840; }
+    .file-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .copy-btn {
+      background: rgba(255,255,255,.06); border: 1px solid var(--border);
+      color: var(--muted); padding: 4px 12px; border-radius: 6px;
+      font-size: 12px; cursor: pointer; transition: background .2s, color .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.1); color: var(--text); }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+    pre {
+      padding: 24px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.65;
+      tab-size: 2;
+    }
+    code { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
+    .kw { color: #c792ea; }
+    .str { color: #c3e88d; }
+    .cm { color: #546e7a; font-style: italic; }
+    .attr { color: #80cbc4; }
+    .tag { color: #f07178; }
+    .val { color: #f78c6c; }
+
+    /* ── Feature grid ── */
+    .features {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto 100px;
+      padding: 0 24px;
+    }
+    .features h2 {
+      font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700;
+      text-align: center; margin-bottom: 48px; letter-spacing: -.5px;
+    }
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      transition: border-color .25s, transform .25s;
+    }
+    .feature-card:hover { border-color: rgba(99,102,241,.4); transform: translateY(-3px); }
+    .feature-icon { font-size: 28px; margin-bottom: 14px; }
+    .feature-card h3 {
+      font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700;
+      margin-bottom: 8px; letter-spacing: -.3px;
+    }
+    .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Steps ── */
+    .steps-section {
+      position: relative; z-index: 1;
+      max-width: 700px; margin: 0 auto 100px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .steps-section h2 {
+      font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700;
+      margin-bottom: 48px; letter-spacing: -.5px;
+    }
+    .step {
+      display: flex; align-items: flex-start; gap: 20px; text-align: left;
+      margin-bottom: 32px;
+    }
+    .step-num {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(99,102,241,.15); border: 1px solid rgba(99,102,241,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 700; color: var(--accent2);
+      font-size: 16px;
+    }
+    .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .step p  { font-size: 14px; color: var(--muted); }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 28px;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">chat<span>embed</span></div>
+    <div class="nav-links">
+      <a href="#embed">Embed</a>
+      <a href="#features">Features</a>
+      <a href="#steps">Docs</a>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('_aicw_bubble')?.click()">Try the Demo →</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">Zero server costs · 100% browser-native AI</div>
+    <h1>Embed AI Chat on Any Website</h1>
+    <p>Drop two lines of JavaScript into any site. Your visitors get a fully working AI chatbot that downloads the model once and runs entirely in their browser — no backend, no API keys, no bills.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('_aicw_bubble')?.click()">▶ Try the chatbot now</button>
+      <button class="btn-secondary" onclick="document.getElementById('embed').scrollIntoView({behavior:'smooth'})">Get the snippet</button>
+    </div>
+  </section>
+
+  <!-- Embed snippet -->
+  <section class="snippet-section" id="embed">
+    <h2>One Snippet. Any Website.</h2>
+    <p class="sub">Paste these two tags anywhere in your HTML and you're done.</p>
+
+    <div class="code-card">
+      <div class="code-card-header">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="file-label">your-website.html</span>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+      </div>
+      <pre><code id="snippetCode"><span class="cm">&lt;!-- Step 1: Configure the chatbot (optional) --&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  <span class="kw">window</span>.<span class="attr">BotConfig</span> = {
+    <span class="attr">modelId</span>:      <span class="str">'onnx-community/SmolLM2-135M-Instruct-ONNX'</span>,
+    <span class="attr">botName</span>:      <span class="str">'Aria'</span>,
+    <span class="attr">accentColor</span>:  <span class="str">'#6366f1'</span>,
+    <span class="attr">greeting</span>:     <span class="str">'Hi! How can I help you today?'</span>,
+    <span class="attr">systemPrompt</span>: <span class="str">'You are a helpful assistant for Acme Corp.'</span>,
+    <span class="attr">workerUrl</span>:    <span class="str">'https://cdn.yourdomain.com/chat-worker.js'</span>,
+  };
+<span class="tag">&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Step 2: Load the widget (async — doesn't slow your page) --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://cdn.yourdomain.com/chatbot-widget.js"</span> <span class="attr">async</span><span class="tag">&gt;&lt;/script&gt;</span></code></pre>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <h2>Why it works this way</h2>
+    <div class="grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Runs Entirely In-Browser</h3>
+        <p>Transformers.js loads a quantised ONNX model into WebAssembly. Zero server calls happen during inference — every token is computed on the visitor's own device.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💾</div>
+        <h3>Permanent Browser Cache</h3>
+        <p>The ~90–140 MB model file downloads once and is stored in the browser's Cache Storage API forever. Every subsequent visit — and every other site using the same model — loads in under a second.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Web Worker Offloading</h3>
+        <p>All inference runs in a dedicated Web Worker so the host page never stutters, even during long generation runs. Tokens stream back token-by-token for a fluid chat feel.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy by Default</h3>
+        <p>User conversations never leave the device. There is no backend logging, no data pipeline, and no third-party API calls during chat. Perfect for GDPR-conscious deployments.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>Fully Customisable</h3>
+        <p>Configure the accent colour, bot name, greeting, and system prompt from a simple <code>window.BotConfig</code> object — no build step required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h3>Zero Ongoing Cost</h3>
+        <p>No GPU bills. No API usage charges. Host the two JS files on any static CDN (Cloudflare Pages, GitHub Pages, Vercel) for a few cents per month.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Steps -->
+  <section class="steps-section" id="steps">
+    <h2>Deploy in 3 Steps</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <h3>Host the two JS files on a CDN</h3>
+        <p>Upload <code>chatbot-widget.js</code> and <code>chat-worker.js</code> to Cloudflare Pages, Vercel, or any static host. Note the public URLs.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <h3>Configure BotConfig</h3>
+        <p>Set <code>workerUrl</code> to the absolute URL of your hosted <code>chat-worker.js</code>. Optionally override <code>botName</code>, <code>accentColor</code>, and <code>systemPrompt</code>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <h3>Paste the snippet &amp; ship</h3>
+        <p>Drop the two <code>&lt;script&gt;</code> tags before <code>&lt;/body&gt;</code> on any page. The widget appears instantly; the AI model loads lazily the first time a visitor opens the chat.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built with <a href="https://huggingface.co/docs/transformers.js" style="color:var(--accent)">Transformers.js</a> ·
+    Model: <a href="https://huggingface.co/onnx-community/SmolLM2-135M-Instruct-ONNX" style="color:var(--accent)">SmolLM2-135M-Instruct-ONNX</a> ·
+    Zero server costs
+  </footer>
+
+  <!-- ──────────────────────────────────────────────────────────────────────
+       DEMO: The actual widget is loaded here.
+       In production, point workerUrl to your absolute CDN URL.
+  ─────────────────────────────────────────────────────────────────────── -->
+  <script>
+    window.BotConfig = {
+      botName:     'Aria',
+      accentColor: '#6366f1',
+      greeting:    "Hi! I'm Aria, running 100% in your browser. Ask me anything!",
+      systemPrompt: 'You are Aria, a friendly and concise AI assistant. Keep responses short and helpful.',
+      // In production, change this to an absolute URL on your CDN:
+      workerUrl: 'chat-worker.js',
+    };
+  </script>
+  <script src="chatbot-widget.js"></script>
+
+  <!-- Copy button logic -->
+  <script>
+    document.getElementById('copyBtn').addEventListener('click', function () {
+      const raw = `<!-- Step 1: Configure the chatbot (optional) -->
+<script>
+  window.BotConfig = {
+    modelId:      'onnx-community/SmolLM2-135M-Instruct-ONNX',
+    botName:      'Aria',
+    accentColor:  '#6366f1',
+    greeting:     'Hi! How can I help you today?',
+    systemPrompt: 'You are a helpful assistant for Acme Corp.',
+    workerUrl:    'https://cdn.yourdomain.com/chat-worker.js',
+  };
+<\/script>
+
+<!-- Step 2: Load the widget (async — doesn't slow your page) -->
+<script src="https://cdn.yourdomain.com/chatbot-widget.js" async><\/script>`;
+
+      navigator.clipboard.writeText(raw).then(() => {
+        this.textContent = '✓ Copied!';
+        this.classList.add('copied');
+        setTimeout(() => { this.textContent = 'Copy'; this.classList.remove('copied'); }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
