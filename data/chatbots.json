@@ -10,5 +10,17 @@
     "userId": "user_3c39c715",
     "name": "shoemart",
     "createdAt": "2026-05-18T10:02:19.607Z"
+  },
+  {
+    "id": "bot_88a55312-af7d-4f1a-b03c-15006a354e7d",
+    "userId": "user_3c39c715",
+    "name": "demo",
+    "createdAt": "2026-05-28T18:13:42.712Z"
+  },
+  {
+    "id": "bot_9a232ed8-47a9-4307-be05-23de1fc1f109",
+    "userId": "user_3c39c715",
+    "name": "new",
+    "createdAt": "2026-06-02T08:20:46.985Z"
   }
 ]

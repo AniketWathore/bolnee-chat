@@ -1,0 +1,560 @@
+{
+  "domain": "bulliesandco.com",
+  "generated_at": "2026-06-05T13:51:32.161Z",
+  "product_count": 13,
+  "responses": {
+    "GREETING": [
+      "Hi there!",
+      "Hello! Welcome to Bullies & Co.",
+      "Hey! Glad you stopped by.",
+      "Hi! Thanks for visiting Bullies & Co — luxury dog collars for every pup.",
+      "Hello! We're thrilled you're here. At Bullies & Co we specialize in premium, hand‑crafted dog collars that combine style and durability, and we can't wait to help you find the perfect piece for your pup."
+    ],
+    "THANKS": [
+      "Thank you!",
+      "Thanks for reaching out!",
+      "Thanks for your interest in our collars.",
+      "Thank you for contacting Bullies & Co.",
+      "We appreciate you getting in touch — let us know how we can make your dog look fabulous!"
+    ],
+    "GENERAL": [
+      "I'm not sure.",
+      "Let me check that for you.",
+      "I’ll look up the information and get back to you shortly.",
+      "Our team is looking into it; we’ll respond as soon as possible.",
+      "One moment while I retrieve the details you need — thanks for your patience!"
+    ],
+    "ABOUT": [
+      "We craft luxury dog collars like the Gold Cuban Choke Chain.",
+      "Our collection includes the Gold Cuban Choke Chain, Rose Gold Choke Chain, and Silver Miami Cuban Clasp.",
+      "Each collar is made from 316L stainless steel with 18k gold or rose gold finishes.",
+      "From the Gold Cuban Link Clasp to the Rose Gold Miami Cuban Clasp, we offer premium, affordable options.",
+      "Whether you need a Silver Miami Cuban Choke Chain or a limited‑edition Rose Gold piece, Bullies & Co provides stylish, durable collars for all dog sizes."
+    ],
+    "RETURN_POLICY": [
+      "All sales are final.",
+      "We do not accept returns or exchanges.",
+      "Please measure your dog correctly; size errors are not eligible for refund.",
+      "Because items are final sale, we cannot process returns after purchase.",
+      "If you have questions about sizing, contact us before ordering; once placed, orders are final."
+    ],
+    "SHIPPING": [
+      "We ship domestically for free.",
+      "Free domestic shipping on all orders.",
+      "Orders are processed within 1‑2 weeks; shipping is complimentary.",
+      "We offer free shipping within the U.S.; typical delivery takes 3‑5 business days after processing.",
+      "Enjoy complimentary domestic shipping on every collar, with processing times up to one week and standard delivery times applying thereafter."
+    ],
+    "WARRANTY": [
+      "We stand behind our products.",
+      "Our collars are made with high‑grade materials.",
+      "We ensure each collar meets strict quality standards.",
+      "If you encounter any defect, contact us for assistance.",
+      "We offer a limited warranty against manufacturing defects on all Bullies & Co collars."
+    ],
+    "CONTACT": [
+      "Please visit our website for contact details.",
+      "You can reach us through our website.",
+      "For inquiries, see our website contact page.",
+      "Get in touch via our website for support.",
+      "Our contact information is available on the website; please visit to connect."
+    ],
+    "HOURS": [
+      "We're open Monday‑Friday, 9 am‑5 pm EST.",
+      "Our store hours are 9 am to 5 pm Eastern time, Monday through Friday.",
+      "We operate Monday through Friday, 9 am‑5 pm EST.",
+      "Business hours: 9 am‑5 pm EST, Monday‑Friday.",
+      "We’re available for orders and support Monday‑Friday, 9 am‑5 pm Eastern Time; weekend hours are currently unavailable."
+    ],
+    "BUDGET_FILTER": [
+      "Under $40: Gold Cuban Choke Chain at $38.99.",
+      "Budget options include the Silver Miami Cuban Choke Chain for $36.99.",
+      "We have mid‑range choices like the Gold Miami Cuban Clasp at $50.99.",
+      "Higher‑end items such as the Gold Cuban Link Clasp start at $70.99.",
+      "Our collection spans $36.99 to $70.99, featuring the Silver Miami Cuban Choke Chain, Gold Cuban Choke Chain, Rose Gold Choke Chain, and limited‑edition Gold Cuban Link Clasp, all with free domestic shipping."
+    ],
+    "PRODUCT_SEARCH": [
+      "You can search for Gold Cuban Choke Chain.",
+      "We carry Gold Cuban Choke Chain, Rose Gold Choke Chain, and Silver Miami Cuban Clasp.",
+      "Available products include Gold Cuban Choke Chain, Silver Miami Cuban Clasp, Rose Gold Miami Cuban Clasp, and Gold Cuban Link Clasp.",
+      "Our lineup features Gold Cuban Choke Chain, Silver Miami Cuban Choke Chain, Rose Gold Choke Chain, Gold Miami Cuban Clasp, Rose Gold Miami Cuban Clasp, and Gold Cuban Link Clasp.",
+      "Browse our full range: Gold Cuban Choke Chain, Silver Miami Cuban Choke Chain, Rose Gold Choke Chain, Gold Miami Cuban Clasp, Rose Gold Miami Cuban Clasp, Gold Cuban Link Clasp, and the limited‑edition Silver Miami Cuban Clasp — all ready for purchase."
+    ],
+    "PRICE": [
+      "Our prices range from $36.99 to $70.99.",
+      "You’ll find items like the Silver Miami Cuban Choke Chain at $36.99 and the Gold Cuban Link Clasp at $70.99.",
+      "Price points include $38.99 for the Gold Cuban Choke Chain, $46.99 for the Silver Miami Cuban Clasp, and $50.99 for the Gold Miami Cuban Clasp.",
+      "We offer a spectrum of prices: $36.99 for Silver Miami Cuban Choke Chain, $38.99 for Gold Cuban Choke Chain, $46.99 for Silver Miami Cuban Clasp, $50.99 for Gold Miami Cuban Clasp and Rose Gold variants, up to $70.99 for the Gold Cuban Link Clasp.",
+      "Across our catalog the price range is $36.99‑$70.99, with specific products such as the Gold Cuban Choke Chain ($38.99), Silver Miami Cuban Choke Chain ($36.99), Rose Gold Choke Chain ($38.99), Gold Miami Cuban Clasp ($50.99), and Gold Cuban Link Clasp ($70.99)."
+    ],
+    "STOCK": [
+      "In stock.",
+      "We have this item available to ship.",
+      "Most of our collars are ready for immediate dispatch.",
+      "We maintain inventory for all listed designs, including the Gold Cuban Choke Chain and Silver Miami Cuban Clasp.",
+      "Current stock includes all featured models; if a specific size or finish is unavailable, it will be noted on the product page, otherwise you can order with confidence."
+    ]
+  },
+  "product_responses": {
+    "collections_frontpage_products_cuban-choke-chain-gold": {
+      "name": "Gold Cuban Choke Chain",
+      "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold",
+      "price_range": "$38.99",
+      "about_responses": [
+        "A Gold Cuban Choke Chain made of 316L stainless steel with an 18k gold finish.",
+        "This luxurious collar features engraved logo rings and fits any size dog.",
+        "You can attach an ID tag and leash to this gold choke chain.",
+        "Bullies & Co crafts this gold choke chain for durability and style.",
+        "The Gold Cuban Choke Chain offers premium stainless steel, 18k gold plating, and a beautiful engraved design, perfect for any dog."
+      ],
+      "price_responses": [
+        "Regular price $38.99, now on sale.",
+        "Sale price is $38.99 for this gold choke chain.",
+        "You can purchase the Gold Cuban Choke Chain for $38.99.",
+        "This premium gold choke chain is available for $38.99, a great value.",
+        "At just $38.99, the Gold Cuban Choke Chain combines luxury and affordability."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Cuban Choke Chain is currently in stock.",
+        "We keep this gold choke chain in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_cuban-choke-chain-gold": {
+      "name": "Gold Cuban Choke Chain",
+      "url": "https://bulliesandco.com/products/cuban-choke-chain-gold",
+      "price_range": "$38.99",
+      "about_responses": [
+        "The Gold Cuban Choke Chain is crafted from 316L stainless steel.",
+        "It features an 18k gold finish and engraved logo rings.",
+        "Designed for any size dog, it supports ID tags and leashes.",
+        "This choke chain offers luxurious style at an affordable price.",
+        "Bullies & Co’s gold choke chain combines durability with elegant design."
+      ],
+      "price_responses": [
+        "Regular price $38.99 Sale.",
+        "Sale price $38.99 for this gold choke chain.",
+        "Buy the Gold Cuban Choke Chain for $38.99.",
+        " Premium gold choke chain priced at $38.99.",
+        "Only $38.99 for this high‑quality gold choke chain."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Cuban Choke Chain is currently in stock.",
+        "We keep this gold choke chain in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_rose-gold-choke-chain-limited-edition": {
+      "name": "Rose Gold Choke Chain",
+      "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition",
+      "price_range": "$38.99",
+      "about_responses": [
+        "A Rose Gold Choke Chain plated with 18k rose gold finish.",
+        "Made for any size dog with engraved logo rings.",
+        "You can attach an ID tag and leash to this rose gold choke chain.",
+        "Bullies & Co crafts this rose gold choke chain for durability and style.",
+        "The Rose Gold Choke Chain offers premium stainless steel, rose gold plating, and a beautiful engraved design, perfect for any dog."
+      ],
+      "price_responses": [
+        "Regular price $38.99 Sale.",
+        "Sale price $38.99 for this rose gold choke chain.",
+        "Purchase the Rose Gold Choke Chain for $38.99.",
+        " Premium rose gold choke chain priced at $38.99.",
+        "Only $38.99 for this high‑quality rose gold choke chain."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Rose Gold Choke Chain is currently in stock.",
+        "We keep this rose gold choke chain in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "collections_frontpage_products_miami-cuban-chain-gold": {
+      "name": "Gold Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold",
+      "price_range": "$50.99",
+      "about_responses": [
+        "A Gold Miami Cuban Clasp handcrafted from medical‑grade 316L stainless steel.",
+        "Features an 18k gold finish and a patented jewelry‑style buckle.",
+        "Engraved logo adds a premium touch to this gold clasp.",
+        "Designed for any size dog, it securely attaches ID tags and leashes.",
+        "The Gold Miami Cuban Clasp combines luxury design with affordable pricing."
+      ],
+      "price_responses": [
+        "Regular price $50.99 Sale.",
+        "Sale price $50.99 for this gold Miami Cuban clasp.",
+        "Buy the Gold Miami Cuban Clasp for $50.99.",
+        " Premium gold Miami Cuban clasp priced at $50.99.",
+        "Only $50.99 for this high‑quality gold clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Miami Cuban Clasp is currently in stock.",
+        "We keep this gold Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "collections_frontpage_products_miami-cuban-chain-silver": {
+      "name": "Silver Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver",
+      "price_range": "$46.99",
+      "about_responses": [
+        "A Silver Miami Cuban Clasp crafted from 316L stainless steel.",
+        "Features a polished silver finish and engraved logo.",
+        "Includes a sturdy buckle for secure attachment of tags and leashes.",
+        "Designed for any size dog, offering both style and durability.",
+        "The Silver Miami Cuban Clasp provides premium stainless steel construction with a sleek silver look."
+      ],
+      "price_responses": [
+        "Regular price $46.99 Sale.",
+        "Sale price $46.99 for this silver Miami Cuban clasp.",
+        "Purchase the Silver Miami Cuban Clasp for $46.99.",
+        " Premium silver Miami Cuban clasp priced at $46.99.",
+        "Only $46.99 for this high‑quality silver clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Silver Miami Cuban Clasp is currently in stock.",
+        "We keep this silver Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "collections_frontpage_products_miami-cuban-rose-gold-clasp-limited-edition": {
+      "name": "Rose Gold Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition",
+      "price_range": "$50.99",
+      "about_responses": [
+        "A Rose Gold Miami Cuban Clasp handcrafted with 18k rose gold finish.",
+        "Features engraved logo and a patented jewelry‑style buckle.",
+        "Designed for any size dog, allowing easy attachment of tags and leashes.",
+        "Combines luxury rose gold aesthetics with durable stainless steel.",
+        "The Rose Gold Miami Cuban Clasp offers premium materials and a refined look."
+      ],
+      "price_responses": [
+        "Regular price $50.99 Sale.",
+        "Sale price $50.99 for this rose gold Miami Cuban clasp.",
+        "Buy the Rose Gold Miami Cuban Clasp for $50.99.",
+        " Premium rose gold Miami Cuban clasp priced at $50.99.",
+        "Only $50.99 for this high‑quality rose gold clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Rose Gold Miami Cuban Clasp is currently in stock.",
+        "We keep this rose gold Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_miami-cuban-chain-silver": {
+      "name": "Silver Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/products/miami-cuban-chain-silver",
+      "price_range": "$46.99",
+      "about_responses": [
+        "The Silver Miami Cuban Clasp is made from 316L stainless steel.",
+        "Features a polished silver finish and engraved logo with a buckle clasp.",
+        "Designed for any size dog, suitable for attaching ID tags and leashes.",
+        "Offers durability and style in a sleek silver design.",
+        "The Silver Miami Cuban Clasp provides premium construction at an affordable price."
+      ],
+      "price_responses": [
+        "Regular price $46.99 Sale.",
+        "Sale price $46.99 for this silver Miami Cuban clasp.",
+        "Purchase the Silver Miami Cuban Clasp for $46.99.",
+        " Premium silver Miami Cuban clasp priced at $46.99.",
+        "Only $46.99 for this high‑quality silver clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Silver Miami Cuban Clasp is currently in stock.",
+        "We keep this silver Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_cuban-choke-chain-silver": {
+      "name": "Silver Miami Cuban Choke Chain",
+      "url": "https://bulliesandco.com/products/cuban-choke-chain-silver",
+      "price_range": "$36.99",
+      "about_responses": [
+        "A Silver Miami Cuban Choke Chain crafted from 316L stainless steel.",
+        "Features engraved logo rings and a durable design for any size dog.",
+        "You can attach an ID tag and leash to this silver choke chain.",
+        "Bullies & Co crafts this silver choke chain for durability and style.",
+        "The Silver Miami Cuban Choke Chain offers premium stainless steel with a sleek silver finish."
+      ],
+      "price_responses": [
+        "Regular price $36.99 Sale.",
+        "Sale price $36.99 for this silver choke chain.",
+        "Buy the Silver Miami Cuban Choke Chain for $36.99.",
+        " Premium silver choke chain priced at $36.99.",
+        "Only $36.99 for this high‑quality silver choke chain."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Silver Miami Cuban Choke Chain is currently in stock.",
+        "We keep this silver Miami Cuban choke chain in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_miami-cuban-rose-gold-clasp-limited-edition": {
+      "name": "Rose Gold Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition",
+      "price_range": "$50.99",
+      "about_responses": [
+        "A Rose Gold Miami Cuban Clasp handcrafted with 18k rose gold finish.",
+        "Features engraved logo and a patented jewelry‑style buckle.",
+        "Designed for any size dog, allowing easy attachment of tags and leashes.",
+        "Combines luxury rose gold aesthetics with durable stainless steel.",
+        "The Rose Gold Miami Cuban Clasp offers premium materials and a refined look."
+      ],
+      "price_responses": [
+        "Regular price $50.99 Sale.",
+        "Sale price $50.99 for this rose gold Miami Cuban clasp.",
+        "Buy the Rose Gold Miami Cuban Clasp for $50.99.",
+        " Premium rose gold Miami Cuban clasp priced at $50.99.",
+        "Only $50.99 for this high‑quality rose gold clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Rose Gold Miami Cuban Clasp is currently in stock.",
+        "We keep this rose gold Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_gold-cuban-link-chain": {
+      "name": "Gold Cuban Link Clasp (LIMITED EDITION*)",
+      "url": "https://bulliesandco.com/products/gold-cuban-link-chain",
+      "price_range": "$70.99",
+      "about_responses": [
+        "A Gold Cuban Link Clasp (LIMITED EDITION*) featuring tightly‑spaced links.",
+        "Made from 316L stainless steel with an 18k gold finish and engraved logo.",
+        "Designed for any size dog, suitable for attaching ID tags and leashes.",
+        "Offers a classic luxury look with robust construction.",
+        "The Gold Cuban Link Clasp (LIMITED EDITION*) combines premium materials with a distinctive design."
+      ],
+      "price_responses": [
+        "Regular price $70.99 Sale.",
+        "Sale price $70.99 for this gold Cuban link clasp.",
+        "Purchase the Gold Cuban Link Clasp for $70.99.",
+        " Premium gold Cuban link clasp priced at $70.99.",
+        "Only $70.99 for this exclusive limited‑edition clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Cuban Link Clasp (LIMITED EDITION*) is currently in stock.",
+        "We keep this gold Cuban link clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "collections_frontpage_products_gold-cuban-link-chain": {
+      "name": "Gold Cuban Link Clasp (LIMITED EDITION*)",
+      "url": "https://bulliesandco.com/collections/frontpage/products/gold-cuban-link-chain",
+      "price_range": "$70.99",
+      "about_responses": [
+        "A Gold Cuban Link Clasp (LIMITED EDITION*) handcrafted from 316L stainless steel.",
+        "Features an 18k gold finish, engraved logo, and a patented buckle clasp.",
+        "Designed for any size dog, allowing easy attachment of tags and leashes.",
+        "Combines luxury gold aesthetics with durable construction.",
+        "The Gold Cuban Link Clasp (LIMITED EDITION*) offers premium quality and stylish design."
+      ],
+      "price_responses": [
+        "Regular price $70.99 Sale.",
+        "Sale price $70.99 for this gold Cuban link clasp.",
+        "Buy the Gold Cuban Link Clasp for $70.99.",
+        " Premium gold Cuban link clasp priced at $70.99.",
+        "Only $70.99 for this exclusive limited‑edition clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Cuban Link Clasp (LIMITED EDITION*) is currently in stock.",
+        "We keep this gold Cuban link clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "products_miami-cuban-chain-gold": {
+      "name": "Gold Miami Cuban Clasp",
+      "url": "https://bulliesandco.com/products/miami-cuban-chain-gold",
+      "price_range": "$50.99",
+      "about_responses": [
+        "A Gold Miami Cuban Clasp handcrafted from medical‑grade 316L stainless steel.",
+        "Features an 18k gold finish, patented jewelry‑style buckle, and engraved logo.",
+        "Designed for any size dog, allowing easy attachment of tags and leashes.",
+        "Offers both style and durability in a luxurious gold design.",
+        "The Gold Miami Cuban Clasp provides premium materials at an affordable price."
+      ],
+      "price_responses": [
+        "Regular price $50.99 Sale.",
+        "Sale price $50.99 for this gold Miami Cuban clasp.",
+        "Purchase the Gold Miami Cuban Clasp for $50.99.",
+        " Premium gold Miami Cuban clasp priced at $50.99.",
+        "Only $50.99 for this high‑quality gold clasp."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Gold Miami Cuban Clasp is currently in stock.",
+        "We keep this gold Miami Cuban clasp in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    },
+    "collections_frontpage_products_cuban-choke-chain-silver": {
+      "name": "Silver Miami Cuban Choke Chain",
+      "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-silver",
+      "price_range": "$36.99",
+      "about_responses": [
+        "A Silver Miami Cuban Choke Chain crafted from 316L stainless steel.",
+        "Features engraved logo rings and a durable design for any size dog.",
+        "You can attach an ID tag and leash to this silver choke chain.",
+        "Bullies & Co crafts this silver choke chain for durability and style.",
+        "The Silver Miami Cuban Choke Chain offers premium stainless steel with a sleek silver finish."
+      ],
+      "price_responses": [
+        "Regular price $36.99 Sale.",
+        "Sale price $36.99 for this silver choke chain.",
+        "Buy the Silver Miami Cuban Choke Chain for $36.99.",
+        " Premium silver choke chain priced at $36.99.",
+        "Only $36.99 for this high‑quality silver choke chain."
+      ],
+      "stock_responses": [
+        "In stock and ready to ship.",
+        "We have this item available for immediate dispatch.",
+        "The Silver Miami Cuban Choke Chain is currently in stock.",
+        "We keep this silver Miami Cuban choke chain in inventory for fast shipping.",
+        "This product is stocked and will ship within our normal processing time."
+      ]
+    }
+  },
+  "faq_responses": [
+    {
+      "question": "What products do you offer?",
+      "responses": [
+        "We sell dog collars.",
+        "Our catalog includes Gold Cuban Choke Chain, Rose Gold Choke Chain, and Silver Miami Cuban Clasp.",
+        "We offer a variety of luxury collars such as Gold Cuban Link Clasp, Silver Miami Cuban Clasp, and limited‑edition Rose Gold pieces.",
+        "Our collection features handcrafted collars in gold, silver, and rose gold finishes for all dog sizes.",
+        "From choke chains to Cuban clasp designs, Bullies & Co provides premium, affordable dog collars for every pup."
+      ]
+    },
+    {
+      "question": "How do I measure my dog's neck?",
+      "responses": [
+        "Use a flexible tape measure around the base of the neck.",
+        "Measure where the collar will sit, just above the shoulders.",
+        "Compare the measurement to our size chart before ordering.",
+        "If your dog's neck is 18\", choose the next size up, such as 20\".",
+        "Proper measurement ensures the right fit and avoids size‑related returns."
+      ]
+    },
+    {
+      "question": "What is your return policy?",
+      "responses": [
+        "All sales are final; we do not accept returns or exchanges.",
+        "Please measure your dog correctly; size errors are not eligible for refund.",
+        "Items are considered final sale once purchased.",
+        "If you have questions before buying, contact us for assistance.",
+        "We cannot process returns after an order has been placed."
+      ]
+    },
+    {
+      "question": "Do you offer free shipping?",
+      "responses": [
+        "Yes, we provide free domestic shipping on all orders.",
+        "Free shipping is included with every collar we sell.",
+        "Orders are processed within 1‑2 weeks and then shipped at no extra cost.",
+        "We offer complimentary shipping within the United States.",
+        "Enjoy free shipping on every product, from Gold Cuban Choke Chains to Rose Gold Clasp."
+      ]
+    },
+    {
+      "question": "How long does shipping take?",
+      "responses": [
+        "Processing takes up to one week.",
+        "After processing, standard delivery typically takes 3‑5 business days.",
+        "Most orders arrive within 7‑10 days from the time they are placed.",
+        "We aim to deliver your collar quickly after the brief processing period.",
+        "Shipping times may vary slightly but we strive for fast turnaround."
+      ]
+    },
+    {
+      "question": "What materials are the collars made from?",
+      "responses": [
+        "All collars are made from 316L stainless steel.",
+        "They are dipped in 18k gold, rose gold, or silver finishes.",
+        "Our materials are medical‑grade and hypoallergenic.",
+        "Each piece features an engraved logo and a patented buckle clasp.",
+        "The combination of stainless steel and plated finishes ensures durability and shine."
+      ]
+    },
+    {
+      "question": "Can I customize a collar?",
+      "responses": [
+        "Currently we do not offer custom engraving or color options.",
+        "All designs are pre‑set and ready to ship.",
+        "Custom requests are not supported at this time.",
+        "If you need a specific size, please refer to our size chart before ordering.",
+        "We may introduce customization in the future; stay tuned for updates."
+      ]
+    },
+    {
+      "question": "How should I care for my dog collar?",
+      "responses": [
+        "Wipe the collar with a soft, dry cloth after use.",
+        "Avoid exposure to harsh chemicals or prolonged seawater.",
+        "Store the collar in a cool, dry place when not in use.",
+        "Do not submerge the collar in water for extended periods.",
+        "Regularly check the clasp and rings for any signs of wear."
+      ]
+    },
+    {
+      "question": "Do you ship internationally?",
+      "responses": [
+        "At this time we only ship within the United States.",
+        "International orders are not currently accepted.",
+        "All shipping is domestic; please check our website for updates.",
+        "If you are outside the U.S., please contact us for future shipping options.",
+        "We look forward to expanding our shipping capabilities soon."
+      ]
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "responses": [
+        "We accept major credit cards such as Visa, MasterCard, and American Express.",
+        "Payments can also be made via PayPal.",
+        "All transactions are securely processed on our website.",
+        "We do not accept cash or other forms of payment.",
+        "Your payment information is encrypted and protected."
+      ]
+    },
+    {
+      "question": "Is there a warranty on the collars?",
+      "responses": [
+        "We offer a limited warranty against manufacturing defects.",
+        "If a defect is discovered, contact us for a resolution.",
+        "The warranty does not cover normal wear or improper use.",
+        "We stand behind the quality of our materials and craftsmanship.",
+        "Warranty claims are handled promptly by our support team."
+      ]
+    },
+    {
+      "question": "Can I place bulk orders?",
+      "responses": [
+        "Yes, we accommodate bulk orders for retailers and special events.",
+        "Contact us through our website for pricing details.",
+        "Bulk pricing may vary based on quantity and style.",
+        "We can coordinate fulfillment for large orders with prior notice.",
+        "Please reach out for a custom quote and shipping arrangements."
+      ]
+    }
+  ]
+}

@@ -1,9 +1,3 @@
-/**
- * chat-worker.js — Intent classification + text generation
- * 1. Loads all-MiniLM-L6-v2 for embedding-based intent classification
- * 2. Loads Qwen2.5-0.5B-Instruct for natural language response generation
- */
-
 import { pipeline, env, TextStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
 
 const INTENTS = {

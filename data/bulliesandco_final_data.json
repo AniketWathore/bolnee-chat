@@ -1,0 +1,417 @@
+{
+  "metadata": {
+    "domain": "bulliesandco.com",
+    "crawled_at": "2026-06-05T09:35:32Z",
+    "processed_at": "2026-06-05T09:36:04.758Z",
+    "product_count": 8
+  },
+  "products": [
+    {
+      "id": "prod_1654354592_123456789",
+      "name": "Gold Cuban Choke Chain",
+      "description": "Regular price $38.99 Sale Bullies & Co's luxurious cuban choke dog collar is made for any size dog. The collar is made out of 316L stainless steel, dipped in 18k gold finish and has our beautiful engraved logo rings. This stunning gold dog collar that looks beautiful on any dog. You can attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Example: If you measure your dog's neck and your measurements are 18\", you would go up a size and get the 20\" choke chain.",
+      "price": "$38.99",
+      "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold",
+      "variants": [
+        {
+          "option": "12\"",
+          "price": "38.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold?variant=35102675666"
+        },
+        {
+          "option": "14\"",
+          "price": "39.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold?variant=35102675794"
+        },
+        {
+          "option": "16\"",
+          "price": "40.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold?variant=35135921234"
+        },
+        {
+          "option": "18\"",
+          "price": "41.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold?variant=35102676050"
+        },
+        {
+          "option": "20\"",
+          "price": "42.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/cuban-choke-chain-gold?variant=35102676114"
+        }
+      ],
+      "keywords": [
+        "gold",
+        "cuban",
+        "choke",
+        "chain",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "gold cuban choke chain luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_234567890",
+      "name": "Rose Gold Choke Chain",
+      "description": "Regular price $38.99 Sale Bullies & Co's luxurious Rose Gold Choke Chain / Collar is made for any size dog. The Rose Gold Choke Chain is dipped in 18k rose gold and has our beautiful engraved logo rings. This stunning Rose Gold Choke Chain dog collar that looks beautiful on any dog. You can attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Example: If you measure your dog's neck and your measurements are 18\", you would go up a size and get the 20\" choke chain.",
+      "price": "$38.99",
+      "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition",
+      "variants": [
+        {
+          "option": "12\"",
+          "price": "38.99",
+          "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition?variant=3768340480023"
+        },
+        {
+          "option": "14\"",
+          "price": "39.99",
+          "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition?variant=3768340512791"
+        },
+        {
+          "option": "16\"",
+          "price": "40.99",
+          "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition?variant=3768340545559"
+        },
+        {
+          "option": "18\"",
+          "price": "41.99",
+          "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition?variant=3768340578327"
+        },
+        {
+          "option": "20\"",
+          "price": "42.99",
+          "url": "https://bulliesandco.com/products/rose-gold-choke-chain-limited-edition?variant=3768340611095"
+        }
+      ],
+      "keywords": [
+        "rose",
+        "gold",
+        "choke",
+        "chain",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "rose gold choke chain luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_345678901",
+      "name": "Gold Miami Cuban Clasp",
+      "description": "Regular price $50.99 Sale Bullies & Co's luxurious cuban dog collar is made for any size dog. Our collars are hand crafted, made out of medical grade 316L stainless steel, dipped in 18k gold finish, with our patented buckle jewelry style clasp and and has our beautiful engraved logo. You can easily attach an ID tag & leash. This stunning gold dog collar that looks beautiful on any dog. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Please, make sure you measure your dog's neck and visit our size chart.",
+      "price": "$50.99",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold",
+      "variants": [
+        {
+          "option": "8\" / Gold",
+          "price": "48.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold?variant=35135816594"
+        },
+        {
+          "option": "10\" / Gold",
+          "price": "50.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold?variant=35135790034"
+        },
+        {
+          "option": "12\" / Gold",
+          "price": "52.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold?variant=35099904018"
+        },
+        {
+          "option": "14\" / Gold",
+          "price": "54.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold?variant=35099904146"
+        },
+        {
+          "option": "16\" / Gold",
+          "price": "56.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-gold?variant=35099904210"
+        }
+      ],
+      "keywords": [
+        "gold",
+        "miami",
+        "cuban",
+        "clasp",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "gold miami cuban clasp luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_456789012",
+      "name": "Silver Miami Cuban Clasp",
+      "description": "Regular price $46.99 Sale Bullies & Co's luxurious cuban dog collar is made for any size dog. The collar is made out of 316L stainless steel and has our beautiful engraved logo with a buckle clasp. This stunning silver dog collar that looks beautiful on any dog. You can easily attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Make sure you measure your dog's neck and visit our size chart. Please allow up to one-two week for fulfillment. ALL SALES ARE FINAL. If you have any questions about sizing or need assistance, send us an email.",
+      "price": "$46.99",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver",
+      "variants": [
+        {
+          "option": "8\"",
+          "price": "46.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver?variant=35135897810"
+        },
+        {
+          "option": "10\"",
+          "price": "48.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver?variant=35135876050"
+        },
+        {
+          "option": "12\"",
+          "price": "50.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver?variant=35101301010"
+        },
+        {
+          "option": "14\"",
+          "price": "52.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver?variant=35101301074"
+        },
+        {
+          "option": "16\"",
+          "price": "54.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-chain-silver?variant=35101301138"
+        }
+      ],
+      "keywords": [
+        "silver",
+        "miami",
+        "cuban",
+        "clasp",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "silver miami cuban clasp luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_567890123",
+      "name": "Rose Gold Miami Cuban Clasp",
+      "description": "Regular price $50.99 Sale Bullies & Co's luxurious cuban dog collar is made for any size dog. The collar is made out of 316L stainless steel, dipped in 18k rose gold finish and has our beautiful engraved logo with a buckle clasp. This stunning gold dog collar that looks beautiful on any dog. You can easily attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Make sure you measure your dog's neck properly and visit our size chart.",
+      "price": "$50.99",
+      "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition",
+      "variants": [
+        {
+          "option": "8\"",
+          "price": "50.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277693975"
+        },
+        {
+          "option": "10\"",
+          "price": "52.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277726743"
+        },
+        {
+          "option": "12\"",
+          "price": "54.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277759511"
+        },
+        {
+          "option": "14\"",
+          "price": "56.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277792279"
+        },
+        {
+          "option": "16\"",
+          "price": "58.99",
+          "url": "https://bulliesandco.com/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277825047"
+        }
+      ],
+      "keywords": [
+        "rose",
+        "gold",
+        "miami",
+        "cuban",
+        "clasp",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "rose gold miami cuban clasp luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_678901234",
+      "name": "Gold Cuban Link Clasp (LIMITED EDITION*)",
+      "description": "Regular price $70.99 Sale The strong, tightly-spaced links of Bullies & Co. Gold Cuban Link Collar makes for a classic, luxury design. And it's now available with tighter links. Get yours now. Bullies & Co's luxurious cuban link pet collar is made for any size dog. The collar is made out of 316L stainless steel, dipped in 18k gold finish and has our beautiful engraved logo with a buckle clasp. This stunning gold dog collar that looks beautiful on any dog. You can easily attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend",
+      "price": "$70.99",
+      "url": "https://bulliesandco.com/products/gold-cuban-link-chain",
+      "variants": [
+        {
+          "option": "8\"",
+          "price": "70.99",
+          "url": "https://bulliesandco.com/products/gold-cuban-link-chain?variant=40596124500038"
+        },
+        {
+          "option": "10\"",
+          "price": "72.99",
+          "url": "https://bulliesandco.com/products/gold-cuban-link-chain?variant=40596124532806"
+        },
+        {
+          "option": "12\"",
+          "price": "74.99",
+          "url": "https://bulliesandco.com/products/gold-cuban-link-chain?variant=29438758289431"
+        },
+        {
+          "option": "14\"",
+          "price": "76.99",
+          "url": "https://bulliesandco.com/products/gold-cuban-link-chain?variant=29438896930839"
+        },
+        {
+          "option": "16\"",
+          "price": "78.99",
+          "url": "https://bulliesandco.com/products/gold-cuban-link-chain?variant=29438896963607"
+        }
+      ],
+      "keywords": [
+        "gold",
+        "cuban",
+        "link",
+        "clasp",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "gold cuban link clasp luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_789012345",
+      "name": "Silver Miami Cuban Choke Chain",
+      "description": "Regular price $36.99 Sale Bullies & Co's luxurious cuban choke dog collar is made for any size dog. The collar is made out of 316L stainless steel and has our beautiful engraved logo rings. This stunning silver dog collar that looks beautiful on any dog. You can easily attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Example: If you measure your dog's neck and your measurements are 18\", you would go up a size and get the 20\" choke chain.",
+      "price": "$36.99",
+      "url": "https://bulliesandco.com/products/cuban-choke-chain-silver",
+      "variants": [
+        {
+          "option": "12\"",
+          "price": "36.99",
+          "url": "https://bulliesandco.com/products/cuban-choke-chain-silver?variant=35102945426"
+        },
+        {
+          "option": "14\"",
+          "price": "37.99",
+          "url": "https://bulliesandco.com/products/cuban-choke-chain-silver?variant=35102945490"
+        },
+        {
+          "option": "16\"",
+          "price": "38.99",
+          "url": "https://bulliesandco.com/products/cuban-choke-chain-silver?variant=35135912786"
+        },
+        {
+          "option": "18\"",
+          "price": "39.99",
+          "url": "https://bulliesandco.com/products/cuban-choke-chain-silver?variant=35102945618"
+        },
+        {
+          "option": "20\"",
+          "price": "40.99",
+          "url": "https://bulliesandco.com/products/cuban-choke-chain-silver?variant=35102945682"
+        }
+      ],
+      "keywords": [
+        "silver",
+        "miami",
+        "cuban",
+        "choke",
+        "chain",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "silver miami cuban choke chain luxury dog collar affordable"
+    },
+    {
+      "id": "prod_1654354592_890123456",
+      "name": "Rose Gold Miami Cuban Clasp",
+      "description": "Regular price $50.99 Sale Bullies & Co's luxurious cuban dog collar is made for any size dog. The collar is made out of 316L stainless steel, dipped in 18k rose gold finish and has our beautiful engraved logo with a buckle clasp. This stunning gold dog collar that looks beautiful on any dog. You can easily attach an ID tag & leash. If you are seeking luxury that's affordable, order this phenomenal chain for your best fur friend today! Make sure you measure your dog's neck properly and visit our size chart.",
+      "price": "$50.99",
+      "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition",
+      "variants": [
+        {
+          "option": "8\"",
+          "price": "50.99",
+          "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277693975"
+        },
+        {
+          "option": "10\"",
+          "price": "52.99",
+          "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277726743"
+        },
+        {
+          "option": "12\"",
+          "price": "54.99",
+          "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277759511"
+        },
+        {
+          "option": "14\"",
+          "price": "56.99",
+          "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277792279"
+        },
+        {
+          "option": "16\"",
+          "price": "58.99",
+          "url": "https://bulliesandco.com/products/miami-cuban-rose-gold-clasp-limited-edition?variant=3801277825047"
+        }
+      ],
+      "keywords": [
+        "rose",
+        "gold",
+        "miami",
+        "cuban",
+        "clasp",
+        "luxury",
+        "dog",
+        "collar",
+        "affordable"
+      ],
+      "searchable_text": "rose gold miami cuban clasp luxury dog collar affordable"
+    }
+  ],
+  "policies": {
+    "terms": {
+      "id": "policy_1654354592_123456789",
+      "type": "terms",
+      "title": "Terms of service",
+      "url": "https://bulliesandco.com/policies/terms-of-service",
+      "content": "TERMS OF SERVICE\n-----\nOVERVIEW\n\nThis website is operated by Bullies and Co. Throughout the site, the terms “we”, “us” and “our” refer to Bullies and Co. Bullies & Co. offers this website, including all information, tools and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies and notices stated here.\n\nBy visiting our site and/ or purchasing something from us, you engage in our “Service” and agree to be bound by the following terms and conditions (“Terms of Service”, “Terms”), including those additional terms and conditions and policies referenced here"
+    },
+    "refund": {
+      "id": "policy_1654354592_234567890",
+      "type": "refund",
+      "title": "Refund policy",
+      "url": "https://bulliesandco.com/policies/refund-policy",
+      "content": "Returns:\n\nALL SALES ARE FINAL!\n\nBullies & Co. no longer accepts Exchanges, Returns or Refunds of any kind on any items offered for sale in our stores.\n\nInspect all details: Please inspect all items carefully and make sure you measure properly.(Size charts are located in the photo area of the collars you'd like to purchase.)\n\nSize: Sizes displayed on collars are precise. Make sure to take the time to measure your dogs neck and head size. We can no longer accept exchanges because the lack of others not measuring and guessing their dogs neck sizes. No exchanges or returns are allowed for size differences."
+    },
+    "shipping": {
+      "id": "policy_1654354592_345678901",
+      "type": "shipping",
+      "title": "Shipping policy",
+      "url": "https://bulliesandco.com/policies/shipping-policy",
+      "content": "Shipping policy content"
+    },
+    "privacy": {
+      "id": "policy_1654354592_456789012",
+      "type": "privacy",
+      "title": "Privacy policy",
+      "url": "https://bulliesandco.com/policies/privacy-policy",
+      "content": "Privacy policy content"
+    }
+  },
+  "about": {
+    "url": "https://bulliesandco.com/pages/our-story",
+    "content": "Bullies & Co. Just a man and a woman who fell head over heels in love with an American Bully named Clyde . The odds were against us from the very start, hearing all the backlash about owning a \"pit bull.\" We have devoted our time, patience and love to train Clyde to be one of the most loyal, loving and intelligent examples of a bully breed. Our goal is to raise awareness to these gentle giants and show people that just like any other breed of dog, a bully that is properly raised will display the care and nurturing that was provided by their devoted owners! Now wherever we go instead of getting straight fear from Clyde be"
+  },
+  "contact": {
+    "support_email": "support@bulliesandco.com",
+    "sales_email": "sales@bulliesandco.com",
+    "phones": [
+      "(123) 456-7890"
+    ],
+    "addresses": [
+      "123 Main St, Anytown, USA"
+    ]
+  }
+}
