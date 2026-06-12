@@ -1,0 +1,1247 @@
+{
+  "/Users/prashik/Aniket/Bolnee/bolnee/.opencode/opencode.json": {
+    "mtime": 1780925264.3908691,
+    "ast_hash": "e5f74d14a81702b55bdf53b33ec991d7",
+    "semantic_hash": "e5f74d14a81702b55bdf53b33ec991d7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/.opencode/package.json": {
+    "mtime": 1780925277.127085,
+    "ast_hash": "c9442b1dfba4cd254e8dc712cf2d3da8",
+    "semantic_hash": "c9442b1dfba4cd254e8dc712cf2d3da8"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/.opencode/plugins/graphify.js": {
+    "mtime": 1780925217.8038564,
+    "ast_hash": "64ccd3c03dbfe0980b6095766f5c4e52",
+    "semantic_hash": "64ccd3c03dbfe0980b6095766f5c4e52"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/SETUP_GUIDE.sh": {
+    "mtime": 1780388100.8006687,
+    "ast_hash": "2b71fd40f222b1fa6de5cbd6903bd056",
+    "semantic_hash": "2b71fd40f222b1fa6de5cbd6903bd056"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/chat-worker.js": {
+    "mtime": 1779275195.157521,
+    "ast_hash": "ae013d0a1af170df99023e0f66278f53",
+    "semantic_hash": "ae013d0a1af170df99023e0f66278f53"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/chatbot-widget.js": {
+    "mtime": 1779275195.157874,
+    "ast_hash": "4fd286cd4526a573d3a1bd2851d67707",
+    "semantic_hash": "4fd286cd4526a573d3a1bd2851d67707"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/_manifest.json": {
+    "mtime": 1780652132.1072302,
+    "ast_hash": "589436c625936bdda7cc6e4c413746ed",
+    "semantic_hash": "589436c625936bdda7cc6e4c413746ed"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco_raw_data.json": {
+    "mtime": 1780652132.354971,
+    "ast_hash": "c944494aef339eb58e99694ed3b2e86b",
+    "semantic_hash": "c944494aef339eb58e99694ed3b2e86b"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/crawler.py": {
+    "mtime": 1780852258.4361012,
+    "ast_hash": "9f8cd7f6d41930cad2d5f68c4fdfab13",
+    "semantic_hash": "9f8cd7f6d41930cad2d5f68c4fdfab13"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/data-processor.js": {
+    "mtime": 1780646884.5178664,
+    "ast_hash": "167f82100474d35ee2481fd89e8b84ab",
+    "semantic_hash": "167f82100474d35ee2481fd89e8b84ab"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/_manifest.json": {
+    "mtime": 1780825065.7367055,
+    "ast_hash": "234267aa571bd74f1863ed73a6d198e6",
+    "semantic_hash": "234267aa571bd74f1863ed73a6d198e6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co_raw_data.json": {
+    "mtime": 1780825067.5481257,
+    "ast_hash": "3a3a40d81c23202e8a148ccc01b62127",
+    "semantic_hash": "3a3a40d81c23202e8a148ccc01b62127"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/llm-processor.js": {
+    "mtime": 1780821040.9305425,
+    "ast_hash": "8e324bc371d0ecf2ec23287119915347",
+    "semantic_hash": "8e324bc371d0ecf2ec23287119915347"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/_manifest.json": {
+    "mtime": 1780852306.4966931,
+    "ast_hash": "9a969a851b1783f3344cbb2b2650c009",
+    "semantic_hash": "9a969a851b1783f3344cbb2b2650c009"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles_raw_data.json": {
+    "mtime": 1780852308.6550014,
+    "ast_hash": "c59059113358a2b17853d910ed54065b",
+    "semantic_hash": "c59059113358a2b17853d910ed54065b"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/bulliesandco_corpus.json": {
+    "mtime": 1780849936.8113153,
+    "ast_hash": "58dfdc958efee31fa63390f6f9f57eb2",
+    "semantic_hash": "58dfdc958efee31fa63390f6f9f57eb2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/bulliesandco_final_data.json": {
+    "mtime": 1780652164.7665868,
+    "ast_hash": "7056f4197b07a6a6f2c84281b8b1c350",
+    "semantic_hash": "7056f4197b07a6a6f2c84281b8b1c350"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/bulliesandco_responses.json": {
+    "mtime": 1780672019.4991004,
+    "ast_hash": "35d3ae2d032e903da9bfab5c77d40d9c",
+    "semantic_hash": "35d3ae2d032e903da9bfab5c77d40d9c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/chatbots.json": {
+    "mtime": 1780388446.9867074,
+    "ast_hash": "952724a1088ecd516bcaef96406e7c02",
+    "semantic_hash": "952724a1088ecd516bcaef96406e7c02"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/leocoffee.co_responses.json": {
+    "mtime": 1780825173.1078038,
+    "ast_hash": "b936aeb22e5bd1c9a51ef8070f7dfef7",
+    "semantic_hash": "b936aeb22e5bd1c9a51ef8070f7dfef7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/leocoffee_corpus.json": {
+    "mtime": 1780837992.5158858,
+    "ast_hash": "28c6bf2fe81264feb1ce14d858a09cf3",
+    "semantic_hash": "28c6bf2fe81264feb1ce14d858a09cf3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/seattlecider_responses.json": {
+    "mtime": 1780824560.5672212,
+    "ast_hash": "a214eec875905e0593c6a3d19b878cd6",
+    "semantic_hash": "a214eec875905e0593c6a3d19b878cd6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/data/users.json": {
+    "mtime": 1779086855.7699327,
+    "ast_hash": "2784567d3ed31d82cd8d6436d071c62d",
+    "semantic_hash": "2784567d3ed31d82cd8d6436d071c62d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/index-a48H70hn.js": {
+    "mtime": 1780826932.429245,
+    "ast_hash": "745e9e901411cd77e65cf007be5e241d",
+    "semantic_hash": "745e9e901411cd77e65cf007be5e241d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/s.js": {
+    "mtime": 1780826934.2875788,
+    "ast_hash": "a91f6d2a39b38bc4cbb055818c98ab69",
+    "semantic_hash": "a91f6d2a39b38bc4cbb055818c98ab69"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/metadata.json": {
+    "mtime": 1779066368.0,
+    "ast_hash": "81630def19f2edf65f148bb77094f608",
+    "semantic_hash": "81630def19f2edf65f148bb77094f608"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/package.json": {
+    "mtime": 1779066368.0,
+    "ast_hash": "cb3411cc29daab1010be59e8438ee817",
+    "semantic_hash": "cb3411cc29daab1010be59e8438ee817"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/bm25.js": {
+    "mtime": 1780838037.2546163,
+    "ast_hash": "b972ddba303eb57e29cc87ce57cd27ec",
+    "semantic_hash": "b972ddba303eb57e29cc87ce57cd27ec"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/chat-worker.js": {
+    "mtime": 1780649864.268681,
+    "ast_hash": "5591f1cad5ba5133db3a799ceccc234e",
+    "semantic_hash": "5591f1cad5ba5133db3a799ceccc234e"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/chatbot-widget.js": {
+    "mtime": 1780857216.7924483,
+    "ast_hash": "17db22bb584a98ef1e3054117cf28268",
+    "semantic_hash": "17db22bb584a98ef1e3054117cf28268"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/context-memory.js": {
+    "mtime": 1780849771.4673193,
+    "ast_hash": "60996e221d87cd52b1e64b1d21281e1c",
+    "semantic_hash": "60996e221d87cd52b1e64b1d21281e1c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/data-extractor.js": {
+    "mtime": 1780387995.72447,
+    "ast_hash": "54148f6625ea13d77001b8d4474becf7",
+    "semantic_hash": "54148f6625ea13d77001b8d4474becf7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/intent-detection.js": {
+    "mtime": 1780667372.9920309,
+    "ast_hash": "1fd9c8cba91155a0a0fb1ba7f97335f2",
+    "semantic_hash": "1fd9c8cba91155a0a0fb1ba7f97335f2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/intent-detector.js": {
+    "mtime": 1780387969.595747,
+    "ast_hash": "c13f0cec6419fd7a37dd0c2dc14fe8c3",
+    "semantic_hash": "c13f0cec6419fd7a37dd0c2dc14fe8c3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/response-generator.js": {
+    "mtime": 1780388026.6575623,
+    "ast_hash": "d9e5b02fbb5dd254a297db02430fc4d9",
+    "semantic_hash": "d9e5b02fbb5dd254a297db02430fc4d9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/response-selector.js": {
+    "mtime": 1780849932.6432216,
+    "ast_hash": "a716170b4389b3bd06262f2b58b2d1e4",
+    "semantic_hash": "a716170b4389b3bd06262f2b58b2d1e4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/retrieval-engine.js": {
+    "mtime": 1780838942.2562258,
+    "ast_hash": "2ec1b89b24a42364872f0074cdf383fe",
+    "semantic_hash": "2ec1b89b24a42364872f0074cdf383fe"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/script.js": {
+    "mtime": 1779183229.7632875,
+    "ast_hash": "069b3ada4eda189b84e52ebece677584",
+    "semantic_hash": "069b3ada4eda189b84e52ebece677584"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/sw.js": {
+    "mtime": 1779180247.5382571,
+    "ast_hash": "1cac7fba5cd594363f7fe14dc50ed4fa",
+    "semantic_hash": "1cac7fba5cd594363f7fe14dc50ed4fa"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/scripts/build-corpus.js": {
+    "mtime": 1780849917.0886173,
+    "ast_hash": "1aacc06a2fb120cf774bb5f68ed49286",
+    "semantic_hash": "1aacc06a2fb120cf774bb5f68ed49286"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/server.ts": {
+    "mtime": 1780848858.5785556,
+    "ast_hash": "0953846d11fd34238117c44b4a59dd91",
+    "semantic_hash": "0953846d11fd34238117c44b4a59dd91"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/components/Auth.tsx": {
+    "mtime": 1779066368.0,
+    "ast_hash": "186916634005459995dfe74f0935de97",
+    "semantic_hash": "186916634005459995dfe74f0935de97"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/components/ChatbotDashboard.tsx": {
+    "mtime": 1779994828.5933816,
+    "ast_hash": "45ef0bb9eaa77d338baeec0e75b97407",
+    "semantic_hash": "45ef0bb9eaa77d338baeec0e75b97407"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/components/KnowledgeSection.tsx": {
+    "mtime": 1779994533.0289345,
+    "ast_hash": "850f1237f02aed57d5358c5d29bbbb48",
+    "semantic_hash": "850f1237f02aed57d5358c5d29bbbb48"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/components/LandingPage.tsx": {
+    "mtime": 1779180247.5400047,
+    "ast_hash": "25afc134384476c9698825714d705276",
+    "semantic_hash": "25afc134384476c9698825714d705276"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/components/Overview.tsx": {
+    "mtime": 1779180247.540267,
+    "ast_hash": "98db8156cc973b91a2762fdbf876c89a",
+    "semantic_hash": "98db8156cc973b91a2762fdbf876c89a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/main.tsx": {
+    "mtime": 1779066368.0,
+    "ast_hash": "2b36426d5ad7e08ef79746aa524f4fb7",
+    "semantic_hash": "2b36426d5ad7e08ef79746aa524f4fb7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/src/types.ts": {
+    "mtime": 1779066368.0,
+    "ast_hash": "0efc6c9196daa1a0e9040b24832ae22c",
+    "semantic_hash": "0efc6c9196daa1a0e9040b24832ae22c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/tsconfig.json": {
+    "mtime": 1779066368.0,
+    "ast_hash": "8827451c4e35790dd3f3538c265e7d15",
+    "semantic_hash": "8827451c4e35790dd3f3538c265e7d15"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/vercel.json": {
+    "mtime": 1779275195.1585264,
+    "ast_hash": "b32dc81be5164e3552adc5704806a5b2",
+    "semantic_hash": "b32dc81be5164e3552adc5704806a5b2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/vite.config.ts": {
+    "mtime": 1779066368.0,
+    "ast_hash": "b7809b0fd88019ca58080817086d946a",
+    "semantic_hash": "b7809b0fd88019ca58080817086d946a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/Junk and Prompt.txt": {
+    "mtime": 1780848834.8565764,
+    "ast_hash": "c50344641acd1c062624fe8c692b3fcc",
+    "semantic_hash": "c50344641acd1c062624fe8c692b3fcc"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/README.md": {
+    "mtime": 1779275203.7903824,
+    "ast_hash": "1d62ac6f8a0396e2b8dad94ae5e1aeb9",
+    "semantic_hash": "1d62ac6f8a0396e2b8dad94ae5e1aeb9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/FINAL_IMPLEMENTATION.md": {
+    "mtime": 1780824851.8135881,
+    "ast_hash": "acd11545d392d156082027314a91e0c1",
+    "semantic_hash": "acd11545d392d156082027314a91e0c1"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/IMPROVEMENTS.md": {
+    "mtime": 1780823907.476896,
+    "ast_hash": "a79de6b788c4acac11085e7c4eecc254",
+    "semantic_hash": "a79de6b788c4acac11085e7c4eecc254"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/agents.md/index.html": {
+    "mtime": 1780651295.6165555,
+    "ast_hash": "1a52f4d460c43dfbc18092e4505e9fd6",
+    "semantic_hash": "1a52f4d460c43dfbc18092e4505e9fd6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/all/index.html": {
+    "mtime": 1780651293.3961823,
+    "ast_hash": "c0b33c54dbc742b74a67aec5e707dd87",
+    "semantic_hash": "c0b33c54dbc742b74a67aec5e707dd87"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/index.html": {
+    "mtime": 1780651293.4626956,
+    "ast_hash": "d50620204b272f71345b38578241ad5a",
+    "semantic_hash": "d50620204b272f71345b38578241ad5a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/cuban-choke-chain-gold/index.html": {
+    "mtime": 1780651293.4378126,
+    "ast_hash": "ce2e2547c4d6646a94f24ee96be797aa",
+    "semantic_hash": "ce2e2547c4d6646a94f24ee96be797aa"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/cuban-choke-chain-silver/index.html": {
+    "mtime": 1780651294.3363574,
+    "ast_hash": "3d6e76aa22b6201f888e57cdb060dc15",
+    "semantic_hash": "3d6e76aa22b6201f888e57cdb060dc15"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/gold-cuban-link-chain/index.html": {
+    "mtime": 1780651294.3233037,
+    "ast_hash": "8d56b59b65854bb6e33c9520677fe38d",
+    "semantic_hash": "8d56b59b65854bb6e33c9520677fe38d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/miami-cuban-chain-gold/index.html": {
+    "mtime": 1780651293.5672252,
+    "ast_hash": "28cb03de8581142448273c9cbb53ab1a",
+    "semantic_hash": "28cb03de8581142448273c9cbb53ab1a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/miami-cuban-chain-silver/index.html": {
+    "mtime": 1780651293.6815827,
+    "ast_hash": "e5c7d045a7dffa7c8d4da73553385e04",
+    "semantic_hash": "e5c7d045a7dffa7c8d4da73553385e04"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/miami-cuban-rose-gold-clasp-limited-edition/index.html": {
+    "mtime": 1780651293.7939117,
+    "ast_hash": "2a00824c0bac7526b1d336e06a488fde",
+    "semantic_hash": "2a00824c0bac7526b1d336e06a488fde"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/collections/frontpage/products/rose-gold-choke-chain-limited-edition/index.html": {
+    "mtime": 1780651293.847854,
+    "ast_hash": "2cab1c026c36a58643a5d6b2b89ca58f",
+    "semantic_hash": "2cab1c026c36a58643a5d6b2b89ca58f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/facebook.com/bulliesandco/index.html": {
+    "mtime": 1780651296.018955,
+    "ast_hash": "2e4c50a977a193419752dea55395e08d",
+    "semantic_hash": "2e4c50a977a193419752dea55395e08d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/index.html": {
+    "mtime": 1780651293.360608,
+    "ast_hash": "5c3817896f3c33904f0e3a642366dc2d",
+    "semantic_hash": "5c3817896f3c33904f0e3a642366dc2d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/instagram.com/bulliesandco/index.html": {
+    "mtime": 1780651296.0205045,
+    "ast_hash": "2e4c50a977a193419752dea55395e08d",
+    "semantic_hash": "2e4c50a977a193419752dea55395e08d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/pages/about-us/index.html": {
+    "mtime": 1780651294.306278,
+    "ast_hash": "fc96a25dc39cbcefceb00bbbb9bd0d97",
+    "semantic_hash": "fc96a25dc39cbcefceb00bbbb9bd0d97"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/pages/our-story/index.html": {
+    "mtime": 1780651293.8389463,
+    "ast_hash": "8766d9e92410273556aa16fd01a42504",
+    "semantic_hash": "8766d9e92410273556aa16fd01a42504"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/policies/refund-policy/index.html": {
+    "mtime": 1780651293.4330394,
+    "ast_hash": "6d41e8d5ed62e3100d77416848af7841",
+    "semantic_hash": "6d41e8d5ed62e3100d77416848af7841"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/policies/terms-of-service/index.html": {
+    "mtime": 1780651293.3726103,
+    "ast_hash": "150bea821e7249bf34e543ac81ad4761",
+    "semantic_hash": "150bea821e7249bf34e543ac81ad4761"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/cuban-choke-chain-gold/index.html": {
+    "mtime": 1780651293.472506,
+    "ast_hash": "649a76ae381e14719dfca02fce092c16",
+    "semantic_hash": "649a76ae381e14719dfca02fce092c16"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/cuban-choke-chain-silver/index.html": {
+    "mtime": 1780651293.8527992,
+    "ast_hash": "41b573679b2c3a6ec8c6e04eb245c8d5",
+    "semantic_hash": "41b573679b2c3a6ec8c6e04eb245c8d5"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/gold-cuban-link-chain/index.html": {
+    "mtime": 1780651294.0959454,
+    "ast_hash": "9be15d827e499aa14f1c6447b3b4b2bd",
+    "semantic_hash": "9be15d827e499aa14f1c6447b3b4b2bd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/miami-cuban-chain-gold/index.html": {
+    "mtime": 1780651294.3318622,
+    "ast_hash": "70d64db2e06c500339d34db143337ba3",
+    "semantic_hash": "70d64db2e06c500339d34db143337ba3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/miami-cuban-chain-silver/index.html": {
+    "mtime": 1780651293.8434272,
+    "ast_hash": "dbbbc9e52f43801e5b8e8e00e0c43e2d",
+    "semantic_hash": "dbbbc9e52f43801e5b8e8e00e0c43e2d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/miami-cuban-rose-gold-clasp-limited-edition/index.html": {
+    "mtime": 1780651294.0703099,
+    "ast_hash": "cc2b1c057f51c38832c7288bfe0bda70",
+    "semantic_hash": "cc2b1c057f51c38832c7288bfe0bda70"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/bulliesandco/products/rose-gold-choke-chain-limited-edition/index.html": {
+    "mtime": 1780651293.5239563,
+    "ast_hash": "febe27f53302db43f050dfa522b92650",
+    "semantic_hash": "febe27f53302db43f050dfa522b92650"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/agents.md/index.html": {
+    "mtime": 1780825051.9300747,
+    "ast_hash": "762b6bde2f37a5eae47d36ee9f3a9976",
+    "semantic_hash": "762b6bde2f37a5eae47d36ee9f3a9976"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/all-blends/index.html": {
+    "mtime": 1780825048.5571413,
+    "ast_hash": "06d781f0b230adeaa6758fc7c79f78c9",
+    "semantic_hash": "06d781f0b230adeaa6758fc7c79f78c9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/all-products/index.html": {
+    "mtime": 1780825049.5292664,
+    "ast_hash": "2f93193c38d76bce209700b382c7deed",
+    "semantic_hash": "2f93193c38d76bce209700b382c7deed"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/all/index.html": {
+    "mtime": 1780825048.2805977,
+    "ast_hash": "0751d2e0fad72cd5e59871e70a14b685",
+    "semantic_hash": "0751d2e0fad72cd5e59871e70a14b685"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/brass-equipment/index.html": {
+    "mtime": 1780825046.8800707,
+    "ast_hash": "822479f0f9c371aa2f38fb9d18cce459",
+    "semantic_hash": "822479f0f9c371aa2f38fb9d18cce459"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/chicory/index.html": {
+    "mtime": 1780825047.284394,
+    "ast_hash": "6a68f6043309a95ed257c0a95c7da5fa",
+    "semantic_hash": "6a68f6043309a95ed257c0a95c7da5fa"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/coffee-equipments/index.html": {
+    "mtime": 1780825050.4688673,
+    "ast_hash": "504d3b11e388243a480e09e451160729",
+    "semantic_hash": "504d3b11e388243a480e09e451160729"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/coffee-with-chicory-blends/index.html": {
+    "mtime": 1780825049.4434376,
+    "ast_hash": "89e695b13404d7e18eb91324052d324f",
+    "semantic_hash": "89e695b13404d7e18eb91324052d324f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/festive-combos/index.html": {
+    "mtime": 1780825049.1005702,
+    "ast_hash": "060c9ce0f2c62ae0ebdc22d836984494",
+    "semantic_hash": "060c9ce0f2c62ae0ebdc22d836984494"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/filter-coffee-blends/index.html": {
+    "mtime": 1780825047.2209759,
+    "ast_hash": "9c1ce792f2c3c3ff9eaaa35518da0a67",
+    "semantic_hash": "9c1ce792f2c3c3ff9eaaa35518da0a67"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/filter-coffee-decoction/index.html": {
+    "mtime": 1780825046.4577088,
+    "ast_hash": "b7f6cd704803bdd6da981acd670ec316",
+    "semantic_hash": "b7f6cd704803bdd6da981acd670ec316"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/freshly-ground-filter-coffee/index.html": {
+    "mtime": 1780825048.1603591,
+    "ast_hash": "968b03a8edd215b34048b75dc9879ee8",
+    "semantic_hash": "968b03a8edd215b34048b75dc9879ee8"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/frontpage/index.html": {
+    "mtime": 1780825049.8393028,
+    "ast_hash": "4cfa22cdb29c6ee46b409e11276001fd",
+    "semantic_hash": "4cfa22cdb29c6ee46b409e11276001fd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/horeca-and-bulk/index.html": {
+    "mtime": 1780825048.9121413,
+    "ast_hash": "29ba0a1d200e6d1a37b33bff1cf6720c",
+    "semantic_hash": "29ba0a1d200e6d1a37b33bff1cf6720c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/instant-coffee-b2g2/index.html": {
+    "mtime": 1780825050.507456,
+    "ast_hash": "ac8fb19fa466b0cb2f64d3a8576e86c3",
+    "semantic_hash": "ac8fb19fa466b0cb2f64d3a8576e86c3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/instant-coffee/index.html": {
+    "mtime": 1780825047.6008308,
+    "ast_hash": "0945dea2f47e69e51577387eb8714ac5",
+    "semantic_hash": "0945dea2f47e69e51577387eb8714ac5"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/instant-combo/index.html": {
+    "mtime": 1780825047.586453,
+    "ast_hash": "0ede1e0605827f3a804729c177b896bb",
+    "semantic_hash": "0ede1e0605827f3a804729c177b896bb"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/mega-unlock/index.html": {
+    "mtime": 1780825048.223467,
+    "ast_hash": "aa2cab550f9c89d2b20c626a1cc301c5",
+    "semantic_hash": "aa2cab550f9c89d2b20c626a1cc301c5"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/packed-filter-coffee/index.html": {
+    "mtime": 1780825048.9032185,
+    "ast_hash": "89e695b13404d7e18eb91324052d324f",
+    "semantic_hash": "89e695b13404d7e18eb91324052d324f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/pure-coffee-blends/index.html": {
+    "mtime": 1780825047.8797994,
+    "ast_hash": "968b03a8edd215b34048b75dc9879ee8",
+    "semantic_hash": "968b03a8edd215b34048b75dc9879ee8"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/special-pure-coffee-blends/index.html": {
+    "mtime": 1780825046.871515,
+    "ast_hash": "fc37d9a754e657763d46e64ce7dc5252",
+    "semantic_hash": "fc37d9a754e657763d46e64ce7dc5252"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/collections/subscribe/index.html": {
+    "mtime": 1780825049.3648212,
+    "ast_hash": "e2fa51e1ecb0749736bc4fb0fe06f2b9",
+    "semantic_hash": "e2fa51e1ecb0749736bc4fb0fe06f2b9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/index.html": {
+    "mtime": 1780825048.299184,
+    "ast_hash": "bc6cffe0236c873fb52ea7261df90254",
+    "semantic_hash": "bc6cffe0236c873fb52ea7261df90254"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/about/index.html": {
+    "mtime": 1780825047.2569034,
+    "ast_hash": "24700eb0bb00586582c06a8401adada8",
+    "semantic_hash": "24700eb0bb00586582c06a8401adada8"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/contact-us/index.html": {
+    "mtime": 1780825048.233439,
+    "ast_hash": "95dc3d05d363ae66ecca76062e0f9fb5",
+    "semantic_hash": "95dc3d05d363ae66ecca76062e0f9fb5"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/dealership/index.html": {
+    "mtime": 1780825065.733627,
+    "ast_hash": "84e98b882becbda0d1581de6f70079c9",
+    "semantic_hash": "84e98b882becbda0d1581de6f70079c9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/mega-unlock/index.html": {
+    "mtime": 1780825048.920208,
+    "ast_hash": "540a818d0e1eb6f03966ba1315bdbea6",
+    "semantic_hash": "540a818d0e1eb6f03966ba1315bdbea6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/privacy-policy/index.html": {
+    "mtime": 1780825047.2480917,
+    "ast_hash": "dcd08368833f3723fca3963e5d32126f",
+    "semantic_hash": "dcd08368833f3723fca3963e5d32126f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/store-locator/index.html": {
+    "mtime": 1780825065.5703843,
+    "ast_hash": "957cdf487b914df17eeba28b9b1adba8",
+    "semantic_hash": "957cdf487b914df17eeba28b9b1adba8"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/subscribe/index.html": {
+    "mtime": 1780825047.2345362,
+    "ast_hash": "f91c609c140dbe27136516c42ee0dc26",
+    "semantic_hash": "f91c609c140dbe27136516c42ee0dc26"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/terms-conditions/index.html": {
+    "mtime": 1780825049.9975612,
+    "ast_hash": "cd3803b568ae62fa9503db34f4478511",
+    "semantic_hash": "cd3803b568ae62fa9503db34f4478511"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/pages/test/index.html": {
+    "mtime": 1780825048.6016476,
+    "ast_hash": "4429354ac98eafbacc972d14b0c24b80",
+    "semantic_hash": "4429354ac98eafbacc972d14b0c24b80"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/policies/refund-policy/index.html": {
+    "mtime": 1780825047.7665362,
+    "ast_hash": "3a41902e5ae448986a4cfc4a2ed69ef3",
+    "semantic_hash": "3a41902e5ae448986a4cfc4a2ed69ef3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/policies/terms-of-service/index.html": {
+    "mtime": 1780825046.7949772,
+    "ast_hash": "2c90c8d2d9c0f721fb64e0415ef10d64",
+    "semantic_hash": "2c90c8d2d9c0f721fb64e0415ef10d64"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/2-cup-filter-2-davara-sets/index.html": {
+    "mtime": 1780825049.3076293,
+    "ast_hash": "dda17616c5cdab8a0e2c95e09b68ea8d",
+    "semantic_hash": "dda17616c5cdab8a0e2c95e09b68ea8d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/4-cup-filter-4-davara-sets/index.html": {
+    "mtime": 1780825050.3085115,
+    "ast_hash": "3f7dd2a7089663c2f929419aecb7f2e2",
+    "semantic_hash": "3f7dd2a7089663c2f929419aecb7f2e2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/4-cup-percolator-kit/index.html": {
+    "mtime": 1780825048.5937827,
+    "ast_hash": "de4acab0072a877f00aa47bf72f9b3b0",
+    "semantic_hash": "de4acab0072a877f00aa47bf72f9b3b0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/6-cup-percolator-kit/index.html": {
+    "mtime": 1780825047.3068466,
+    "ast_hash": "596346fdb265433e08e381eb1fdd2038",
+    "semantic_hash": "596346fdb265433e08e381eb1fdd2038"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/brass-coffee-filter/index.html": {
+    "mtime": 1780825046.844483,
+    "ast_hash": "a1870cd7e351dab97e60caf80929a71c",
+    "semantic_hash": "a1870cd7e351dab97e60caf80929a71c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/brass-davara/index.html": {
+    "mtime": 1780825046.4747033,
+    "ast_hash": "53ded7c341f265ed4c20b6c9d399e237",
+    "semantic_hash": "53ded7c341f265ed4c20b6c9d399e237"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/brass-filter-davara-set/index.html": {
+    "mtime": 1780825047.3502407,
+    "ast_hash": "0e7597915cb3ba5301425c9ee13093d3",
+    "semantic_hash": "0e7597915cb3ba5301425c9ee13093d3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/breakfast-blend-60-40/index.html": {
+    "mtime": 1780825048.993126,
+    "ast_hash": "8da6f2406086abd90146e6b69d0feb26",
+    "semantic_hash": "8da6f2406086abd90146e6b69d0feb26"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/caffe-blend/index.html": {
+    "mtime": 1780825047.9374142,
+    "ast_hash": "72fe0ff73ed53c5823b3e69b86717223",
+    "semantic_hash": "72fe0ff73ed53c5823b3e69b86717223"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/chicory-blend-range/index.html": {
+    "mtime": 1780825048.5837283,
+    "ast_hash": "0eb71c768350d63f8f5ce85e1b9e3951",
+    "semantic_hash": "0eb71c768350d63f8f5ce85e1b9e3951"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/chicory-coffee-delights-combo/index.html": {
+    "mtime": 1780825046.8538945,
+    "ast_hash": "9bc754b72cfaf0d114abbc0bcb04b716",
+    "semantic_hash": "9bc754b72cfaf0d114abbc0bcb04b716"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/chicory/index.html": {
+    "mtime": 1780825050.4486413,
+    "ast_hash": "49d48ff7c4f476256d8a4390554cfe17",
+    "semantic_hash": "49d48ff7c4f476256d8a4390554cfe17"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/coffee-percolator-4-cup/index.html": {
+    "mtime": 1780825048.245617,
+    "ast_hash": "1fe7e0377f18e78ce8c17a97b6ccea72",
+    "semantic_hash": "1fe7e0377f18e78ce8c17a97b6ccea72"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/coffee-percolator-6-cup/index.html": {
+    "mtime": 1780825046.8313768,
+    "ast_hash": "98d18e630f7a73cafc8500cb9f81e66d",
+    "semantic_hash": "98d18e630f7a73cafc8500cb9f81e66d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/copy-of-brass-coffee-filter-2-cups/index.html": {
+    "mtime": 1780825049.9381402,
+    "ast_hash": "50bcb4a1be927b908af6c7cc1feffc8a",
+    "semantic_hash": "50bcb4a1be927b908af6c7cc1feffc8a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/degree-blend-70-30/index.html": {
+    "mtime": 1780825049.9531605,
+    "ast_hash": "3dda1b49a21c129222b9f5686958ecff",
+    "semantic_hash": "3dda1b49a21c129222b9f5686958ecff"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/filter-coffee-decoction/index.html": {
+    "mtime": 1780825049.2804985,
+    "ast_hash": "b770d2af6e369514b855435f451dacf7",
+    "semantic_hash": "b770d2af6e369514b855435f451dacf7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/filter-coffee-ranges/index.html": {
+    "mtime": 1780825047.551317,
+    "ast_hash": "f7f2814b21b901aad74e01f1c38368fd",
+    "semantic_hash": "f7f2814b21b901aad74e01f1c38368fd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/flowerpot-combo/index.html": {
+    "mtime": 1780825050.9631329,
+    "ast_hash": "7032f9cfafcec3eae9353e0275834023",
+    "semantic_hash": "7032f9cfafcec3eae9353e0275834023"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/hotel-blend-60-40/index.html": {
+    "mtime": 1780825050.5866113,
+    "ast_hash": "efd7dafe0a8831e4cc4e004780eadb87",
+    "semantic_hash": "efd7dafe0a8831e4cc4e004780eadb87"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/hotel-blend/index.html": {
+    "mtime": 1780825048.254654,
+    "ast_hash": "4cd7c66c1460d90b224ef344909fe97b",
+    "semantic_hash": "4cd7c66c1460d90b224ef344909fe97b"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/house-blend-5-kgs-bean-bag/index.html": {
+    "mtime": 1780825048.0463436,
+    "ast_hash": "dd316182e0eb114c8290948f4b81febe",
+    "semantic_hash": "dd316182e0eb114c8290948f4b81febe"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/house-blend/index.html": {
+    "mtime": 1780825046.8188317,
+    "ast_hash": "782478c211ab8addefb9f39ed36fc960",
+    "semantic_hash": "782478c211ab8addefb9f39ed36fc960"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-aroma-classic-jar/index.html": {
+    "mtime": 1780825050.1468868,
+    "ast_hash": "73842a402c407b07c97bf97cf7df1739",
+    "semantic_hash": "73842a402c407b07c97bf97cf7df1739"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-jar-50g-aroma-classic/index.html": {
+    "mtime": 1780825049.5399108,
+    "ast_hash": "a5bda5e183ee04553604cc595a27ebdb",
+    "semantic_hash": "a5bda5e183ee04553604cc595a27ebdb"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-jar-50g-ultimate/index.html": {
+    "mtime": 1780825047.9237363,
+    "ast_hash": "4f766628795e3a2e2b90a90816f75617",
+    "semantic_hash": "4f766628795e3a2e2b90a90816f75617"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-refill-aroma/index.html": {
+    "mtime": 1780825048.5736887,
+    "ast_hash": "c6b598c663ba30487033b98fa5dd3218",
+    "semantic_hash": "c6b598c663ba30487033b98fa5dd3218"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-refill-ultimate/index.html": {
+    "mtime": 1780825049.5877886,
+    "ast_hash": "0a71b58c5ba8a08a24cb79799e2c31d9",
+    "semantic_hash": "0a71b58c5ba8a08a24cb79799e2c31d9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-sachets-aroma/index.html": {
+    "mtime": 1780825049.8525946,
+    "ast_hash": "43f4f240a340230e623b1ce82286f4a3",
+    "semantic_hash": "43f4f240a340230e623b1ce82286f4a3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-sachets-ultimate/index.html": {
+    "mtime": 1780825050.2700236,
+    "ast_hash": "188db1f411a5829f53274785e12582be",
+    "semantic_hash": "188db1f411a5829f53274785e12582be"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-taster-pack-jars/index.html": {
+    "mtime": 1780825047.6198478,
+    "ast_hash": "5d6ed7396d29d2861f8ac76afef95df0",
+    "semantic_hash": "5d6ed7396d29d2861f8ac76afef95df0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-coffee-ultimate-jar/index.html": {
+    "mtime": 1780825050.1913195,
+    "ast_hash": "66e643e28175b7071d4295fcedd9d718",
+    "semantic_hash": "66e643e28175b7071d4295fcedd9d718"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/instant-energiser-combo-pack/index.html": {
+    "mtime": 1780825047.6106746,
+    "ast_hash": "62ab470203c84e1121dd9232e9839eaa",
+    "semantic_hash": "62ab470203c84e1121dd9232e9839eaa"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/lakshmi-bomb-combo/index.html": {
+    "mtime": 1780825048.368631,
+    "ast_hash": "69d27dc53a9307f386131ec63bfe51c9",
+    "semantic_hash": "69d27dc53a9307f386131ec63bfe51c9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/leo-estate-single-origin/index.html": {
+    "mtime": 1780825047.950556,
+    "ast_hash": "05fd13d26c7191932af05227aaf76668",
+    "semantic_hash": "05fd13d26c7191932af05227aaf76668"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/madras-blend-80-20/index.html": {
+    "mtime": 1780825048.962774,
+    "ast_hash": "d83d5aef8142d0792d51f0d4a46a4141",
+    "semantic_hash": "d83d5aef8142d0792d51f0d4a46a4141"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/pure-coffee-ranges/index.html": {
+    "mtime": 1780825049.6196835,
+    "ast_hash": "3c9ed079b41caaff4590e563097b78fb",
+    "semantic_hash": "3c9ed079b41caaff4590e563097b78fb"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/pure-coffee-shots-combo/index.html": {
+    "mtime": 1780825047.3279693,
+    "ast_hash": "309eda93f9c76beb2d7c51cabc95d645",
+    "semantic_hash": "309eda93f9c76beb2d7c51cabc95d645"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/rocket-combo/index.html": {
+    "mtime": 1780825048.6166909,
+    "ast_hash": "147359a6cb2294a3c63be50c36ba2057",
+    "semantic_hash": "147359a6cb2294a3c63be50c36ba2057"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/south-indian-filter-coffee-starter-pack/index.html": {
+    "mtime": 1780825049.6759133,
+    "ast_hash": "6cbe9aca84afe7debf959e7c27bff2d2",
+    "semantic_hash": "6cbe9aca84afe7debf959e7c27bff2d2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/special-a-5-kgs-bean-bag/index.html": {
+    "mtime": 1780825050.1999598,
+    "ast_hash": "30721040b56d876029eca3990e74c631",
+    "semantic_hash": "30721040b56d876029eca3990e74c631"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/special-a/index.html": {
+    "mtime": 1780825048.6293175,
+    "ast_hash": "efabe4c1b4959a2e89f7f329245a60b6",
+    "semantic_hash": "efabe4c1b4959a2e89f7f329245a60b6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/special-peaberry-bean-5-kgs-bag/index.html": {
+    "mtime": 1780825047.9112184,
+    "ast_hash": "389e0fe7dc4c17dfa4395a865ae55578",
+    "semantic_hash": "389e0fe7dc4c17dfa4395a865ae55578"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/special-peaberry/index.html": {
+    "mtime": 1780825050.577273,
+    "ast_hash": "53fecb5a63a398f4f34fe547394dfdd1",
+    "semantic_hash": "53fecb5a63a398f4f34fe547394dfdd1"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/spl-peaberry-spl-a-50-50-mix/index.html": {
+    "mtime": 1780825049.297165,
+    "ast_hash": "a00fa361ca5b586489f47663b9122a9f",
+    "semantic_hash": "a00fa361ca5b586489f47663b9122a9f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/ss-coffee-filter/index.html": {
+    "mtime": 1780825047.6837006,
+    "ast_hash": "46119ff73e59d0b717be5c353a3427b4",
+    "semantic_hash": "46119ff73e59d0b717be5c353a3427b4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/taster-pack/index.html": {
+    "mtime": 1780825046.8629825,
+    "ast_hash": "0b34830f2a8b4a44b7e40ef4f6fef486",
+    "semantic_hash": "0b34830f2a8b4a44b7e40ef4f6fef486"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/top-blend/index.html": {
+    "mtime": 1780825048.9337282,
+    "ast_hash": "49bf606e0127dc135088c18470b7eb71",
+    "semantic_hash": "49bf606e0127dc135088c18470b7eb71"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/vending-machine-blend-70-30/index.html": {
+    "mtime": 1780825049.8891582,
+    "ast_hash": "b8c56c2c932aa7ef3cda94911fa0a93c",
+    "semantic_hash": "b8c56c2c932aa7ef3cda94911fa0a93c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/products/vending-machine-blend/index.html": {
+    "mtime": 1780825049.2093701,
+    "ast_hash": "563304536a829d4d6430e38ed962b84b",
+    "semantic_hash": "563304536a829d4d6430e38ed962b84b"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/leocoffee.co/search/index.html": {
+    "mtime": 1780825048.8478453,
+    "ast_hash": "9842086da00ed909e973d6a8e07d4dc9",
+    "semantic_hash": "9842086da00ed909e973d6a8e07d4dc9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/agents.md/index.html": {
+    "mtime": 1780851904.617314,
+    "ast_hash": "67a85dda7ba8d99c5a6e6894d668aa9a",
+    "semantic_hash": "67a85dda7ba8d99c5a6e6894d668aa9a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/collections/accessories/index.html": {
+    "mtime": 1780851897.9940379,
+    "ast_hash": "0eebf13e55b806101572ce94741bd4e1",
+    "semantic_hash": "0eebf13e55b806101572ce94741bd4e1"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/collections/bf-basic-not-loaded/index.html": {
+    "mtime": 1780851917.905557,
+    "ast_hash": "16a805cb8d6f67df65c3eb10b30db4dd",
+    "semantic_hash": "16a805cb8d6f67df65c3eb10b30db4dd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/collections/dk2-bikes/index.html": {
+    "mtime": 1780851899.6687307,
+    "ast_hash": "b67cdf34422bf831a6fe60ade0b1d55f",
+    "semantic_hash": "b67cdf34422bf831a6fe60ade0b1d55f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/collections/home-page-collection-basic-basic-loaded-electric-electric-loaded/index.html": {
+    "mtime": 1780851899.259681,
+    "ast_hash": "275eb2c036c2134bc2072108fca26309",
+    "semantic_hash": "275eb2c036c2134bc2072108fca26309"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/collections/parts/index.html": {
+    "mtime": 1780851903.3753753,
+    "ast_hash": "9e39e43c81862035a36af6cdc2cf4d18",
+    "semantic_hash": "9e39e43c81862035a36af6cdc2cf4d18"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/customer_authentication/redirect/index.html": {
+    "mtime": 1780851922.8238184,
+    "ast_hash": "703f378557d78fa01e75dcdffdf8f629",
+    "semantic_hash": "703f378557d78fa01e75dcdffdf8f629"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/en-ca/index.html": {
+    "mtime": 1780851900.4650176,
+    "ast_hash": "9a807d2f60fb75c21668d6a44ed2b984",
+    "semantic_hash": "9a807d2f60fb75c21668d6a44ed2b984"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/index.html": {
+    "mtime": 1780851897.9537635,
+    "ast_hash": "fcdd4f1b09969cb368e7e1855a0b33e4",
+    "semantic_hash": "fcdd4f1b09969cb368e7e1855a0b33e4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/about-us/index.html": {
+    "mtime": 1780851897.0012345,
+    "ast_hash": "46a6fb6237980ce2d63391703fbf471e",
+    "semantic_hash": "46a6fb6237980ce2d63391703fbf471e"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/additional-resources/index.html": {
+    "mtime": 1780851896.9816062,
+    "ast_hash": "05ff5a1b6cdf11f9b27c2ae1d7c323ef",
+    "semantic_hash": "05ff5a1b6cdf11f9b27c2ae1d7c323ef"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/be-a-madsen-affiliate/index.html": {
+    "mtime": 1780851899.1883113,
+    "ast_hash": "7dfff80bdee801180bf6a56d9a1e1088",
+    "semantic_hash": "7dfff80bdee801180bf6a56d9a1e1088"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/blem-bikes-madsen-scratch-dents/index.html": {
+    "mtime": 1780851898.0109415,
+    "ast_hash": "6ef466a1858db30295ebe1f94e7d29e0",
+    "semantic_hash": "6ef466a1858db30295ebe1f94e7d29e0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/collabs-with-madsen-1/index.html": {
+    "mtime": 1780851897.0599298,
+    "ast_hash": "7e56e2ab25ff03dffad3ce03a7de18fe",
+    "semantic_hash": "7e56e2ab25ff03dffad3ce03a7de18fe"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/collabs-with-madsen/index.html": {
+    "mtime": 1780851902.5126207,
+    "ast_hash": "9e086f0cb32c22d90809158f7d699df2",
+    "semantic_hash": "9e086f0cb32c22d90809158f7d699df2"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/connect-with-an-owner-test-ride-a-bike/index.html": {
+    "mtime": 1780851897.7921162,
+    "ast_hash": "77bf45b4d8b363190fa1c33d3f6024d1",
+    "semantic_hash": "77bf45b4d8b363190fa1c33d3f6024d1"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/contact-us/index.html": {
+    "mtime": 1780851898.2941637,
+    "ast_hash": "a2b960b8c3976f924308713f190e0aad",
+    "semantic_hash": "a2b960b8c3976f924308713f190e0aad"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/faqs-1/index.html": {
+    "mtime": 1780851897.1896138,
+    "ast_hash": "5f770393ac03b75d01a358cae9e8bbed",
+    "semantic_hash": "5f770393ac03b75d01a358cae9e8bbed"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/join-the-madsen-map/index.html": {
+    "mtime": 1780851901.15796,
+    "ast_hash": "fe5e776e4e636f08acecf5a70a2cde0f",
+    "semantic_hash": "fe5e776e4e636f08acecf5a70a2cde0f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/madsen-challenges/index.html": {
+    "mtime": 1780851899.741077,
+    "ast_hash": "767d45643711afaf720b242c41ef0651",
+    "semantic_hash": "767d45643711afaf720b242c41ef0651"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/madsen-cycles-product-registration/index.html": {
+    "mtime": 1780851898.6876647,
+    "ast_hash": "c6e4997ecbec7456822a21dfcf666dba",
+    "semantic_hash": "c6e4997ecbec7456822a21dfcf666dba"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/payment-plan/index.html": {
+    "mtime": 1780851901.807698,
+    "ast_hash": "0f6577958e863ef53e407c3f394ab82d",
+    "semantic_hash": "0f6577958e863ef53e407c3f394ab82d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/payment-plans-new/index.html": {
+    "mtime": 1780851902.5347471,
+    "ast_hash": "2e2cb2aa1147d62056e8772fea0f58d4",
+    "semantic_hash": "2e2cb2aa1147d62056e8772fea0f58d4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/privacy-policy/index.html": {
+    "mtime": 1780851899.1668422,
+    "ast_hash": "e7edae862b5e1059fde97e04794ab303",
+    "semantic_hash": "e7edae862b5e1059fde97e04794ab303"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/resgiter-your-bikes/index.html": {
+    "mtime": 1780851902.3537467,
+    "ast_hash": "64cd843c5d3fb75f96af9284f982b181",
+    "semantic_hash": "64cd843c5d3fb75f96af9284f982b181"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/shipping-international-inquiries/index.html": {
+    "mtime": 1780851900.0418887,
+    "ast_hash": "9c3c996c13c3478f544c7202c7356cd0",
+    "semantic_hash": "9c3c996c13c3478f544c7202c7356cd0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/shipping/index.html": {
+    "mtime": 1780851898.4695845,
+    "ast_hash": "97efe7f1eb1375d5a31cb33194fd26a7",
+    "semantic_hash": "97efe7f1eb1375d5a31cb33194fd26a7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/sitemap/index.html": {
+    "mtime": 1780851917.9092312,
+    "ast_hash": "3756ba10b926c9880158c338b92211d7",
+    "semantic_hash": "3756ba10b926c9880158c338b92211d7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/terms-conditions/index.html": {
+    "mtime": 1780851900.5849905,
+    "ast_hash": "00780327d97f6e23c9c559943d7e2aa4",
+    "semantic_hash": "00780327d97f6e23c9c559943d7e2aa4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/test-ride/index.html": {
+    "mtime": 1780851900.8276954,
+    "ast_hash": "9e8bfad8b04c0ff0babd4056beafc353",
+    "semantic_hash": "9e8bfad8b04c0ff0babd4056beafc353"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/video-review/index.html": {
+    "mtime": 1780851902.9445105,
+    "ast_hash": "b0c6a83c47adf68f188853485d0e0bdd",
+    "semantic_hash": "b0c6a83c47adf68f188853485d0e0bdd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/warranty-returns-1/index.html": {
+    "mtime": 1780851903.3468916,
+    "ast_hash": "29d67e4ab7194a7ac57c0a606ec1f7a7",
+    "semantic_hash": "29d67e4ab7194a7ac57c0a606ec1f7a7"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/warranty-returns-new/index.html": {
+    "mtime": 1780851900.9158623,
+    "ast_hash": "edd1ec8545bf2ba2db7968238d1bd27d",
+    "semantic_hash": "edd1ec8545bf2ba2db7968238d1bd27d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/pages/why-a-madsen/index.html": {
+    "mtime": 1780851900.1219397,
+    "ast_hash": "1221fa70d20f3bf1d0da22110eb6b831",
+    "semantic_hash": "1221fa70d20f3bf1d0da22110eb6b831"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/1-seat-belt/index.html": {
+    "mtime": 1780851903.0124435,
+    "ast_hash": "4fd50bcce6ae5dbebc57347340a992e5",
+    "semantic_hash": "4fd50bcce6ae5dbebc57347340a992e5"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/2009-2014-front-rack-mounting-bracket/index.html": {
+    "mtime": 1780851899.6459868,
+    "ast_hash": "9af5ce48b39afae4045f52ea40de8752",
+    "semantic_hash": "9af5ce48b39afae4045f52ea40de8752"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/528-w-battery-extra-or-replacement/index.html": {
+    "mtime": 1780851900.9367342,
+    "ast_hash": "55c73410aeb8831912d475d183886ec0",
+    "semantic_hash": "55c73410aeb8831912d475d183886ec0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/accessory-1/index.html": {
+    "mtime": 1780851897.635869,
+    "ast_hash": "adce71ecd0deb3eab7dd1da01895119d",
+    "semantic_hash": "adce71ecd0deb3eab7dd1da01895119d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/accessory-2/index.html": {
+    "mtime": 1780851898.7888587,
+    "ast_hash": "54a5abbd13314ac60eb5527fcfb5a438",
+    "semantic_hash": "54a5abbd13314ac60eb5527fcfb5a438"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/accessory-3/index.html": {
+    "mtime": 1780851902.6146157,
+    "ast_hash": "3540152d528397d5bc179155c475b922",
+    "semantic_hash": "3540152d528397d5bc179155c475b922"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/accessory-4/index.html": {
+    "mtime": 1780851900.1633098,
+    "ast_hash": "edad9a3616395b006ac7fd60c83b1c18",
+    "semantic_hash": "edad9a3616395b006ac7fd60c83b1c18"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/accessory-6/index.html": {
+    "mtime": 1780851901.4495306,
+    "ast_hash": "043f69e868ae9a01a082fd301ca6c7e4",
+    "semantic_hash": "043f69e868ae9a01a082fd301ca6c7e4"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/battery-extra-ships-with-new-bikes-only/index.html": {
+    "mtime": 1780851896.9198744,
+    "ast_hash": "1bccf6e24231c760ee11822658f1a268",
+    "semantic_hash": "1bccf6e24231c760ee11822658f1a268"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/black-handlebar-grips-set-of-2/index.html": {
+    "mtime": 1780851902.971703,
+    "ast_hash": "110fcbf09972839a8b0427f123468a0c",
+    "semantic_hash": "110fcbf09972839a8b0427f123468a0c"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/black-saddle-black-grips/index.html": {
+    "mtime": 1780851898.849656,
+    "ast_hash": "be42ad75343292705d20c891e183a58a",
+    "semantic_hash": "be42ad75343292705d20c891e183a58a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/blank-replacement-key/index.html": {
+    "mtime": 1780851898.322684,
+    "ast_hash": "1e97731ab9966e291b66c99c8eace0f6",
+    "semantic_hash": "1e97731ab9966e291b66c99c8eace0f6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/bucket-bench-seat/index.html": {
+    "mtime": 1780851900.996707,
+    "ast_hash": "7a9ee582c7ac753f57cb01c406363380",
+    "semantic_hash": "7a9ee582c7ac753f57cb01c406363380"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/cable-lock-clicks-into-madsen-rim-lock-for-additional-security-fits-2016-and-newer-models/index.html": {
+    "mtime": 1780851897.0244658,
+    "ast_hash": "4697ff9a92e19abbf111af687f49c51d",
+    "semantic_hash": "4697ff9a92e19abbf111af687f49c51d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/chain-guide-wheel-with-bearings/index.html": {
+    "mtime": 1780851897.0433602,
+    "ast_hash": "ce4c4571054aff1460ad5d21f9018b02",
+    "semantic_hash": "ce4c4571054aff1460ad5d21f9018b02"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/charger-replacement/index.html": {
+    "mtime": 1780851897.167079,
+    "ast_hash": "eb5660432a763b6a64e5f5951ef2e49a",
+    "semantic_hash": "eb5660432a763b6a64e5f5951ef2e49a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/classic-shiny-brass-bicycle-bell-1/index.html": {
+    "mtime": 1780851898.208847,
+    "ast_hash": "2eef3435683389913b60c44d682c3827",
+    "semantic_hash": "2eef3435683389913b60c44d682c3827"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/cup-holder/index.html": {
+    "mtime": 1780851902.2099204,
+    "ast_hash": "00e426814566d291c81e08312d1fd2b9",
+    "semantic_hash": "00e426814566d291c81e08312d1fd2b9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/derailleur-hanger-2015-2017/index.html": {
+    "mtime": 1780851899.1031117,
+    "ast_hash": "aaea7a28e1b48e12486542e63a2aa472",
+    "semantic_hash": "aaea7a28e1b48e12486542e63a2aa472"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/electric-assist-thumb-throttle/index.html": {
+    "mtime": 1780851898.827249,
+    "ast_hash": "d83a90ae905c73ab3321ffd911f2079a",
+    "semantic_hash": "d83a90ae905c73ab3321ffd911f2079a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/electric-cargo-bikes/index.html": {
+    "mtime": 1780851896.8063965,
+    "ast_hash": "5ba41f81655caeb48067db343620d9e1",
+    "semantic_hash": "5ba41f81655caeb48067db343620d9e1"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/electric-dk2-copy/index.html": {
+    "mtime": 1780851898.8739707,
+    "ast_hash": "0fd9662a2f86bc9a8c0670bf856f90db",
+    "semantic_hash": "0fd9662a2f86bc9a8c0670bf856f90db"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/electric-dk2-luxury/index.html": {
+    "mtime": 1780851897.9073737,
+    "ast_hash": "2ee1aa704ebf305708ba7328583bd0aa",
+    "semantic_hash": "2ee1aa704ebf305708ba7328583bd0aa"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/electric-dk2-premium/index.html": {
+    "mtime": 1780851903.7079153,
+    "ast_hash": "0cc322bb1402a48df26dc2c1b16c44f3",
+    "semantic_hash": "0cc322bb1402a48df26dc2c1b16c44f3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/kickstand-feet-replacement-pair/index.html": {
+    "mtime": 1780851902.089109,
+    "ast_hash": "e8c6ff5bd5f9d8125e417ecda24576ce",
+    "semantic_hash": "e8c6ff5bd5f9d8125e417ecda24576ce"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/kickstand-replacement/index.html": {
+    "mtime": 1780851898.4282987,
+    "ast_hash": "d370da35f9b4ab912fae22e7b0f1c22e",
+    "semantic_hash": "d370da35f9b4ab912fae22e7b0f1c22e"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/leather-look-honey-colored-grips/index.html": {
+    "mtime": 1780851898.5007708,
+    "ast_hash": "6e8bc15c674983c0aa4bc736d14ddba6",
+    "semantic_hash": "6e8bc15c674983c0aa4bc736d14ddba6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/leather-look-honey-colored-saddle-and-grips-for-current-madsen-owners/index.html": {
+    "mtime": 1780851901.644909,
+    "ast_hash": "2db679aa2c7f7bb6789d965c6b4c026a",
+    "semantic_hash": "2db679aa2c7f7bb6789d965c6b4c026a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/local-e-kit-installation-at-ut-shop/index.html": {
+    "mtime": 1780851897.3405666,
+    "ast_hash": "b48e10597b7195456dcb551c53e5225e",
+    "semantic_hash": "b48e10597b7195456dcb551c53e5225e"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/madsen-big-mouth-water-bottle/index.html": {
+    "mtime": 1780851898.345421,
+    "ast_hash": "8adb63df929e072a85bf40ce66b49224",
+    "semantic_hash": "8adb63df929e072a85bf40ce66b49224"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/madsen-front-rack-crate/index.html": {
+    "mtime": 1780851903.9651964,
+    "ast_hash": "b777d25e0822588b768848350cc03548",
+    "semantic_hash": "b777d25e0822588b768848350cc03548"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/middle-bucket-seat-accessory/index.html": {
+    "mtime": 1780851899.6942718,
+    "ast_hash": "85c2616cb8de8310ab62be583c5f7309",
+    "semantic_hash": "85c2616cb8de8310ab62be583c5f7309"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/new-bucket-climbing-rocks-hardware/index.html": {
+    "mtime": 1780851898.405554,
+    "ast_hash": "6a1460e92c2d44f4ca1c2b11416af1b9",
+    "semantic_hash": "6a1460e92c2d44f4ca1c2b11416af1b9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/products/replacement-wheel-lock-with-2-keys/index.html": {
+    "mtime": 1780851902.121824,
+    "ast_hash": "dffc019219ad62ed726ddabb545e1ef6",
+    "semantic_hash": "dffc019219ad62ed726ddabb545e1ef6"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/crawler/madsencycles/search/index.html": {
+    "mtime": 1780851897.4936275,
+    "ast_hash": "f241d71fd3214e70384b55546ecebf56",
+    "semantic_hash": "f241d71fd3214e70384b55546ecebf56"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/index.html": {
+    "mtime": 1779180247.5329447,
+    "ast_hash": "bc1ef9fccb69d7a4da77d57b20e9a739",
+    "semantic_hash": "bc1ef9fccb69d7a4da77d57b20e9a739"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude.html": {
+    "mtime": 1780826934.3139753,
+    "ast_hash": "0ea813fe654a19456a0f2f43a785edda",
+    "semantic_hash": "0ea813fe654a19456a0f2f43a785edda"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/mcp_apps(1).html": {
+    "mtime": 1780826934.3130195,
+    "ast_hash": "525ddbd425496ba3834861a1f343e9c3",
+    "semantic_hash": "525ddbd425496ba3834861a1f343e9c3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/mcp_apps.html": {
+    "mtime": 1780826934.313205,
+    "ast_hash": "9f2260623d0b65cae9715f08674c801a",
+    "semantic_hash": "9f2260623d0b65cae9715f08674c801a"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/saved_resource(1).html": {
+    "mtime": 1780826934.3135417,
+    "ast_hash": "93fc412cabfc4f077904f4d061814eb9",
+    "semantic_hash": "93fc412cabfc4f077904f4d061814eb9"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/saved_resource(2).html": {
+    "mtime": 1780826934.3129585,
+    "ast_hash": "91d37ea269b7bb61c055ce8166058091",
+    "semantic_hash": "91d37ea269b7bb61c055ce8166058091"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/junk/Chatbot response quality and context handling architecture - Claude_files/saved_resource.html": {
+    "mtime": 1780826934.314127,
+    "ast_hash": "1d450433ae62fbe5015c06c0c7a9c0e0",
+    "semantic_hash": "1d450433ae62fbe5015c06c0c7a9c0e0"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/shoemart.html": {
+    "mtime": 1779201334.2901816,
+    "ast_hash": "ad98cd1d947e9b0b4205412efc60551d",
+    "semantic_hash": "ad98cd1d947e9b0b4205412efc60551d"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/test-bm25.html": {
+    "mtime": 1780849823.6211214,
+    "ast_hash": "64dc45a89bfb12214cabd6638c89a9fc",
+    "semantic_hash": "64dc45a89bfb12214cabd6638c89a9fc"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/test-chatbot.html": {
+    "mtime": 1780825906.899036,
+    "ast_hash": "9577c0fba32789f3639d62ac3c46c769",
+    "semantic_hash": "9577c0fba32789f3639d62ac3c46c769"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/test/index.html": {
+    "mtime": 1780736609.7406974,
+    "ast_hash": "97ba7e71a0fd587551431e57bceedcfd",
+    "semantic_hash": "97ba7e71a0fd587551431e57bceedcfd"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/img/adidassuperstars.webp": {
+    "mtime": 1779180247.5344677,
+    "ast_hash": "dae9f2361b1193fdff7f4bfae90163d3",
+    "semantic_hash": "dae9f2361b1193fdff7f4bfae90163d3"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/img/nikeairforce1.webp": {
+    "mtime": 1779180247.534823,
+    "ast_hash": "1c930520adbd8a3dcab6df72f97e1d45",
+    "semantic_hash": "1c930520adbd8a3dcab6df72f97e1d45"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/img/nikeairmax.webp": {
+    "mtime": 1779180247.535172,
+    "ast_hash": "bcfd55cad74a785df09775bc1b843a5f",
+    "semantic_hash": "bcfd55cad74a785df09775bc1b843a5f"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/img/nikejordan1.webp": {
+    "mtime": 1779180247.535528,
+    "ast_hash": "0cab9ee675b6f742460d878c0fd63775",
+    "semantic_hash": "0cab9ee675b6f742460d878c0fd63775"
+  },
+  "/Users/prashik/Aniket/Bolnee/bolnee/public/img/sparxrunnerelite.webp": {
+    "mtime": 1779180247.5359359,
+    "ast_hash": "666ead84b7a33c9770b145d6282ba671",
+    "semantic_hash": "666ead84b7a33c9770b145d6282ba671"
+  }
+}

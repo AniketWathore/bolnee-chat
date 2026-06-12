@@ -75,15 +75,39 @@ app.use(bodyParser.json());
 app.get("/api/public/knowledge/:chatbotId", async (req, res) => {
   try {
     const { chatbotId } = req.params;
-    const filePath = path.join(DATA_DIR, `${chatbotId}.json`);
+    // Try both formats: chatbotId_responses.json and chatbotId.json
+    let filePath = path.join(DATA_DIR, `${chatbotId}_responses.json`);
+    
+    if (!(await fs.pathExists(filePath))) {
+      filePath = path.join(DATA_DIR, `${chatbotId}.json`);
+    }
+    
     if (await fs.pathExists(filePath)) {
       const data = await fs.readJson(filePath);
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache for 1h
       res.json(data);
     } else {
       res.status(404).json({ error: "Knowledge data not found" });
     }
   } catch (error) {
     res.status(500).json({ error: "Failed to read knowledge data" });
+  }
+});
+
+// Public corpus endpoint (for BM25 search)
+app.get("/api/public/corpus/:chatbotId", async (req, res) => {
+  try {
+    const { chatbotId } = req.params;
+    const filePath = path.join(DATA_DIR, `${chatbotId}_corpus.json`);
+    if (await fs.pathExists(filePath)) {
+      const data = await fs.readJson(filePath);
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24h
+      res.json(data);
+    } else {
+      res.status(404).json({ error: "Corpus not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to read corpus" });
   }
 });
 

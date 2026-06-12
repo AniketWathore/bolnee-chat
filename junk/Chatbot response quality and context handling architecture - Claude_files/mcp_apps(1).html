@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!-- saved from url=(0424)https://574c2c088eaac0e51c360d8d35d39bec.claudemcpcontent.com/mcp_apps?connect-src=https%3A%2F%2Fesm.sh+https%3A%2F%2Fcdnjs.cloudflare.com+https%3A%2F%2Fcdn.jsdelivr.net+https%3A%2F%2Funpkg.com&resource-src=https%3A%2F%2Fesm.sh+https%3A%2F%2Fcdnjs.cloudflare.com+https%3A%2F%2Fcdn.jsdelivr.net+https%3A%2F%2Funpkg.com+https%3A%2F%2Ffonts.googleapis.com+https%3A%2F%2Ffonts.gstatic.com+https%3A%2F%2Fassets.claude.ai&dev=true -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="color-scheme" content="light dark">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MCP-UI Proxy</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      iframe {
+        background-color: transparent;
+        border: 0px none transparent;
+        padding: 0px;
+        overflow: hidden;
+        flex-grow: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Double-iframe raw HTML mode (HTML sent via postMessage)
+      const inner = document.createElement('iframe');
+      inner.style = 'width:100%; height:100%; border:none;';
+      inner.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+      document.body.appendChild(inner);
+
+      let parentOrigin = '*';
+
+      const ALLOWED_ORIGIN_PATTERNS = ["https://claude.ai","https://preview.claude.ai"];
+
+      const isAllowedOrigin = function(origin) {
+        try {
+          const url = new URL(origin);
+          const originHost = url.host;
+          const originScheme = url.protocol.replace(':', '');
+          return ALLOWED_ORIGIN_PATTERNS.some(pattern => {
+            const [patternScheme, patternHost] = pattern.split('://');
+            if (originScheme !== patternScheme) return false;
+            if (patternHost === 'localhost:*') {
+              return originHost.startsWith('localhost:') || originHost === 'localhost';
+            }
+            if (patternHost === '127.0.0.1:*') {
+              return originHost.startsWith('127.0.0.1:') || originHost === '127.0.0.1';
+            }
+            if (patternHost.startsWith('*.')) {
+              const baseDomain = patternHost.slice(2);
+              return originHost === baseDomain || originHost.endsWith('.' + baseDomain);
+            }
+            return originHost === patternHost;
+          });
+        } catch {
+          return false;
+        }
+      };
+
+      // Build Permission Policy allow attribute from permissions object.
+      // Maps McpUiResourcePermissions keys to Permission Policy feature names.
+      // Uses '*' suffix for cross-origin permission delegation.
+      //
+      // NOTE: This is duplicated from packages/mcp-ext-apps-host/app-host-utils.ts
+      // because this runs as inline JS in the browser. Keep both in sync!
+      const buildAllowAttribute = function(permissions) {
+        if (!permissions || typeof permissions !== 'object') return '';
+        const mapping = {
+          camera: 'camera',
+          microphone: 'microphone',
+          geolocation: 'geolocation',
+          clipboardWrite: 'clipboard-write',
+        };
+        const features = Object.keys(permissions)
+          .filter(key => mapping[key] && permissions[key] != null)
+          .map(key => mapping[key] + ' *');
+        return features.join('; ');
+      };
+
+      // IncrementalJsonParser for healing streamed tool-input deltas.
+      // When the host sends raw JSON text deltas (tool-input-delta), the sandbox
+      // feeds them through this parser and forwards the healed result to the view
+      // as a standard tool-input-partial notification.
+      // Source: packages/utils/incrementalJsonParser.ts (build-time generated, see scripts/build-inline-parser.ts)
+      var T=Object.defineProperty;var m=(h,e,i)=>e in h?T(h,e,{enumerable:!0,configurable:!0,writable:!0,value:i}):h[e]=i;var r=(h,e,i)=>m(h,typeof e!="symbol"?e+"":e,i);var E=(a=>(a[a.NONE=0]="NONE",a[a.STRING=1]="STRING",a[a.STRING_ESCAPE=2]="STRING_ESCAPE",a[a.STRING_UNICODE=3]="STRING_UNICODE",a[a.NUMBER=4]="NUMBER",a[a.LITERAL=5]="LITERAL",a))(E||{}),c=(t=>(t[t.SIGN=0]="SIGN",t[t.INT_ZERO=1]="INT_ZERO",t[t.INT_DIGIT=2]="INT_DIGIT",t[t.FRAC_DOT=3]="FRAC_DOT",t[t.FRAC_DIGIT=4]="FRAC_DIGIT",t[t.EXP_E=5]="EXP_E",t[t.EXP_SIGN=6]="EXP_SIGN",t[t.EXP_DIGIT=7]="EXP_DIGIT",t))(c||{}),P=(t=>(t[t.OBJ_EMPTY=0]="OBJ_EMPTY",t[t.OBJ_VALUE=1]="OBJ_VALUE",t[t.OBJ_AFTER_KEY=2]="OBJ_AFTER_KEY",t[t.OBJ_AFTER_VALUE=3]="OBJ_AFTER_VALUE",t[t.OBJ_AFTER_COMMA=4]="OBJ_AFTER_COMMA",t[t.ARR_EMPTY=10]="ARR_EMPTY",t[t.ARR_AFTER_VALUE=11]="ARR_AFTER_VALUE",t[t.ARR_AFTER_COMMA=12]="ARR_AFTER_COMMA",t))(P||{});function _(h){return h<10}class IncrementalJsonParser{constructor(e){r(this,"raw","");r(this,"rawLength",0);r(this,"stack",[]);r(this,"tokenType",0);r(this,"numPhase",0);r(this,"literalTarget","");r(this,"literalIndex",0);r(this,"unicodeRemaining",0);r(this,"escapeStartPos",0);r(this,"numberStartPos",0);r(this,"trailingCommaIndex",-1);r(this,"currentPos",0);r(this,"complete",!1);r(this,"healedCache",null);r(this,"onUpdateCb");r(this,"onCompleteCb");this.onUpdateCb=e?.onUpdate??null,this.onCompleteCb=e?.onComplete??null}get onUpdate(){return this.onUpdateCb}set onUpdate(e){this.onUpdateCb=e}get onComplete(){return this.onCompleteCb}set onComplete(e){this.onCompleteCb=e}write(e){if(this.complete||e.length===0)return;const i=this.rawLength;let s=e.length;for(let a=0;a<e.length;a++){if(this.complete){s=a;break}const n=e[a],t=i+a;switch(this.currentPos=t,this.tokenType){case 1:this.processStringChar(n);break;case 2:this.processStringEscapeChar(n);break;case 3:this.processStringUnicodeChar(n);break;case 4:this.processNumberChar(n)||(this.endNumber(),a--);break;case 5:this.processLiteralChar(n)||(this.endLiteral(),a--);break;case 0:this.processStructuralChar(n,t);break}}s===e.length?this.raw+=e:s>0&&(this.raw+=e.substring(0,s)),this.rawLength+=s;const l=this.healedCache;this.healedCache=null;const u=this.getHealed();u!==l&&this.onUpdateCb&&this.onUpdateCb(u),this.complete&&this.onCompleteCb&&this.onCompleteCb(this.raw)}getHealed(){if(this.healedCache!==null)return this.healedCache;if(this.complete)return this.healedCache=this.raw,this.raw;if(this.rawLength===0)return this.healedCache="","";const e=this.stack.length>0?this.stack[this.stack.length-1]:null,i=e&&(e.phase===0||e.phase===4),s=e&&(i&&this.tokenType!==0||this.tokenType===0&&(e.phase===2||e.phase===1)),l=this.tokenType===4&&!this.isTerminalNumberPhase()&&!s,u=l?this.numberStartPos+this.validNumberPrefixLength():-1,a=l&&u<=this.numberStartPos,n=(this.tokenType===2||this.tokenType===3)&&!s;let t;s?t=this.raw.substring(0,e.lastEntryEnd):a?t=e?this.raw.substring(0,e.lastEntryEnd):"":l?t=this.raw.substring(0,u):n?t=this.raw.substring(0,this.escapeStartPos):this.trailingCommaIndex>=0&&this.tokenType===0?t=this.raw.substring(0,this.trailingCommaIndex):t=this.raw;let o="";if(n)o+='"';else if(!s&&!a&&!l)switch(this.tokenType){case 1:o+='"';break;case 2:case 3:break;case 4:o+=this.healNumberSuffix();break;case 5:o+=this.literalTarget.substring(this.literalIndex);break;case 0:break}for(let p=this.stack.length-1;p>=0;p--)o+=_(this.stack[p].phase)?"}":"]";return this.healedCache=t+o,this.healedCache}getRaw(){return this.raw}get isComplete(){return this.complete}get depth(){return this.stack.length}end(){this.complete||(this.stack.length===0&&(this.tokenType===4?this.endNumber():this.tokenType===5&&this.endLiteral()),this.complete&&this.onCompleteCb&&this.onCompleteCb(this.raw))}reset(){this.raw="",this.rawLength=0,this.stack.length=0,this.tokenType=0,this.numPhase=0,this.literalTarget="",this.literalIndex=0,this.unicodeRemaining=0,this.escapeStartPos=0,this.numberStartPos=0,this.trailingCommaIndex=-1,this.currentPos=0,this.complete=!1,this.healedCache=null}processStringChar(e){e==='"'?(this.tokenType=0,this.stringCompleted()):e==="\\"&&(this.tokenType=2,this.escapeStartPos=this.currentPos)}processStringEscapeChar(e){e==="u"?(this.tokenType=3,this.unicodeRemaining=4):this.tokenType=1}processStringUnicodeChar(e){this.unicodeRemaining--,this.unicodeRemaining===0&&(this.tokenType=1)}stringCompleted(){if(this.stack.length===0){this.complete=!0;return}const e=this.stack[this.stack.length-1];switch(e.phase){case 0:case 4:e.phase=2;break;case 1:e.phase=3,e.lastEntryEnd=this.currentPos+1;break;case 10:case 12:e.phase=11,e.lastEntryEnd=this.currentPos+1;break}}processNumberChar(e){switch(this.numPhase){case 0:return e==="0"?(this.numPhase=1,!0):e>="1"&&e<="9"?(this.numPhase=2,!0):!1;case 1:return e==="."?(this.numPhase=3,!0):e==="e"||e==="E"?(this.numPhase=5,!0):!1;case 2:return e>="0"&&e<="9"?!0:e==="."?(this.numPhase=3,!0):e==="e"||e==="E"?(this.numPhase=5,!0):!1;case 3:return e>="0"&&e<="9"?(this.numPhase=4,!0):!1;case 4:return e>="0"&&e<="9"?!0:e==="e"||e==="E"?(this.numPhase=5,!0):!1;case 5:return e==="+"||e==="-"?(this.numPhase=6,!0):e>="0"&&e<="9"?(this.numPhase=7,!0):!1;case 6:return e>="0"&&e<="9"?(this.numPhase=7,!0):!1;case 7:return e>="0"&&e<="9"}}endNumber(){this.tokenType=0,(this.numPhase===1||this.numPhase===2||this.numPhase===4||this.numPhase===7)&&this.valueCompleted(this.currentPos)}isTerminalNumberPhase(){return this.numPhase===1||this.numPhase===2||this.numPhase===4||this.numPhase===7}healNumberSuffix(){return""}validNumberPrefixLength(){const e=this.rawLength-this.numberStartPos;switch(this.numPhase){case 0:return 0;case 3:return e-1;case 5:return e-1;case 6:return e-2;default:return e}}processLiteralChar(e){return e===this.literalTarget[this.literalIndex]?(this.literalIndex++,this.literalIndex===this.literalTarget.length&&this.endLiteral(),!0):!1}endLiteral(){this.tokenType=0,this.literalIndex===this.literalTarget.length&&this.valueCompleted(this.currentPos+1)}processStructuralChar(e,i){if(!(e===" "||e==="	"||e===`
+`||e==="\r"))switch(e){case"{":this.clearTrailingComma(),this.stack.push({phase:0,lastEntryEnd:i+1});break;case"[":this.clearTrailingComma(),this.stack.push({phase:10,lastEntryEnd:i+1});break;case"}":{const s=this.topFrame();s&&(s.phase===0||s.phase===3)&&(this.stack.pop(),this.valueCompleted(i+1));break}case"]":{const s=this.topFrame();s&&(s.phase===10||s.phase===11)&&(this.stack.pop(),this.valueCompleted(i+1));break}case":":{const s=this.topFrame();s&&s.phase===2&&(s.phase=1);break}case",":{const s=this.topFrame();s&&(s.phase===3?s.phase=4:s.phase===11&&(s.phase=12),this.trailingCommaIndex=i);break}case'"':this.clearTrailingComma(),this.tokenType=1;break;default:if(e==="-"||e>="0"&&e<="9"){this.clearTrailingComma(),this.tokenType=4,this.numberStartPos=i,e==="-"?this.numPhase=0:e==="0"?this.numPhase=1:this.numPhase=2;break}e==="t"?(this.clearTrailingComma(),this.tokenType=5,this.literalTarget="true",this.literalIndex=1):e==="f"?(this.clearTrailingComma(),this.tokenType=5,this.literalTarget="false",this.literalIndex=1):e==="n"&&(this.clearTrailingComma(),this.tokenType=5,this.literalTarget="null",this.literalIndex=1);break}}topFrame(){return this.stack.length>0?this.stack[this.stack.length-1]:null}clearTrailingComma(){this.trailingCommaIndex>=0&&(this.trailingCommaIndex=-1)}valueCompleted(e){if(this.stack.length===0){this.complete=!0;return}const i=this.stack[this.stack.length-1];switch(i.phase){case 1:i.phase=3,i.lastEntryEnd=e;break;case 10:case 12:i.phase=11,i.lastEntryEnd=e;break}}}
+
+      const jsonParser = new IncrementalJsonParser();
+
+      // Handle messages from the parent (web: claude.ai via postMessage, mobile: native app via mcpAppBridgeReceive).
+      // onHandshake is called once during sandbox-resource-ready to lock in the parent origin (web only).
+      const handleParentMessage = function(data, onHandshake) {
+        if (data && data.method === 'ui/notifications/sandbox-resource-ready') {
+          const {html, permissions} = data.params;
+          if (typeof html === 'string') {
+            if (onHandshake) onHandshake();
+            // Set allow attribute for Permission Policy features
+            const allowValue = buildAllowAttribute(permissions);
+            if (allowValue) {
+              inner.setAttribute('allow', allowValue);
+            }
+
+            // Use document.write() instead of srcdoc to preserve origin.
+            // srcdoc creates an opaque origin that breaks WebGL canvas operations
+            // like toDataURL() and cross-origin resource access.
+            const doc = inner.contentDocument;
+            doc.open();
+            doc.write(html);
+            doc.close();
+          }
+        } else if (data && data.method === 'ui/notifications/tool-input-delta') {
+          // Host sends raw JSON text deltas — heal and forward as tool-input-partial.
+          // The view never sees tool-input-delta; it sees the specced tool-input-partial.
+          const delta = data.params && data.params.delta;
+          if (typeof delta === 'string' && delta.length > 0) {
+            jsonParser.write(delta);
+            const healed = jsonParser.getHealed();
+            let args;
+            try {
+              args = JSON.parse(healed);
+            } catch {
+              console.error('[mcp_apps] healed tool-input-delta did not parse');
+              return;
+            }
+            if (typeof args !== 'object' || args === null) {
+              console.error('[mcp_apps] healed tool-input-delta was not an object');
+              return;
+            }
+            if (inner && inner.contentWindow) {
+              inner.contentWindow.postMessage({
+                jsonrpc: '2.0',
+                method: 'ui/notifications/tool-input-partial',
+                params: { arguments: args },
+              }, location.origin);
+            }
+          }
+        } else {
+          if (data && data.method === 'ui/notifications/tool-input') {
+            jsonParser.reset();
+          }
+          if (inner && inner.contentWindow) {
+            inner.contentWindow.postMessage(data, location.origin);
+          }
+        }
+      };
+
+      // Wait for HTML content from parent
+      window.addEventListener('message', async (event) => {
+        if (event.source === window.parent && isAllowedOrigin(event.origin)) {
+          handleParentMessage(event.data, function() { parentOrigin = event.origin; });
+        } else if (event.source === inner.contentWindow && event.origin === location.origin) {
+          // Relay messages from inner to parent (srcdoc + allow-same-origin = same origin as parent)
+          window.parent.postMessage(event.data, parentOrigin);
+        }
+      });
+
+      // Notify parent that proxy is ready to receive HTML (distinct event)
+      window.parent.postMessage({
+        jsonrpc: "2.0",
+        method: 'ui/notifications/sandbox-proxy-ready',
+        params: {}
+      }, '*');
+
+    </script><iframe sandbox="allow-scripts allow-same-origin allow-forms" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial;" allow="clipboard-write *" src="./saved_resource.html"></iframe>
+  
+</body></html>

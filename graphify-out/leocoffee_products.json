@@ -1,0 +1,1581 @@
+{
+  "nodes": [
+    {
+      "id": "leocoffee_co_prk_nadar_sons",
+      "type": "concept",
+      "label": "PRK Nadar Sons (Leo Coffee)",
+      "properties": {
+        "name": "PRK Nadar Sons",
+        "alternateName": "Leo Coffee",
+        "website": "https://www.leocoffee.co.in",
+        "founded": "1971",
+        "location": "Mylapore, Chennai, India",
+        "shopify_store_id": "44533219490"
+      }
+    },
+    {
+      "id": "category_pure_coffee",
+      "type": "concept",
+      "label": "Pure Coffee (Chicory Free)",
+      "properties": {
+        "category": "Pure Coffee"
+      }
+    },
+    {
+      "id": "category_coffee_with_chicory",
+      "type": "concept",
+      "label": "Coffee with Chicory",
+      "properties": {
+        "category": "Coffee With Chicory"
+      }
+    },
+    {
+      "id": "category_instant_coffee",
+      "type": "concept",
+      "label": "Instant Coffee",
+      "properties": {
+        "category": "Instant Coffee"
+      }
+    },
+    {
+      "id": "category_combo_pack",
+      "type": "concept",
+      "label": "Combo Pack",
+      "properties": {
+        "category": "Combo Pack"
+      }
+    },
+    {
+      "id": "category_equipment",
+      "type": "concept",
+      "label": "Coffee Equipment & Accessories",
+      "properties": {
+        "category": "Equipment"
+      }
+    },
+    {
+      "id": "category_bulk_horeca",
+      "type": "concept",
+      "label": "Bulk / Horeca",
+      "properties": {
+        "category": "Bulk Horeca"
+      }
+    },
+    {
+      "id": "product_2-cup-filter-2-davara-sets",
+      "type": "concept",
+      "label": "2 Cup Filter + 2 Davara Sets with Madras Blend Combo",
+      "properties": {
+        "product_handle": "2-cup-filter-2-davara-sets",
+        "sku": "LC0012-3",
+        "price_inr": "2,412.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/2-cup-filter-2-davara-sets"
+      }
+    },
+    {
+      "id": "product_4-cup-filter-4-davara-sets",
+      "type": "concept",
+      "label": "4 Cup Filter + 4 Davara Sets with Madras Blend Combo",
+      "properties": {
+        "product_handle": "4-cup-filter-4-davara-sets",
+        "sku": "LC0012-4",
+        "price_inr": "4,230.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/4-cup-filter-4-davara-sets"
+      }
+    },
+    {
+      "id": "product_4-cup-percolator-kit",
+      "type": "concept",
+      "label": "4 Cup percolator Combo",
+      "properties": {
+        "product_handle": "4-cup-percolator-kit",
+        "sku": "LC0012-5",
+        "price_inr": "1,490.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/4-cup-percolator-kit"
+      }
+    },
+    {
+      "id": "product_6-cup-percolator-kit",
+      "type": "concept",
+      "label": "6 Cup percolator Combo",
+      "properties": {
+        "product_handle": "6-cup-percolator-kit",
+        "sku": "LC0012-6",
+        "price_inr": "2,100.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/6-cup-percolator-kit"
+      }
+    },
+    {
+      "id": "product_brass-coffee-filter",
+      "type": "concept",
+      "label": "Brass Coffee Filter - 4 Cups",
+      "properties": {
+        "product_handle": "brass-coffee-filter",
+        "sku": "LC0012",
+        "price_inr": "1,300.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/brass-coffee-filter"
+      }
+    },
+    {
+      "id": "product_brass-davara",
+      "type": "concept",
+      "label": "Brass Davara",
+      "properties": {
+        "product_handle": "brass-davara",
+        "sku": "LC0013",
+        "price_inr": "600.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/brass-davara"
+      }
+    },
+    {
+      "id": "product_brass-filter-davara-set",
+      "type": "concept",
+      "label": "Brass Filter (2 cups) & Davara Set",
+      "properties": {
+        "product_handle": "brass-filter-davara-set",
+        "sku": "LC0012-2",
+        "price_inr": "1,600.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/brass-filter-davara-set"
+      }
+    },
+    {
+      "id": "product_breakfast-blend-60-40",
+      "type": "concept",
+      "label": "Breakfast Blend 60-40",
+      "properties": {
+        "product_handle": "breakfast-blend-60-40",
+        "sku": "LC0009-1",
+        "price_inr": "465.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/breakfast-blend-60-40"
+      }
+    },
+    {
+      "id": "product_caffe-blend",
+      "type": "concept",
+      "label": "Caff\u00e9 Blend",
+      "properties": {
+        "product_handle": "caffe-blend",
+        "sku": "LC0004-1",
+        "price_inr": "850.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/caffe-blend"
+      }
+    },
+    {
+      "id": "product_chicory",
+      "type": "concept",
+      "label": "Chicory",
+      "properties": {
+        "product_handle": "chicory",
+        "sku": "LC0006-1",
+        "price_inr": "95.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/chicory"
+      }
+    },
+    {
+      "id": "product_chicory-blend-range",
+      "type": "concept",
+      "label": "Chicory Blend Mini Combo",
+      "properties": {
+        "product_handle": "chicory-blend-range",
+        "sku": "LC0036",
+        "price_inr": "594.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/chicory-blend-range"
+      }
+    },
+    {
+      "id": "product_chicory-coffee-delights-combo",
+      "type": "concept",
+      "label": "Chicory Coffee Delights Combo",
+      "properties": {
+        "product_handle": "chicory-coffee-delights-combo",
+        "sku": "LC0069",
+        "price_inr": "680.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/chicory-coffee-delights-combo"
+      }
+    },
+    {
+      "id": "product_coffee-percolator-4-cup",
+      "type": "concept",
+      "label": "Coffee Percolator - 4 cups",
+      "properties": {
+        "product_handle": "coffee-percolator-4-cup",
+        "sku": "LC0015",
+        "price_inr": "1,250.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/coffee-percolator-4-cup"
+      }
+    },
+    {
+      "id": "product_coffee-percolator-6-cup",
+      "type": "concept",
+      "label": "Coffee Percolator - 6 cups",
+      "properties": {
+        "product_handle": "coffee-percolator-6-cup",
+        "sku": "LC0016",
+        "price_inr": "1,500.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/coffee-percolator-6-cup"
+      }
+    },
+    {
+      "id": "product_copy-of-brass-coffee-filter-2-cups",
+      "type": "concept",
+      "label": "Brass Coffee Filter - 2 Cups",
+      "properties": {
+        "product_handle": "copy-of-brass-coffee-filter-2-cups",
+        "sku": "LC0012-1",
+        "price_inr": "1,000.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/copy-of-brass-coffee-filter-2-cups"
+      }
+    },
+    {
+      "id": "product_degree-blend-70-30",
+      "type": "concept",
+      "label": "Degree Blend 70-30",
+      "properties": {
+        "product_handle": "degree-blend-70-30",
+        "sku": "LC0008-1",
+        "price_inr": "490.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/degree-blend-70-30"
+      }
+    },
+    {
+      "id": "product_filter-coffee-decoction",
+      "type": "concept",
+      "label": "Leo Filter Coffee Decoction - Pack of 2",
+      "properties": {
+        "product_handle": "filter-coffee-decoction",
+        "sku": "LC0032-4",
+        "price_inr": "440.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/filter-coffee-decoction"
+      }
+    },
+    {
+      "id": "product_filter-coffee-ranges",
+      "type": "concept",
+      "label": "Filter Coffee Mini Combo",
+      "properties": {
+        "product_handle": "filter-coffee-ranges",
+        "sku": "LC0034",
+        "price_inr": "1,122.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/filter-coffee-ranges"
+      }
+    },
+    {
+      "id": "product_flowerpot-combo",
+      "type": "concept",
+      "label": "Filter Coffee Combo",
+      "properties": {
+        "product_handle": "flowerpot-combo",
+        "sku": "LC0039",
+        "price_inr": "1,755.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/flowerpot-combo"
+      }
+    },
+    {
+      "id": "product_hotel-blend",
+      "type": "concept",
+      "label": "Vending Machine Blend 70-30",
+      "properties": {
+        "product_handle": "hotel-blend",
+        "sku": "LC0021-2",
+        "price_inr": "800.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/hotel-blend"
+      }
+    },
+    {
+      "id": "product_hotel-blend-60-40",
+      "type": "concept",
+      "label": "Hotel Blend 60-40",
+      "properties": {
+        "product_handle": "hotel-blend-60-40",
+        "sku": "LC0022-2",
+        "price_inr": "660.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/hotel-blend-60-40"
+      }
+    },
+    {
+      "id": "product_house-blend",
+      "type": "concept",
+      "label": "House Blend",
+      "properties": {
+        "product_handle": "house-blend",
+        "sku": "LC0003-1",
+        "price_inr": "570.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/house-blend"
+      }
+    },
+    {
+      "id": "product_house-blend-5-kgs-bean-bag",
+      "type": "concept",
+      "label": "House Blend 5 Kgs Bean Bag",
+      "properties": {
+        "product_handle": "house-blend-5-kgs-bean-bag",
+        "sku": "LC0018",
+        "price_inr": "5,700.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/house-blend-5-kgs-bean-bag"
+      }
+    },
+    {
+      "id": "product_instant-coffee-aroma-classic-jar",
+      "type": "concept",
+      "label": "Instant Coffee Jar - Aroma Classic",
+      "properties": {
+        "product_handle": "instant-coffee-aroma-classic-jar",
+        "sku": "LC0030-2",
+        "price_inr": "220.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-aroma-classic-jar"
+      }
+    },
+    {
+      "id": "product_instant-coffee-jar-50g-aroma-classic",
+      "type": "concept",
+      "label": "Instant Coffee Jar 50g - Aroma Classic",
+      "properties": {
+        "product_handle": "instant-coffee-jar-50g-aroma-classic",
+        "sku": "LC0030-7",
+        "price_inr": "115.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-jar-50g-aroma-classic"
+      }
+    },
+    {
+      "id": "product_instant-coffee-jar-50g-ultimate",
+      "type": "concept",
+      "label": "Leo Instant Coffee Jar 50g - Ultimate",
+      "properties": {
+        "product_handle": "instant-coffee-jar-50g-ultimate",
+        "sku": "LC0029-7",
+        "price_inr": "155.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-jar-50g-ultimate"
+      }
+    },
+    {
+      "id": "product_instant-coffee-refill-aroma",
+      "type": "concept",
+      "label": "Instant Coffee Refill - Aroma Classic",
+      "properties": {
+        "product_handle": "instant-coffee-refill-aroma",
+        "sku": "LC0030-6",
+        "price_inr": "215.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-refill-aroma"
+      }
+    },
+    {
+      "id": "product_instant-coffee-refill-ultimate",
+      "type": "concept",
+      "label": "Leo Instant Coffee Refill - Ultimate",
+      "properties": {
+        "product_handle": "instant-coffee-refill-ultimate",
+        "sku": "LC0029-6",
+        "price_inr": "305.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-refill-ultimate"
+      }
+    },
+    {
+      "id": "product_instant-coffee-sachets-aroma",
+      "type": "concept",
+      "label": "Instant Coffee Sachets 50g - Aroma Classic (pack of 2)",
+      "properties": {
+        "product_handle": "instant-coffee-sachets-aroma",
+        "sku": "LC0030-5",
+        "price_inr": "200.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-sachets-aroma"
+      }
+    },
+    {
+      "id": "product_instant-coffee-sachets-ultimate",
+      "type": "concept",
+      "label": "Instant Coffee Sachets 50g - Ultimate (pack of 2)",
+      "properties": {
+        "product_handle": "instant-coffee-sachets-ultimate",
+        "sku": "LC0029-5",
+        "price_inr": "300.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-sachets-ultimate"
+      }
+    },
+    {
+      "id": "product_instant-coffee-taster-pack-jars",
+      "type": "concept",
+      "label": "Instant Coffee Combo Jars - Aroma Classic & Ultimate",
+      "properties": {
+        "product_handle": "instant-coffee-taster-pack-jars",
+        "sku": "LC0031-4",
+        "price_inr": "270.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-taster-pack-jars"
+      }
+    },
+    {
+      "id": "product_instant-coffee-ultimate-jar",
+      "type": "concept",
+      "label": "Instant Coffee Jar - Ultimate",
+      "properties": {
+        "product_handle": "instant-coffee-ultimate-jar",
+        "sku": "LC0029-2",
+        "price_inr": "300.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-coffee-ultimate-jar"
+      }
+    },
+    {
+      "id": "product_instant-energiser-combo-pack",
+      "type": "concept",
+      "label": "Instant Energiser Combo",
+      "properties": {
+        "product_handle": "instant-energiser-combo-pack",
+        "sku": "LC0031-3",
+        "price_inr": "490.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/instant-energiser-combo-pack"
+      }
+    },
+    {
+      "id": "product_lakshmi-bomb-combo",
+      "type": "concept",
+      "label": "Chicory Filter Coffee With Equipment Combo",
+      "properties": {
+        "product_handle": "lakshmi-bomb-combo",
+        "sku": "LC0041",
+        "price_inr": "2,705.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/lakshmi-bomb-combo"
+      }
+    },
+    {
+      "id": "product_leo-estate-single-origin",
+      "type": "concept",
+      "label": "Leo Estate Single Origin",
+      "properties": {
+        "product_handle": "leo-estate-single-origin",
+        "sku": "LC0010-41",
+        "price_inr": "500.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/leo-estate-single-origin"
+      }
+    },
+    {
+      "id": "product_madras-blend-80-20",
+      "type": "concept",
+      "label": "Madras Blend 80:20",
+      "properties": {
+        "product_handle": "madras-blend-80-20",
+        "sku": "LC0007-1",
+        "price_inr": "530.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/madras-blend-80-20"
+      }
+    },
+    {
+      "id": "product_pure-coffee-ranges",
+      "type": "concept",
+      "label": "Pure Coffee Mini Combo",
+      "properties": {
+        "product_handle": "pure-coffee-ranges",
+        "sku": "LC0035",
+        "price_inr": "1,376.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/pure-coffee-ranges"
+      }
+    },
+    {
+      "id": "product_pure-coffee-shots-combo",
+      "type": "concept",
+      "label": "Pure Coffee Shots Combo",
+      "properties": {
+        "product_handle": "pure-coffee-shots-combo",
+        "sku": "LC0067",
+        "price_inr": "940.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/pure-coffee-shots-combo"
+      }
+    },
+    {
+      "id": "product_rocket-combo",
+      "type": "concept",
+      "label": "Pure Coffee Combo",
+      "properties": {
+        "product_handle": "rocket-combo",
+        "sku": "LC0040",
+        "price_inr": "2,480.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/rocket-combo"
+      }
+    },
+    {
+      "id": "product_south-indian-filter-coffee-starter-pack",
+      "type": "concept",
+      "label": "South Indian filter coffee starter pack",
+      "properties": {
+        "product_handle": "south-indian-filter-coffee-starter-pack",
+        "sku": "LC0059",
+        "price_inr": "1,712.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/south-indian-filter-coffee-starter-pack"
+      }
+    },
+    {
+      "id": "product_special-a",
+      "type": "concept",
+      "label": "Special \"A\" Coffee Blend",
+      "properties": {
+        "product_handle": "special-a",
+        "sku": "LC0002-1",
+        "price_inr": "630.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/special-a"
+      }
+    },
+    {
+      "id": "product_special-a-5-kgs-bean-bag",
+      "type": "concept",
+      "label": "Special \"A\" Coffee Beans Unique Blend - 5 Kg Bag",
+      "properties": {
+        "product_handle": "special-a-5-kgs-bean-bag",
+        "sku": "LC0019",
+        "price_inr": "6,300.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/special-a-5-kgs-bean-bag"
+      }
+    },
+    {
+      "id": "product_special-peaberry",
+      "type": "concept",
+      "label": "Special Peaberry Coffee Blend",
+      "properties": {
+        "product_handle": "special-peaberry",
+        "sku": "LC0001-1",
+        "price_inr": "640.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/special-peaberry"
+      }
+    },
+    {
+      "id": "product_special-peaberry-bean-5-kgs-bag",
+      "type": "concept",
+      "label": "Special Peaberry Bean 5 Kgs Bag",
+      "properties": {
+        "product_handle": "special-peaberry-bean-5-kgs-bag",
+        "sku": "LC0020",
+        "price_inr": "6,400.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/special-peaberry-bean-5-kgs-bag"
+      }
+    },
+    {
+      "id": "product_spl-peaberry-spl-a-50-50-mix",
+      "type": "concept",
+      "label": "Special Peaberry + Special \"A\" 50:50 Mix",
+      "properties": {
+        "product_handle": "spl-peaberry-spl-a-50-50-mix",
+        "sku": "LC0028-1",
+        "price_inr": "635.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/spl-peaberry-spl-a-50-50-mix"
+      }
+    },
+    {
+      "id": "product_ss-coffee-filter",
+      "type": "concept",
+      "label": "SS Coffee Filter",
+      "properties": {
+        "product_handle": "ss-coffee-filter",
+        "sku": "LC0011",
+        "price_inr": "300.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/ss-coffee-filter"
+      }
+    },
+    {
+      "id": "product_taster-pack",
+      "type": "concept",
+      "label": "Taster Pack",
+      "properties": {
+        "product_handle": "taster-pack",
+        "sku": "LC0033",
+        "price_inr": "982.00",
+        "in_stock": false,
+        "shopify_url": "https://www.leocoffee.co.in/products/taster-pack"
+      }
+    },
+    {
+      "id": "product_top-blend",
+      "type": "concept",
+      "label": "Top Blend",
+      "properties": {
+        "product_handle": "top-blend",
+        "sku": "LC0005-1",
+        "price_inr": "750.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/top-blend"
+      }
+    },
+    {
+      "id": "product_vending-machine-blend",
+      "type": "concept",
+      "label": "Vending Machine Blend 80-20",
+      "properties": {
+        "product_handle": "vending-machine-blend",
+        "sku": "LC0021-1",
+        "price_inr": "720.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/vending-machine-blend"
+      }
+    },
+    {
+      "id": "product_vending-machine-blend-70-30",
+      "type": "concept",
+      "label": "Hotel Blend 70-30",
+      "properties": {
+        "product_handle": "vending-machine-blend-70-30",
+        "sku": "LC0022-1",
+        "price_inr": "710.00",
+        "in_stock": true,
+        "shopify_url": "https://www.leocoffee.co.in/products/vending-machine-blend-70-30"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "product_2-cup-filter-2-davara-sets",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_2-cup-filter-2-davara-sets",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_4-cup-filter-4-davara-sets",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_4-cup-filter-4-davara-sets",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_4-cup-percolator-kit",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_4-cup-percolator-kit",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_6-cup-percolator-kit",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_6-cup-percolator-kit",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-davara",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-davara",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-filter-davara-set",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-filter-davara-set",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_caffe-blend",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_caffe-blend",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory",
+      "target": "category_coffee_with_chicory",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory-blend-range",
+      "target": "category_coffee_with_chicory",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory-blend-range",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory-coffee-delights-combo",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_chicory-coffee-delights-combo",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_coffee-percolator-4-cup",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_coffee-percolator-4-cup",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_coffee-percolator-6-cup",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_coffee-percolator-6-cup",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_copy-of-brass-coffee-filter-2-cups",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_copy-of-brass-coffee-filter-2-cups",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_degree-blend-70-30",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_degree-blend-70-30",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_filter-coffee-decoction",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_filter-coffee-decoction",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_filter-coffee-ranges",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_filter-coffee-ranges",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_flowerpot-combo",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_flowerpot-combo",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_hotel-blend",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_hotel-blend",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_hotel-blend-60-40",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_hotel-blend-60-40",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_house-blend",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_house-blend",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_house-blend-5-kgs-bean-bag",
+      "target": "category_bulk_horeca",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_house-blend-5-kgs-bean-bag",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-aroma-classic-jar",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-aroma-classic-jar",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-jar-50g-aroma-classic",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-jar-50g-aroma-classic",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-jar-50g-ultimate",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-jar-50g-ultimate",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-refill-aroma",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-refill-aroma",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-refill-ultimate",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-refill-ultimate",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-sachets-aroma",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-sachets-aroma",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-sachets-ultimate",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-sachets-ultimate",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-taster-pack-jars",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-taster-pack-jars",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-ultimate-jar",
+      "target": "category_instant_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-ultimate-jar",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-energiser-combo-pack",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-energiser-combo-pack",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_lakshmi-bomb-combo",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_lakshmi-bomb-combo",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_leo-estate-single-origin",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_leo-estate-single-origin",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_madras-blend-80-20",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_madras-blend-80-20",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_pure-coffee-ranges",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_pure-coffee-ranges",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_pure-coffee-shots-combo",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_pure-coffee-shots-combo",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_rocket-combo",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_rocket-combo",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_south-indian-filter-coffee-starter-pack",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_south-indian-filter-coffee-starter-pack",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-a",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-a",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-a-5-kgs-bean-bag",
+      "target": "category_bulk_horeca",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-a-5-kgs-bean-bag",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-peaberry",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-peaberry",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-peaberry-bean-5-kgs-bag",
+      "target": "category_bulk_horeca",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-peaberry-bean-5-kgs-bag",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_spl-peaberry-spl-a-50-50-mix",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_spl-peaberry-spl-a-50-50-mix",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_ss-coffee-filter",
+      "target": "category_equipment",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_ss-coffee-filter",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_taster-pack",
+      "target": "category_combo_pack",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_taster-pack",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_top-blend",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_top-blend",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_vending-machine-blend",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_vending-machine-blend",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_vending-machine-blend-70-30",
+      "target": "category_pure_coffee",
+      "relation": "belongs_to_category",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_vending-machine-blend-70-30",
+      "target": "leocoffee_co_prk_nadar_sons",
+      "relation": "sold_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_caffe-blend",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_degree-blend-70-30",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_hotel-blend",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_hotel-blend-60-40",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_house-blend",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_leo-estate-single-origin",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_madras-blend-80-20",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_special-a",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_special-peaberry",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_spl-peaberry-spl-a-50-50-mix",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_top-blend",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_vending-machine-blend",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_breakfast-blend-60-40",
+      "target": "product_vending-machine-blend-70-30",
+      "relation": "related_blend",
+      "confidence": "INFERRED",
+      "confidence_score": 0.7
+    },
+    {
+      "source": "product_special-a-5-kgs-bean-bag",
+      "target": "product_special-a",
+      "relation": "bulk_variant_of",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_special-peaberry-bean-5-kgs-bag",
+      "target": "product_special-peaberry",
+      "relation": "bulk_variant_of",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_house-blend-5-kgs-bean-bag",
+      "target": "product_house-blend",
+      "relation": "bulk_variant_of",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-aroma-classic-jar",
+      "target": "product_instant-coffee-jar-50g-aroma-classic",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-aroma-classic-jar",
+      "target": "product_instant-coffee-refill-aroma",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-aroma-classic-jar",
+      "target": "product_instant-coffee-sachets-aroma",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-ultimate-jar",
+      "target": "product_instant-coffee-jar-50g-ultimate",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-ultimate-jar",
+      "target": "product_instant-coffee-refill-ultimate",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_instant-coffee-ultimate-jar",
+      "target": "product_instant-coffee-sachets-ultimate",
+      "relation": "same_product_family",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "product_brass-davara",
+      "relation": "related_equipment",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "product_ss-coffee-filter",
+      "relation": "related_equipment",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "product_coffee-percolator-4-cup",
+      "relation": "related_equipment",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6
+    },
+    {
+      "source": "product_brass-coffee-filter",
+      "target": "product_coffee-percolator-6-cup",
+      "relation": "related_equipment",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6
+    },
+    {
+      "source": "product_vending-machine-blend",
+      "target": "product_hotel-blend",
+      "relation": "similar_blend_family",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8
+    },
+    {
+      "source": "product_vending-machine-blend-70-30",
+      "target": "product_hotel-blend-60-40",
+      "relation": "similar_blend_family",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8
+    }
+  ],
+  "hyperedges": [],
+  "metadata": {
+    "source": "leocoffee.co.in Shopify product pages",
+    "total_products": 50,
+    "categories_identified": [
+      "Pure Coffee (Chicory Free)",
+      "Coffee with Chicory",
+      "Instant Coffee",
+      "Combo Pack",
+      "Coffee Equipment & Accessories",
+      "Bulk / Horeca"
+    ],
+    "in_stock_count": 35,
+    "out_of_stock_count": 15,
+    "price_range_inr": "95 - 6,400",
+    "store_type": "Shopify e-commerce",
+    "extraction_date": "2026-06-08"
+  }
+}

@@ -75,7 +75,7 @@ _SKIP_EXT = frozenset([".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".avif"
 _SKIP_PATH = re.compile(
     r"/(cart|checkout|account|login|register|wishlist|logout|"
     r"password|reset|unsubscribe|cdn-cgi|\.well-known|"
-    r"track|order-status|compare|print|ajax|api/)",
+    r"order-status|compare|print|ajax)",
     re.I,
 )
 
@@ -107,8 +107,8 @@ _PRODUCT_PATH = re.compile(
 )
 
 _PRICE_RE = re.compile(
-    r"(?:₹|Rs\.?\s?|MRP:?\s?|\$|£|€)\s?[\d,]+(?:\.\d{1,2})?"
-    r"|[\d,]+(?:\.\d{1,2})?\s?(?:INR|USD|EUR|GBP)\b",
+    r"(?:₹|Rs\.?\s?|INR\s?|MRP:?\s?|\$|USD\s?|£|GBP\s?|€|EUR\s?)\s?[\d,]+(?:\.\d{1,2})?"
+    r"|[\d,]+(?:\.\d{1,2})?\s?(?:INR|USD|EUR|GBP|Rs\.?|₹|\$|£|€)\b",
     re.I,
 )
 
@@ -152,21 +152,67 @@ async def _pw_fetch(url: str, timeout_ms: int = 25000) -> Optional[str]:
         ctx  = await _pw_browser.new_context(user_agent=REQUEST_HEADERS["User-Agent"],
                                              viewport={"width": 1280, "height": 800})
         page = await ctx.new_page()
+        
+        # Capture API responses that might contain location data
+        api_responses = []
+        async def capture_response(response):
+            if response.request.resource_type == "xhr" or response.request.resource_type == "fetch":
+                if re.search(r'/(location|store|dealer|api)', response.url, re.I):
+                    try:
+                        body = await response.body()
+                        if body:
+                            api_responses.append(body.decode('utf-8', errors='ignore'))
+                    except:
+                        pass
+        
+        page.on("response", capture_response)
+        
         async def _block(route):
             if route.request.resource_type in ("image","media","font","stylesheet"):
                 await route.abort()
             else:
                 await route.continue_()
         await page.route("**/*", _block)
+        
+        # Navigate to page
         try:
             await page.goto(url, timeout=timeout_ms, wait_until="domcontentloaded")
         except Exception:
             pass
+        
+        # Wait for network to be idle
         try:
-            await page.wait_for_load_state("networkidle", timeout=7000)
+            await page.wait_for_load_state("networkidle", timeout=10000)
         except Exception:
             pass
+        
+        # For pages with dynamic content (maps, store locators, etc.), wait for specific elements
+        parsed_url = urlparse(url)
+        if re.search(r'/(location|store|find|dealer|retailer|where-to-buy|cider-finder)', parsed_url.path, re.I):
+            try:
+                # Wait for common map/location container elements to appear
+                await page.wait_for_selector('div[role="list"], .location-card, .store-card, .dealer-card, [class*="location"], [class*="store"], [id*="map"], [class*="result"]', timeout=8000)
+            except Exception:
+                pass
+            # Additional wait for JS to populate content
+            await asyncio.sleep(3)
+        
+        # Scroll to trigger lazy-loaded content
+        try:
+            await page.evaluate('window.scrollTo(0, document.body.scrollHeight / 2)')
+            await asyncio.sleep(0.5)
+            await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+            await asyncio.sleep(0.5)
+        except Exception:
+            pass
+        
         html = await page.content()
+        
+        # If we captured API responses with location data, append them as JSON in a special script tag
+        if api_responses:
+            for idx, api_data in enumerate(api_responses):
+                html += f'\n<script type="application/json" id="api-response-{idx}">{api_data}</script>'
+        
         await ctx.close()
         return html
     except Exception as exc:
@@ -174,19 +220,27 @@ async def _pw_fetch(url: str, timeout_ms: int = 25000) -> Optional[str]:
         return None
 
 def _looks_like_js_shell(html: Optional[str]) -> bool:
-    if not html or len(html) < 5000:
+    if not html or len(html) < 3000:
         return True
     soup = BeautifulSoup(html, "lxml")
     for t in soup.find_all(["script","style"]):
         t.decompose()
     text = soup.get_text(strip=True)
-    if len(text) < 150:
+    if len(text) < 100:
         return True
+    # Check for meaningful content tags
     meaningful = [
         t for t in (soup.body.find_all(True) if soup.body else [])
-        if t.name in ("h1","h2","h3","p","li","td","a") and t.get_text(strip=True)
+        if t.name in ("h1","h2","h3","h4","p","li","td","a","article","section") and len(t.get_text(strip=True)) > 20
     ]
-    return len(meaningful) < 4
+    if len(meaningful) < 3:
+        return True
+    # Check for common JS framework loading indicators
+    if re.search(r'(data-react-helmet|__NEXT_DATA__|ng-version|data-vue-|v-cloak)', html, re.I):
+        # Has framework markers but check if content is actually rendered
+        if len(text) < 500:  # Very little text despite framework = not yet rendered
+            return True
+    return False
 
 async def _http_fetch(session: aiohttp.ClientSession, url: str, timeout: int) -> Optional[str]:
     try:
@@ -227,12 +281,23 @@ async def _http_fetch(session: aiohttp.ClientSession, url: str, timeout: int) ->
         return None
 
 async def smart_fetch(session: aiohttp.ClientSession, url: str, timeout: int, use_playwright: bool) -> Optional[str]:
+    # Check if this is a location/store finder page - always use Playwright for these
+    parsed_url = urlparse(url)
+    is_location_page = bool(re.search(r'/(location|store|find|dealer|retailer|where-to-buy|cider-finder)', parsed_url.path, re.I))
+    
+    if is_location_page and use_playwright:
+        print(f"    🎭  {parsed_url.path[:55]}  (location page) → Playwright")
+        return await _pw_fetch(url, timeout_ms=timeout * 1500)
+    
+    # Try HTTP first for other pages
     html = await _http_fetch(session, url, timeout)
     if not _looks_like_js_shell(html):
         return html
+    
+    # Fallback to Playwright for JS-heavy pages
     if use_playwright:
         reason = "JS shell" if html else "HTTP failed"
-        print(f"    🎭  {urlparse(url).path[:55]}  ({reason}) → Playwright")
+        print(f"    🎭  {parsed_url.path[:55]}  ({reason}) → Playwright")
         html = await _pw_fetch(url, timeout_ms=timeout * 1500)
     return html
 
@@ -241,12 +306,14 @@ async def smart_fetch(session: aiohttp.ClientSession, url: str, timeout: int, us
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _strip_boilerplate(soup: BeautifulSoup) -> None:
-    for tag in soup.find_all(["nav", "header", "footer", "aside"]):
+    # Only remove nav and aside, preserve header/footer for contact info
+    for tag in soup.find_all(["nav", "aside"]):
         tag.decompose()
-    for attr in ("class", "id", "role"):
-        for tag in soup.find_all(True, attrs={attr: _BOILERPLATE_RE}):
+    # Remove only obvious navigation/menu elements, not all boilerplate
+    for attr in ("class", "id"):
+        for tag in soup.find_all(True, attrs={attr: re.compile(r"\b(nav(?:bar|igation)?|menu|breadcrumb|sidebar)\b", re.I)}):
             tag.decompose()
-    for tag in soup.find_all(True, attrs={"role": re.compile(r"navigation|banner|complementary|contentinfo", re.I)}):
+    for tag in soup.find_all(True, attrs={"role": re.compile(r"navigation|banner|complementary", re.I)}):
         tag.decompose()
 
 def _extract_content(soup: BeautifulSoup) -> List[dict]:
@@ -291,6 +358,230 @@ def _extract_content(soup: BeautifulSoup) -> List[dict]:
                 content.append({"tag": "div", "text": text})
     return content
 
+def _extract_contact_info(soup: BeautifulSoup) -> dict:
+    """Extract contact information from anywhere on the page (footer, header, body)."""
+    contact = {}
+    
+    # Email regex (more comprehensive)
+    email_re = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
+    
+    # Phone regex (handles multiple formats)
+    phone_re = re.compile(r'(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|\+?\d{1,3}[-.\s]?\d{3,4}[-.\s]?\d{4}')
+    
+    # Strategy 1: Look in mailto links (highest priority)
+    for link in soup.find_all('a', href=re.compile(r'^mailto:', re.I)):
+        email = link.get('href', '').replace('mailto:', '').split('?')[0].strip()
+        if email_re.match(email):
+            contact.setdefault('emails', []).append(email.lower())
+    
+    # Strategy 2: Look in meta tags
+    for meta in soup.find_all('meta'):
+        content = meta.get('content', '')
+        if email_re.search(content):
+            for email in email_re.findall(content):
+                if not email.lower().endswith(('.png', '.jpg', '.gif', '.css', '.js')):
+                    contact.setdefault('emails', []).append(email.lower())
+    
+    # Strategy 3: Search entire page text
+    page_text = soup.get_text()
+    emails = email_re.findall(page_text)
+    if emails:
+        # Filter out common false positives
+        valid_emails = [
+            e.lower() for e in emails 
+            if not e.lower().endswith(('.png', '.jpg', '.gif', '.svg', '.css', '.js', '.woff', '.ttf'))
+            and '@example.' not in e.lower()
+            and 'noreply@' not in e.lower()
+            and 'donotreply@' not in e.lower()
+        ]
+        contact.setdefault('emails', []).extend(valid_emails)
+    
+    # Strategy 4: Look for obfuscated emails (e.g., "info [at] domain [dot] com")
+    obfuscated = re.findall(r'(\w+)\s*\[at\]\s*(\w+)\s*\[dot\]\s*(\w+)', page_text, re.I)
+    for match in obfuscated:
+        email = f"{match[0]}@{match[1]}.{match[2]}".lower()
+        contact.setdefault('emails', []).append(email)
+    
+    # Deduplicate emails and limit
+    if 'emails' in contact:
+        contact['emails'] = list(set(contact['emails']))[:5]
+    
+    # Phone extraction
+    phones = phone_re.findall(page_text)
+    if phones:
+        # Clean and deduplicate
+        cleaned_phones = []
+        for phone in phones:
+            # Skip if it looks like a year or other number
+            digits_only = re.sub(r'\D', '', phone)
+            if len(digits_only) >= 10:  # Valid phone has at least 10 digits
+                cleaned_phones.append(phone.strip())
+        contact['phones'] = list(set(cleaned_phones))[:5]
+    
+    # Address extraction - look in footer or contact sections
+    address_containers = soup.find_all(['footer', 'address']) + \
+                        soup.find_all(class_=re.compile(r'(contact|address|location|footer)', re.I)) + \
+                        soup.find_all(id=re.compile(r'(contact|address|location|footer)', re.I))
+    
+    for container in address_containers:
+        text = container.get_text(separator=' ', strip=True)
+        # Look for patterns like "123 Main St" with city, state, zip
+        addr_match = re.search(r'(\d{1,5}\s+[\w\s]+(?:st|street|ave|avenue|rd|road|blvd|boulevard|way|drive|dr|lane|ln|pkwy|parkway|ct|court|pl|place)\.?[,\s]+[\w\s]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?)', text, re.I)
+        if addr_match:
+            if 'address' not in contact:
+                contact['address'] = addr_match.group(1).strip()[:200]  # Limit length
+                break
+    
+    return contact
+
+def _extract_locations(soup: BeautifulSoup, html: str) -> List[dict]:
+    """Extract store/location data from locator pages, including JS-rendered content."""
+    locations = []
+    
+    # Strategy 0: Check for captured API responses (added by Playwright)
+    for script in soup.find_all('script', type='application/json', id=re.compile(r'api-response-\d+')):
+        try:
+            data = json.loads(script.string or '{}')
+            # Handle different API response formats
+            if isinstance(data, list):
+                for item in data:
+                    if isinstance(item, dict) and any(k in item for k in ['name', 'address', 'city', 'location', 'store']):
+                        loc = _parse_location_object(item)
+                        if loc:
+                            locations.append(loc)
+            elif isinstance(data, dict):
+                # Check for common API wrapper patterns
+                for key in ['data', 'results', 'locations', 'stores', 'dealers']:
+                    if key in data and isinstance(data[key], list):
+                        for item in data[key]:
+                            if isinstance(item, dict):
+                                loc = _parse_location_object(item)
+                                if loc:
+                                    locations.append(loc)
+                        break
+        except:
+            pass
+    
+    if locations:
+        return locations  # Return early if we found API data
+    
+    # Strategy 1: Look for structured data in scripts (JSON arrays/objects)
+    for script in soup.find_all('script'):
+        text = script.string or ''
+        if not text or script.get('type') == 'application/json' and script.get('id', '').startswith('api-response-'):
+            continue
+        
+        # Try to find JSON arrays/objects with location data
+        if re.search(r'"(location|store|address|city|dealer|retailer)"', text, re.I):
+            # Look for arrays of locations
+            for match in re.finditer(r'\[[\s\S]*?\{[\s\S]*?"(?:name|location|address|city|store)"[\s\S]*?\}[\s\S]*?\]', text):
+                try:
+                    data = json.loads(match.group(0))
+                    if isinstance(data, list):
+                        for item in data:
+                            if isinstance(item, dict) and any(k in item for k in ['name', 'address', 'city', 'location', 'store']):
+                                loc = _parse_location_object(item)
+                                if loc:
+                                    locations.append(loc)
+                except:
+                    pass
+            
+            # Look for single location objects
+            if not locations:
+                for match in re.finditer(r'\{[^{}]*"(?:name|location|address|city)"[^{}]*\}', text):
+                    try:
+                        data = json.loads(match.group(0))
+                        if isinstance(data, dict) and any(k in data for k in ['name', 'address', 'city', 'location']):
+                            loc = _parse_location_object(data)
+                            if loc and loc not in locations:
+                                locations.append(loc)
+                    except:
+                        pass
+    
+    # Strategy 2: Look for location cards/divs in HTML
+    if not locations:  # Only if we didn't find structured data
+        loc_containers = soup.find_all(class_=re.compile(r'(location|store|dealer|retailer|outlet|branch)(?!-nav)', re.I))
+        loc_containers += soup.find_all(attrs={'data-location': True}) + soup.find_all(attrs={'data-store': True})
+        
+        for container in loc_containers[:30]:  # Limit to 30 locations
+            loc = {}
+            
+            # Try to extract name
+            name_el = container.find(['h2', 'h3', 'h4', 'h5', 'strong', 'b'])
+            if name_el:
+                name_text = name_el.get_text(strip=True)
+                if len(name_text) < 100:  # Reasonable name length
+                    loc['name'] = name_text
+            
+            # Try to extract address
+            addr_el = container.find(class_=re.compile(r'address', re.I)) or container.find('address')
+            if addr_el:
+                loc['address'] = addr_el.get_text(separator=', ', strip=True)
+            
+            # Try to extract from data attributes
+            for attr in ['data-address', 'data-location', 'data-store-address']:
+                if container.get(attr):
+                    loc['address'] = container[attr]
+                    break
+            
+            # Extract city/state/zip from text
+            text = container.get_text()
+            city_match = re.search(r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),\s*([A-Z]{2})\s+(\d{5}(?:-\d{4})?)', text)
+            if city_match:
+                loc['city'] = city_match.group(1)
+                loc['state'] = city_match.group(2)
+                loc['zip'] = city_match.group(3)
+            
+            # Extract phone
+            phone_match = re.search(r'(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', text)
+            if phone_match:
+                loc['phone'] = phone_match.group(0)
+            
+            # Extract email
+            email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
+            if email_match:
+                loc['email'] = email_match.group(0)
+            
+            if loc and len(loc) >= 2:  # At least 2 fields (e.g., name + address)
+                locations.append(loc)
+    
+    # Strategy 3: Look for GeoJSON or other structured location data
+    if not locations:
+        geojson_match = re.search(r'"type"\s*:\s*"FeatureCollection"[\s\S]*?"features"\s*:\s*\[([\s\S]*?)\]', html)
+        if geojson_match:
+            try:
+                features = json.loads('[' + geojson_match.group(1) + ']')
+                for feature in features:
+                    if isinstance(feature, dict) and feature.get('properties'):
+                        loc = _parse_location_object(feature['properties'])
+                        if loc:
+                            locations.append(loc)
+            except:
+                pass
+    
+    return locations if locations else None
+
+def _parse_location_object(item: dict) -> Optional[dict]:
+    """Parse a location object from various field name formats."""
+    if not isinstance(item, dict):
+        return None
+    
+    loc = {}
+    loc['name'] = item.get('name') or item.get('storeName') or item.get('title') or item.get('store_name')
+    loc['address'] = item.get('address') or item.get('street') or item.get('addressLine1') or item.get('address_line1') or item.get('street_address')
+    loc['city'] = item.get('city')
+    loc['state'] = item.get('state') or item.get('province') or item.get('region')
+    loc['zip'] = item.get('zip') or item.get('zipCode') or item.get('postalCode') or item.get('postal_code') or item.get('zip_code')
+    loc['phone'] = item.get('phone') or item.get('telephone') or item.get('phoneNumber') or item.get('phone_number')
+    loc['email'] = item.get('email')
+    loc['website'] = item.get('website') or item.get('url')
+    
+    # Filter out None/empty values
+    loc = {k: str(v).strip() if v else None for k, v in loc.items()}
+    loc = {k: v for k, v in loc.items() if v}
+    
+    return loc if loc else None
+
 def _json_ld(soup: BeautifulSoup) -> List[dict]:
     out: List[dict] = []
     for sc in soup.find_all("script", type="application/ld+json"):
@@ -316,27 +607,48 @@ def _title(soup: BeautifulSoup) -> str:
     return ""
 
 def _price(soup: BeautifulSoup, ld: List[dict]) -> Optional[str]:
+    # Strategy 1: JSON-LD structured data
     for item in ld:
         offers = item.get("offers")
         if isinstance(offers, dict):
             p, c = offers.get("price"), offers.get("priceCurrency","")
-            if p: return f"{c} {p}".strip() if c else str(p)
+            if p: 
+                price_str = str(p).replace(',', '')
+                if price_str.replace('.', '').isdigit():
+                    return f"{c} {price_str}".strip() if c else price_str
         if isinstance(offers, list) and offers:
             p, c = offers[0].get("price"), offers[0].get("priceCurrency","")
-            if p: return f"{c} {p}".strip() if c else str(p)
-    for pat in [r"price.*sale|sale.*price|special.*price",
-                r"price.*current|now.*price",
-                r"product.*price|item.*price",
+            if p: 
+                price_str = str(p).replace(',', '')
+                if price_str.replace('.', '').isdigit():
+                    return f"{c} {price_str}".strip() if c else price_str
+    
+    # Strategy 2: Look for price in common class/id patterns
+    for pat in [r"price.*sale|sale.*price|special.*price|current.*price",
+                r"price.*now|now.*price",
+                r"product.*price|item.*price|offer.*price",
                 r"\bprice\b"]:
-        el = soup.find(class_=re.compile(pat, re.I))
-        if el:
+        for el in soup.find_all(class_=re.compile(pat, re.I)):
             m = _PRICE_RE.search(el.get_text())
             if m: return m.group(0).strip()
+        for el in soup.find_all(id=re.compile(pat, re.I)):
+            m = _PRICE_RE.search(el.get_text())
+            if m: return m.group(0).strip()
+    
+    # Strategy 3: Meta tags (Open Graph)
     og = soup.find("meta", property=re.compile(r"og:price:amount|product:price:amount", re.I))
     if og and og.get("content"):
         curr = soup.find("meta", property=re.compile(r"og:price:currency", re.I))
         c = (curr and curr.get("content") or "").strip()
         return f"{c} {og['content'].strip()}".strip() if c else og["content"].strip()
+    
+    # Strategy 4: data-price attributes
+    for el in soup.find_all(attrs={"data-price": True}):
+        price_val = el.get("data-price", "").strip()
+        if price_val and re.match(r'[\d,.]+$', price_val):
+            return price_val
+    
+    # Strategy 5: Search all text (last resort)
     m = _PRICE_RE.search(soup.get_text())
     return m.group(0).strip() if m else None
 
@@ -520,6 +832,15 @@ def extract_page(html: str, url: str) -> dict:
     page_title = _title(soup)
     page_price = _price(soup, ld) if ptype == "product" else None
     content = _extract_content(soup)
+    
+    # Extract contact info from all pages
+    contact_info = _extract_contact_info(soup_raw)
+    
+    # Extract locations if this looks like a location/store finder page
+    locations = None
+    if re.search(r'/(location|store|find|dealer|retailer|where-to-buy|cider-finder)', url, re.I):
+        locations = _extract_locations(soup_raw, html)
+    
     variants: dict = {}
     if ptype == "product":
         raw_variants = _discover_variants(html, url)
@@ -530,11 +851,18 @@ def extract_page(html: str, url: str) -> dict:
             if vdata.get("price") and vdata["price"] != page_price:
                 entry["price"] = vdata["price"]
             variants[vid] = entry
+    
     result: dict = {"page_type": ptype, "title": page_title, "content": content}
+    
     if page_price:
         result["price"] = page_price
     if variants:
         result["variants"] = variants
+    if contact_info:
+        result["contact"] = contact_info
+    if locations:
+        result["locations"] = locations
+    
     return result
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -614,11 +942,28 @@ class CrawlStore:
         self.products: Dict[str, dict] = {}
         self.categories: Dict[str, dict] = {}
         self.pages: Dict[str, dict] = {}
+        self.contact_info: Dict[str, List[str]] = {"emails": [], "phones": [], "addresses": []}
+        self.locations: List[dict] = []
 
     def add(self, url: str, data: dict):
         slug = _slug(url)
         ptype = data["page_type"]
         entry: dict = {"url": url, "title": data.get("title",""), "content": data.get("content",[])}
+        
+        # Aggregate contact info
+        if data.get("contact"):
+            contact = data["contact"]
+            if contact.get("emails"):
+                self.contact_info["emails"].extend(contact["emails"])
+            if contact.get("phones"):
+                self.contact_info["phones"].extend(contact["phones"])
+            if contact.get("address"):
+                self.contact_info["addresses"].append(contact["address"])
+        
+        # Aggregate locations
+        if data.get("locations"):
+            self.locations.extend(data["locations"])
+        
         if ptype == "product":
             if data.get("price"):
                 entry["price"] = data["price"]
@@ -641,6 +986,7 @@ class CrawlStore:
                 slugs.append(ps)
 
     def deduplicate(self):
+        # Deduplicate content
         counts: Dict[str, int] = {}
         all_entries = list(self.products.values()) + list(self.categories.values()) + list(self.pages.values())
         for e in all_entries:
@@ -657,9 +1003,24 @@ class CrawlStore:
             removed += len(orig) - len(kept)
             e["content"] = kept
         print(f"🧹  Dedup: removed {removed} repeated items (appeared on ≥{threshold} pages)")
+        
+        # Deduplicate contact info
+        self.contact_info["emails"] = list(set(self.contact_info["emails"]))[:5]
+        self.contact_info["phones"] = list(set(self.contact_info["phones"]))[:5]
+        self.contact_info["addresses"] = list(set(self.contact_info["addresses"]))[:3]
+        
+        # Deduplicate locations
+        seen_locs = set()
+        unique_locs = []
+        for loc in self.locations:
+            loc_key = (loc.get('name', ''), loc.get('address', ''), loc.get('city', ''))
+            if loc_key not in seen_locs and any(loc_key):
+                seen_locs.add(loc_key)
+                unique_locs.append(loc)
+        self.locations = unique_locs
 
     def to_dict(self) -> dict:
-        return {
+        result = {
             "domain": self.domain,
             "crawled_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "counts": {"products": len(self.products), "categories": len(self.categories), "pages": len(self.pages)},
@@ -667,13 +1028,22 @@ class CrawlStore:
             "categories": self.categories,
             "pages": self.pages,
         }
+        
+        # Only add contact/locations if we found any
+        if any(self.contact_info.values()):
+            result["contact_info"] = {k: v for k, v in self.contact_info.items() if v}
+        if self.locations:
+            result["locations"] = self.locations
+        
+        return result
 
     def save(self, path: str = "ecommerce_data.json"):
         data = self.to_dict()
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         kb = len(json.dumps(data)) / 1024
-        print(f"💾  Saved → {path}  ({kb:.0f} KB  |  {len(self.products)} products, {len(self.categories)} categories, {len(self.pages)} pages)")
+        extra = f", {len(self.locations)} locations" if self.locations else ""
+        print(f"💾  Saved → {path}  ({kb:.0f} KB  |  {len(self.products)} products, {len(self.categories)} categories, {len(self.pages)} pages{extra})")
 
 class LocalParser:
     def __init__(self, mirror_dir: str = None):
@@ -984,7 +1354,7 @@ class EcommerceDataStore:
 
 if __name__ == "__main__":
 
-    TARGET_URL = "https://bulliesandco.com/"
+    TARGET_URL = "https://www.deathwishcoffee.com/"
 
     site_name = _site_name(TARGET_URL)
     mirror_dir = site_name
@@ -1024,11 +1394,17 @@ if __name__ == "__main__":
     # Prefer the new LLM-based processor; fall back to the rule-based processor
     if os.path.exists(lp_script):
         print(f"\n🧠  Running llm-processor.js ...")
-        subprocess.run(["node", lp_script, raw_output, final_output], capture_output=False, cwd=script_dir)
-        print(f"✅  Pre-built responses saved to: {final_output}")
+        result = subprocess.run(["node", lp_script, raw_output, final_output], capture_output=False, cwd=script_dir)
+        if result.returncode == 0 and os.path.exists(final_output):
+            print(f"✅  Pre-built responses saved to: {final_output}")
+        else:
+            print(f"❌  llm-processor.js failed (exit code {result.returncode}) — responses file not generated")
     elif os.path.exists(dp_script):
         print(f"\n📊  Running data-processor.js (legacy rule-based) ...")
-        subprocess.run(["node", dp_script, raw_output, final_output], capture_output=False, cwd=script_dir)
-        print(f"✅  Final knowledge data saved to: {final_output}")
+        result = subprocess.run(["node", dp_script, raw_output, final_output], capture_output=False, cwd=script_dir)
+        if result.returncode == 0 and os.path.exists(final_output):
+            print(f"✅  Final knowledge data saved to: {final_output}")
+        else:
+            print(f"❌  data-processor.js failed (exit code {result.returncode})")
     else:
         print(f"\n⚠️  No processor script found. Skipping.")

@@ -14,7 +14,7 @@
       var src = scripts[i].src;
       if (src && src.includes('chatbot-widget.js')) {
         return src.substring(0, src.lastIndexOf('/') + 1);
-      }
+      } 
     }
     return '/public/';
   })();
