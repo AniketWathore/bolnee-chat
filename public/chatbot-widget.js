@@ -1,36 +1,12 @@
 (function () {
   'use strict';
 
-  var engineScripts = [
-    'intent-detection.js',
-    'intent-detector.js',
-    'data-extractor.js',
-    'response-generator.js'
-  ];
-
-  var baseUrl = (function() {
-    var scripts = document.getElementsByTagName('script');
-    for (var i = 0; i < scripts.length; i++) {
-      var src = scripts[i].src;
-      if (src && src.includes('chatbot-widget.js')) {
-        return src.substring(0, src.lastIndexOf('/') + 1);
-      } 
-    }
-    return '/public/';
-  })();
-
-  engineScripts.forEach(function(script) {
-    var s = document.createElement('script');
-    s.src = baseUrl + script;
-    s.async = false;
-    document.head.appendChild(s);
-  });
-
   var cfg          = window.BotConfig || {};
   var ACCENT       = cfg.accentColor  || '#6366f1';
   var BOT_NAME     = cfg.botName      || 'AI Assistant';
   var GREETING      = cfg.greeting      || 'Hi! How can I help you today?';
   var KNOWLEDGE_URL = cfg.knowledgeUrl  || null;
+  var CHAT_URL      = cfg.chatUrl      || null;
 
   document.head.insertAdjacentHTML('beforeend', '<style>' +
     '#_cw,#_cw *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}' +
@@ -99,16 +75,24 @@
   var isOpen       = false;
   var ready        = false;
   var waiting      = false;
-  var lastUserText = '';
-  var knowledge    = null;
-  var responsesDetector = null;
-  var intentCounters = {}; // tracks how many times each intent was asked
+  var engine       = null;
+
+  var baseUrl = (function() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+      var src = scripts[i].src;
+      if (src && src.includes('chatbot-widget.js')) {
+        return src.substring(0, src.lastIndexOf('/') + 1);
+      }
+    }
+    return '/public/';
+  })();
 
   bubble.addEventListener('click', function() {
     isOpen = !isOpen;
     win.classList.toggle('open', isOpen);
     bubble.classList.toggle('open', isOpen);
-    if (isOpen && !knowledge) boot();
+    if (isOpen && !engine) boot();
     if (isOpen && ready) inp.focus();
   });
   document.addEventListener('keydown', function(e) {
@@ -116,28 +100,18 @@
   });
 
   function boot() {
-    if (KNOWLEDGE_URL) {
-      fetch(KNOWLEDGE_URL)
-        .then(function(r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.json();
-        })
-        .then(function(data) {
-          knowledge = data;
-          if (window.BolneeIntentDetector) {
-            try {
-              responsesDetector = new window.BolneeIntentDetector(knowledge);
-              ready = true;
-              enableInput();
-            } catch (e) {
-              console.error('[chatbot-widget]', e);
-            }
-          }
-        })
-        .catch(function(err) {
-          console.error('[chatbot-widget] Knowledge fetch failed:', err);
-        });
+    if (CHAT_URL) {
+      ready = true;
+      enableInput();
+      addMsg('bot', GREETING);
+      return;
     }
+
+    ready = true;
+    enableInput();
+    addMsg('bot', 'This chatbot is not configured with a server chat URL yet.');
+    return;
+
     addMsg('bot', GREETING);
   }
 
@@ -165,7 +139,6 @@
     if (!text || !ready || waiting) return;
 
     waiting = true;
-    lastUserText = text;
     inp.value  = '';
     inp.style.height = 'auto';
     inp.disabled     = true;
@@ -173,31 +146,142 @@
 
     addMsg('user', text);
 
-    if (responsesDetector) {
-      try {
-        var rDetection = responsesDetector.detect(text);
-        var intent = rDetection.intent;
-        intentCounters[intent] = (intentCounters[intent] || 0) + 1;
-        rDetection.variationIndex = intentCounters[intent] - 1;
-        var rResponse = responsesDetector.formatResponse(rDetection);
-        if (rResponse) {
-          addTyping();
-          setTimeout(function() {
-            rmTyping();
-            streamText(rResponse, function() {
-              waiting = false;
-              enableInput();
-            });
-          }, 2000);
-        } else {
-          addMsg('bot', "I don't have that information available yet.");
-          enableInput();
-        }
-      } catch (e) {
-        console.error('[chatbot-widget]', e);
-        addMsg('bot', "I don't have that information available yet.");
-        enableInput();
+    if (CHAT_URL) {
+      addTyping();
+      var BOT_ID_EXTRACT = (function(u){ try { var m = u.match(/\/chat\/([^\/\?#]+)/); return m ? m[1] : null; } catch(e){ return null; } })(CHAT_URL);
+      var FALLBACK_URL = BOT_ID_EXTRACT ? baseUrl + 'api/public/chat/' + BOT_ID_EXTRACT : null;
+      function doFetch(url) {
+        return fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
       }
+      function handleSSEText(text, answerEl) {
+        var saw = false;
+        text.split('\n').forEach(function(line){
+          if (!line.startsWith('data: ') || line === 'data: [DONE]') return;
+          try {
+            var p = JSON.parse(line.slice(6));
+            if (p.token) { saw = true; answerEl.querySelector('._mb').textContent += p.token; msgs.scrollTop = msgs.scrollHeight; }
+            else if (p.error) { saw = true; answerEl.querySelector('._mb').textContent += p.error; msgs.scrollTop = msgs.scrollHeight; }
+            else if (p.sources && p.sources.length) {
+              var src = p.sources.slice(0,3).map(function(s){ return s.title || s.url; }).filter(Boolean).join(', ');
+              if (src) answerEl.querySelector('._mb').textContent += '\n\nSources: ' + src;
+            }
+          } catch(e){ console.warn('[chatbot-widget] Invalid SSE', e); }
+        });
+        return saw;
+      }
+      function handleStream(response) {
+        if (!response.ok) throw new Error('Chat HTTP ' + response.status);
+        if (!response.body) throw new Error('No response body');
+        // If body is already locked (old SW v2 bug), retry bypassing SW
+        if (response.body.locked) throw new Error('ReadableStream locked - old service worker');
+        var answer = addMsg('bot', '');
+        var reader;
+        try {
+          reader = response.body.getReader();
+        } catch (e) {
+          // Fallback to text() for locked streams (old SW)
+          console.warn('[chatbot-widget] getReader failed, falling back to text()', e);
+          return response.text().then(function(t){
+            var saw = handleSSEText(t, answer);
+            if (!saw) answer.querySelector('._mb').textContent = 'No response from server.';
+          }).catch(function(err2){
+            // If text() also fails due to locked, re-fetch bypassing SW
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+              return navigator.serviceWorker.getRegistrations().then(function(rs){
+                rs.forEach(function(r){ try { r.unregister(); } catch(_){} });
+                return doFetch(CHAT_URL + (CHAT_URL.indexOf('?')===-1 ? '?' : '&') + 'bypass_sw=' + Date.now()).then(handleStream);
+              });
+            }
+            throw err2;
+          });
+        }
+        var decoder = new TextDecoder();
+        var buffer = '';
+        var sawToken = false;
+
+        function read() {
+          return reader.read().then(function(result) {
+            if (result.done) return;
+            buffer += decoder.decode(result.value, { stream: true });
+            var events = buffer.split('\n');
+            buffer = events.pop() || '';
+            events.forEach(function(event) {
+              if (!event.startsWith('data: ') || event === 'data: [DONE]') return;
+              try {
+                var payload = JSON.parse(event.slice(6));
+                if (payload.token) {
+                  sawToken = true;
+                  answer.querySelector('._mb').textContent += payload.token;
+                  msgs.scrollTop = msgs.scrollHeight;
+                } else if (payload.error) {
+                  sawToken = true;
+                  answer.querySelector('._mb').textContent += payload.error;
+                  msgs.scrollTop = msgs.scrollHeight;
+                } else if (payload.sources && payload.sources.length) {
+                  var src = payload.sources.slice(0,3).map(function(s){ return s.title || s.url; }).filter(Boolean).join(', ');
+                  if (src) answer.querySelector('._mb').textContent += '\n\nSources: ' + src;
+                }
+              } catch (error) {
+                console.warn('[chatbot-widget] Invalid chat event', error);
+              }
+            });
+            return read();
+          }).catch(function(err){
+            // Stream read error - fallback to showing what we have
+            console.warn('[chatbot-widget] Stream read error', err);
+            if (!sawToken) throw err;
+          });
+        }
+        return read().then(function(){ if (!sawToken) answer.querySelector('._mb').textContent = 'No response from server.'; });
+      }
+      function doFetchWithBypass(url) {
+        // Bypass service worker cache for SSE
+        return fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+          body: JSON.stringify({ message: text }),
+          cache: 'no-store'
+        });
+      }
+      // Override doFetch to use bypass
+      doFetch = doFetchWithBypass;
+      doFetch(CHAT_URL).then(handleStream).catch(function(err){
+        var isLocked = err && err.message && (err.message.indexOf('locked') !== -1 || err.message.indexOf('getReader') !== -1);
+        if (isLocked && navigator.serviceWorker && navigator.serviceWorker.controller) {
+          console.warn('[chatbot-widget] Stream locked by old SW, unregistering and retrying');
+          return navigator.serviceWorker.getRegistrations().then(function(rs){
+            var ps = rs.map(function(r){ try { return r.unregister(); } catch(_){ return Promise.resolve(); } });
+            return Promise.all(ps).then(function(){
+              // After unregister, retry with cache-busted URL
+              return doFetch(CHAT_URL + (CHAT_URL.indexOf('?')===-1 ? '?' : '&') + 'sw_bypass=' + Date.now()).then(handleStream);
+            });
+          });
+        }
+        // Port fallback: if CHAT_URL was on stale localhost:3001 but server moved to 3000, try baseUrl fallback
+        if (FALLBACK_URL && FALLBACK_URL !== CHAT_URL) {
+          console.warn('[chatbot-widget] Primary chatUrl failed, trying fallback', FALLBACK_URL, err);
+          return doFetch(FALLBACK_URL).then(handleStream);
+        }
+        throw err;
+      }).catch(function(error) {
+        console.error('[chatbot-widget] Server chat failed:', error);
+        var msg = error && error.message && error.message.indexOf('Failed to fetch') !== -1
+          ? 'Cannot reach chat server (' + CHAT_URL + '). If you copied the embed from localhost, the server must be running and reachable from this page. For external sites, deploy Bolnee and use the public URL.'
+          : 'Sorry, I could not process that question right now. (' + (error.message || 'unknown') + ')';
+        // If we already created an answer bubble but it is empty, reuse it, else create new
+        var last = msgs.querySelector('._m.b:last-child ._mb');
+        if (last && !last.textContent.trim()) last.textContent = msg;
+        else addMsg('bot', msg);
+      })
+        .finally(function() {
+          rmTyping();
+          waiting = false;
+          enableInput();
+        });
       return;
     }
 

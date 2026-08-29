@@ -91,7 +91,18 @@ _LOCALE_PATH = re.compile(
 _CONTENT_SECTION = re.compile(
     r"/(blogs?|articles?|journal|news|press|events?|"
     r"recipes|magazine|lookbook|gallery|"
-    r"team|our-team|careers|jobs)/",
+    r"team|our-team|careers|jobs|"
+    r"academy|learn|tutorials?|guides?|docs?|"
+    r"stories?|case.studies|showcase|"
+    r"dictionary|glossary)/",
+    re.I,
+)
+
+_SKIP_COMMUNITY = re.compile(
+    r"/@\w+|"                       # user profiles (/@username)
+    r"/(community|forum|forums|discuss|discourse|"
+    r"marketplace|template|component|plugin|"
+    r"user|users|profile|profiles|member|members)/",
     re.I,
 )
 
@@ -358,6 +369,72 @@ def _extract_content(soup: BeautifulSoup) -> List[dict]:
                 content.append({"tag": "div", "text": text})
     return content
 
+_FAKE_DOMAIN_PATTERNS = re.compile(
+    r'@(example|test(ing)?|yourdomain|yourcompany|yourstore|yoursite|yourwebsite|'
+    r'placeholder|dummy|fake|null|tbd|unknown|'
+    r'domain|company|coporation|corporation|website|sitename|'
+    r'mydomain|mycompany|mywebsite|mysite)\.',
+    re.I
+)
+
+_FAKE_PHONE_RE = re.compile(
+    r'\(?555\)?[-.\s]?\d{3}[-.\s]?\d{4}|'   # 555-xxx-xxxx
+    r'\(?000\)?[-.\s]?\d{3}[-.\s]?\d{4}'     # 000-xxx-xxxx
+)
+
+def _is_valid_phone(phone: str) -> bool:
+    digits = re.sub(r'\D', '', phone)
+    if len(digits) < 10:
+        return False
+    # Check for fake patterns
+    if _FAKE_PHONE_RE.search(phone):
+        return False
+    # All same digit (111-111-1111, 222-222-2222, etc.)
+    last10 = digits[-10:] if len(digits) >= 10 else digits
+    if len(set(last10)) == 1:
+        return False
+    # NANP: area code (first 3 digits) cannot start with 0 or 1
+    if len(digits) == 10 or (len(digits) == 11 and digits[0] == '1'):
+        ac = digits[-10:-7] if len(digits) == 11 else digits[:3]
+        if ac[0] in ('0', '1'):
+            return False
+    # International numbers: at least 7 digits but reject obviously fake
+    if len(digits) < 7:
+        return False
+    return True
+
+def _is_valid_email(email: str) -> bool:
+    if not email or len(email) > 100:
+        return False
+    lower = email.lower()
+    # Reject common false positives
+    if lower.endswith(('.png', '.jpg', '.gif', '.svg', '.css', '.js', '.woff', '.ttf', '.ico', '.webp')):
+        return False
+    if 'noreply@' in lower or 'donotreply@' in lower or 'no-reply@' in lower or 'no_reply@' in lower:
+        return False
+    if _FAKE_DOMAIN_PATTERNS.search(lower):
+        return False
+    # Reject generic placeholder local parts
+    local = lower.split('@')[0]
+    if local in ('user', 'name', 'yourname', 'you', 'someone', 'somebody', 'person', 'recipient', 'email', 'mail'):
+        return False
+    return True
+
+def _is_valid_address(address: str) -> bool:
+    if not address or len(address) < 15:
+        return False
+    lower = address.lower()
+    # Reject if it's just coordinates
+    if re.match(r'^-?\d+\.\d+,\s*-?\d+\.\d+', address):
+        return False
+    # Reject placeholder text
+    if any(w in lower for w in ['your address', '123 your', 'example address', 'enter address', 'your street']):
+        return False
+    # Must contain at least one digit (street number)
+    if not re.search(r'\d', address):
+        return False
+    return True
+
 def _extract_contact_info(soup: BeautifulSoup) -> dict:
     """Extract contact information from anywhere on the page (footer, header, body)."""
     contact = {}
@@ -371,7 +448,7 @@ def _extract_contact_info(soup: BeautifulSoup) -> dict:
     # Strategy 1: Look in mailto links (highest priority)
     for link in soup.find_all('a', href=re.compile(r'^mailto:', re.I)):
         email = link.get('href', '').replace('mailto:', '').split('?')[0].strip()
-        if email_re.match(email):
+        if email_re.match(email) and _is_valid_email(email):
             contact.setdefault('emails', []).append(email.lower())
     
     # Strategy 2: Look in meta tags
@@ -379,28 +456,22 @@ def _extract_contact_info(soup: BeautifulSoup) -> dict:
         content = meta.get('content', '')
         if email_re.search(content):
             for email in email_re.findall(content):
-                if not email.lower().endswith(('.png', '.jpg', '.gif', '.css', '.js')):
+                if _is_valid_email(email):
                     contact.setdefault('emails', []).append(email.lower())
     
     # Strategy 3: Search entire page text
     page_text = soup.get_text()
     emails = email_re.findall(page_text)
     if emails:
-        # Filter out common false positives
-        valid_emails = [
-            e.lower() for e in emails 
-            if not e.lower().endswith(('.png', '.jpg', '.gif', '.svg', '.css', '.js', '.woff', '.ttf'))
-            and '@example.' not in e.lower()
-            and 'noreply@' not in e.lower()
-            and 'donotreply@' not in e.lower()
-        ]
+        valid_emails = [e.lower() for e in emails if _is_valid_email(e)]
         contact.setdefault('emails', []).extend(valid_emails)
     
     # Strategy 4: Look for obfuscated emails (e.g., "info [at] domain [dot] com")
     obfuscated = re.findall(r'(\w+)\s*\[at\]\s*(\w+)\s*\[dot\]\s*(\w+)', page_text, re.I)
     for match in obfuscated:
         email = f"{match[0]}@{match[1]}.{match[2]}".lower()
-        contact.setdefault('emails', []).append(email)
+        if _is_valid_email(email):
+            contact.setdefault('emails', []).append(email)
     
     # Deduplicate emails and limit
     if 'emails' in contact:
@@ -409,14 +480,13 @@ def _extract_contact_info(soup: BeautifulSoup) -> dict:
     # Phone extraction
     phones = phone_re.findall(page_text)
     if phones:
-        # Clean and deduplicate
         cleaned_phones = []
         for phone in phones:
-            # Skip if it looks like a year or other number
-            digits_only = re.sub(r'\D', '', phone)
-            if len(digits_only) >= 10:  # Valid phone has at least 10 digits
-                cleaned_phones.append(phone.strip())
-        contact['phones'] = list(set(cleaned_phones))[:5]
+            phone = phone.strip()
+            if _is_valid_phone(phone):
+                cleaned_phones.append(phone)
+        if cleaned_phones:
+            contact['phones'] = list(set(cleaned_phones))[:5]
     
     # Address extraction - look in footer or contact sections
     address_containers = soup.find_all(['footer', 'address']) + \
@@ -426,10 +496,11 @@ def _extract_contact_info(soup: BeautifulSoup) -> dict:
     for container in address_containers:
         text = container.get_text(separator=' ', strip=True)
         # Look for patterns like "123 Main St" with city, state, zip
-        addr_match = re.search(r'(\d{1,5}\s+[\w\s]+(?:st|street|ave|avenue|rd|road|blvd|boulevard|way|drive|dr|lane|ln|pkwy|parkway|ct|court|pl|place)\.?[,\s]+[\w\s]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?)', text, re.I)
+        addr_match = re.search(r'(\d{1,5}\s+[\w\s]+(?:st|street|ave|avenue|rd|road|blvd|boulevard|way|drive|dr|lane|ln|pkwy|parkway|ct|court|pl|place|square|sq)\.?[,\s]+[\w\s]+,\s*[A-Z]{2}\s+\d{5}(?:-\d{4})?)', text, re.I)
         if addr_match:
-            if 'address' not in contact:
-                contact['address'] = addr_match.group(1).strip()[:200]  # Limit length
+            addr = addr_match.group(1).strip()[:200]
+            if _is_valid_address(addr):
+                contact['address'] = addr
                 break
     
     return contact
@@ -889,6 +960,9 @@ def extract_internal_links(html: str, base_url: str, domain: str, scheme: str) -
         # Skip content sections (blogs, articles)
         if _CONTENT_SECTION.search(path):
             continue
+        # Skip community / user-generated content
+        if _SKIP_COMMUNITY.search(path):
+            continue
         clean = urlunparse((scheme, domain, path, "", "", ""))
         links.add(clean)
     return links
@@ -1159,6 +1233,8 @@ class SiteDownloaderHybrid:
         path = urlparse(url).path.lower().rstrip('/')
         if _LOCALE_PATH.search(path):
             return True
+        if _SKIP_COMMUNITY.search(path):
+            return True
         if not self.skip_content:
             return False
         if _CONTENT_SECTION.search(path):
@@ -1226,7 +1302,7 @@ class SiteDownloaderHybrid:
             for url in sitemap_urls:
                 if not self._should_skip(url) and urlparse(url).netloc == self.domain:
                     all_target_urls.add(url)
-            print(f"✅  Added {len(all_target_urls)} URLs from sitemap (skipped blogs/articles)")
+            print(f"✅  Added {len(all_target_urls)} URLs from sitemap (skipped blogs, community, locale)")
         else:
             print("\n⚠️  No sitemap found. Will rely on homepage link extraction.")
 
@@ -1257,6 +1333,8 @@ class SiteDownloaderHybrid:
             except Exception as e:
                 print(f"   Error extracting homepage links: {e}")
 
+        # Ensure start_url itself is always crawled (important for single-page sites like example.com)
+        all_target_urls.add(self.start_url)
         # 3. Limit to max_pages
         final_urls = list(all_target_urls)[:self.max_pages]
         print(f"\n📥  Total pages to download: {len(final_urls)}")
@@ -1354,7 +1432,7 @@ class EcommerceDataStore:
 
 if __name__ == "__main__":
 
-    TARGET_URL = "https://www.deathwishcoffee.com/"
+    TARGET_URL = "https://www.clarasight.com/" #check the crawlchat and firecrawl files for crawler methods
 
     site_name = _site_name(TARGET_URL)
     mirror_dir = site_name

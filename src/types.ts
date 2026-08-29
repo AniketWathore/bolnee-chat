@@ -31,6 +31,7 @@ export type NavSection = 'overview' | 'chatbots' | 'knowledge' | 'settings';
 export interface Chatbot {
   _id: string;
   name: string;
+  avatar?: string;
   createdAt: string;
 }
 

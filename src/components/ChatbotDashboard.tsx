@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft, Bot, MessageSquare, BookOpen, Settings,
   Zap, Clock, Trash2, ArrowUpRight, Copy, Check, Globe
@@ -9,22 +9,41 @@ import KnowledgeSection from './KnowledgeSection';
 
 type ChatbotTab = 'overview' | 'chats' | 'knowledge' | 'settings';
 
-interface ChatbotDashboardProps {
+  interface ChatbotDashboardProps {
   chatbot: Chatbot;
   knowledgeData: KnowledgeData;
-  onSaveKnowledge: (data: any) => Promise<void>;
+  onSaveKnowledge: (data: unknown) => Promise<void>;
+  onUploadSources?: (files: File[]) => Promise<void>;
+  onAddUrl?: (url: string) => Promise<void>;
+  onSaveSettings?: (settings: { provider: string; model: string; apiKey: string; baseUrl?: string }) => Promise<void>;
   onBack: () => void;
   onDeleteBot?: (id: string) => void;
+  forceOpenWizard?: boolean;
+  onWizardClose?: () => void;
 }
 
 export default function ChatbotDashboard({
-  chatbot, knowledgeData, onSaveKnowledge, onBack, onDeleteBot
+  chatbot, knowledgeData, onSaveKnowledge, onUploadSources, onAddUrl, onSaveSettings, onBack, onDeleteBot, forceOpenWizard, onWizardClose
 }: ChatbotDashboardProps) {
   const [activeTab, setActiveTab] = useState<ChatbotTab>('overview');
   const [showKnowledgeWizard, setShowKnowledgeWizard] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const isKnowledgeConfigured = !!(knowledgeData.about);
+
+  useEffect(() => {
+    if (forceOpenWizard) setShowKnowledgeWizard(true);
+  }, [forceOpenWizard]);
+
+  const handleWizardClose = () => {
+    setShowKnowledgeWizard(false);
+    onWizardClose?.();
+  };
+  const handleWizardDone = () => {
+    setShowKnowledgeWizard(false);
+    onWizardClose?.();
+    setActiveTab('overview');
+  };
 
   const handleBack = () => {
     if (showKnowledgeWizard) return;
@@ -35,16 +54,13 @@ export default function ChatbotDashboard({
 
   const embedCode = `<script>
   window.BotConfig = {
-    modelId: 'onnx-community/Qwen2.5-0.5B-Instruct',
-    botName: '${chatbot.name}',
-    accentColor: '#6366f1',
-    greeting: 'Hi! How can I help you today?',
-    systemPrompt: 'You are a helpful assistant for our store.',
-    workerUrl: '${DEPLOY_URL}/chat-worker.js',
-    knowledgeUrl: '${DEPLOY_URL}/api/public/knowledge/${chatbot._id}',
+    botName: "${chatbot.name}",
+    avatar: "",
+    chatUrl: "${DEPLOY_URL}/api/public/chat/${chatbot._id}",
+    accentColor: "#111111",
+    greeting: "Hi! How can I help?"
   };
 </script>
-<script src="${DEPLOY_URL}/intent-detection.js"></script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;
 
   const copyToClipboard = () => {
@@ -174,8 +190,8 @@ export default function ChatbotDashboard({
           <div className="space-y-2">
             <h3 className="font-mono text-xl font-black uppercase italic">No Knowledge Base</h3>
             <p className="font-mono text-xs opacity-50 max-w-sm mx-auto">
-              Train your chatbot by selecting an industry, adding your website, and uploading documents.
-            </p>
+                Add your website URL and/or upload PDFs/docs to train your chatbot, then configure your AI provider.
+              </p>
           </div>
           <button
             onClick={() => setShowKnowledgeWizard(true)}
@@ -264,8 +280,11 @@ export default function ChatbotDashboard({
         <KnowledgeSection
           data={knowledgeData}
           onSave={onSaveKnowledge}
-          onDashboard={onBack}
-          onCancel={() => setShowKnowledgeWizard(false)}
+          onUploadSources={onUploadSources}
+          onAddUrl={onAddUrl}
+          onSaveSettings={onSaveSettings}
+          onDashboard={handleWizardDone}
+          onCancel={handleWizardClose}
         />
       )}
     </div>

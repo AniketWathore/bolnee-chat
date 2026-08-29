@@ -3,17 +3,14 @@
  * Caches AI model and static assets for offline support and persistent caching
  */
 
-const CACHE_NAME = 'bolnee-v2';
-const RUNTIME_CACHE = 'bolnee-runtime';
+const CACHE_NAME = 'bolnee-v3';
+const RUNTIME_CACHE = 'bolnee-runtime-v3';
 
 // Files to cache on install (static assets only, not the model)
 const urlsToCache = [
   '/',
   '/index.html',
-  '/demo.html',
   '/chatbot-widget.js',
-  '/intent-detection.js',
-  '/chat-worker.js',
   '/index.css',
 ];
 
@@ -79,7 +76,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first for API calls, with cache fallback
+  // Network-first for API GETs only — NEVER cache POST or SSE chat streams
+  // /api/public/chat is Server-Sent Events (streaming) and must not be intercepted/cached
+  if (request.method !== 'GET' || url.pathname.includes('/api/public/chat')) {
+    return;
+  }
   if (url.pathname.includes('/api/') || url.pathname.includes('/knowledge/')) {
     event.respondWith(
       fetch(request)
@@ -131,6 +132,5 @@ self.addEventListener('fetch', (event) => {
 function isStaticAsset(pathname) {
   return /\.(js|css|html|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i.test(pathname) ||
          pathname === '/' ||
-         pathname === '/demo.html' ||
          pathname === '/index.html';
 }
