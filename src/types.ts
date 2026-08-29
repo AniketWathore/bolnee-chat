@@ -32,6 +32,11 @@ export interface Chatbot {
   _id: string;
   name: string;
   avatar?: string;
+  accentColor?: string;
+  theme?: string;
+  greeting?: string;
+  defaultMessage?: string;
+  fallbackMessage?: string;
   createdAt: string;
 }
 

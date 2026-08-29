@@ -22,9 +22,13 @@ import {
   saveKnowledge,
   createSource,
   listSources,
+  deleteSource,
   updateChatbotSettings,
   getChatbotSettings,
+  getChatbotAppearance,
   insertMessage,
+  listMessages,
+  getChatStats,
 } from "./server/db.ts";
 import { hashContent, ingestFile, ingestUrl, validateUrlForSSRF } from "./server/ingestion.ts";
 
@@ -273,15 +277,21 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    // Save user message
-    try { insertMessage(chatbotId, "user", message.trim()); } catch { /* ignore */ }
+    // Identify visitor (IP + optional visitorId from header/body) and respect appearance fallback
+    const visitorIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || (req as { ip?: string }).ip || (req as { headers: Record<string,string> }).headers["x-real-ip"] || "";
+    const visitorId = (req.body as { visitorId?: string })?.visitorId || (req.headers["x-visitor-id"] as string) || visitorIp || "anon";
+    const appearance = getChatbotAppearance(chatbotId);
+    const fallbackMessage = appearance?.fallbackMessage || "";
+
+    // Save user message with IP + visitor
+    try { insertMessage(chatbotId, "user", message.trim(), { ip: visitorIp, userIdentifier: visitorId, model }); } catch { /* ignore */ }
 
     // Allow keyless if a self-hosted baseUrl is explicitly configured (ollama/vllm)
     const hasProvider = !!apiKey || !!settings?.baseUrl;
     if (!hasProvider) {
       const text = chunks.length
         ? "An AI provider is not configured yet. Relevant sources were found, but Bolnee will not generate an answer without a model."
-        : "I could not find relevant information in this bot's knowledge base.";
+        : (fallbackMessage || "I could not find relevant information in this bot's knowledge base.");
       res.write(`data: ${JSON.stringify({ token: text })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
@@ -312,10 +322,11 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
     } catch (e) {
       const fallback = chunks.length
         ? `Provider unreachable. Showing retrieved context:\n` + chunks.slice(0,2).map(c=> `- ${c.title || c.url}: ${c.text.slice(0,180)}`).join("\n")
-        : "Provider unreachable and no sources found.";
+        : (fallbackMessage || "Provider unreachable and no sources found.");
       res.write(`data: ${JSON.stringify({ token: fallback })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
+      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: "system", model }); } catch { /* ignore */ }
       return res.end();
     }
 
@@ -329,10 +340,12 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
         : details ? ` Details: ${details.slice(0, 200)}` : "";
       const fallback = chunks.length
         ? `Provider error (${completion.status}).${hint}\n\nI found relevant sources but couldn't call the model. Sources:\n` + chunks.slice(0, 2).map(c => `- ${c.title || c.url || "source"}: ${c.text.slice(0, 200)}`).join("\n")
-        : `Provider error (${completion.status}).${hint}`;
+        : (fallbackMessage || `Provider error (${completion.status}).${hint}`);
       res.write(`data: ${JSON.stringify({ token: fallback })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
+      // persist fallback as assistant message for history
+      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: "system", model }); } catch { /* ignore */ }
       return res.end();
     }
 
@@ -359,7 +372,7 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
         }
       }
     }
-    try { if (fullResponse) insertMessage(chatbotId, "assistant", fullResponse); } catch { /* ignore */ }
+    try { if (fullResponse) insertMessage(chatbotId, "assistant", fullResponse, { ip: visitorIp, userIdentifier: visitorId, model }); } catch { /* ignore */ }
     res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
     res.write("data: [DONE]\n\n");
     return res.end();
@@ -520,13 +533,28 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (baseUrl !== undefined && typeof baseUrl !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "baseUrl must be a string" });
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
   if (typeof avatar === "string" && avatar.length > 2.5 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
+  // Handle appearance fields (name, accentColor, etc.) plus provider fields
+  const appearanceFields = {
+    name: (r.body as { name?: unknown })?.name as string | undefined,
+    accentColor: (r.body as { accentColor?: unknown })?.accentColor as string | undefined,
+    theme: (r.body as { theme?: unknown })?.theme as string | undefined,
+    greeting: (r.body as { greeting?: unknown })?.greeting as string | undefined,
+    defaultMessage: (r.body as { defaultMessage?: unknown })?.defaultMessage as string | undefined,
+    fallbackMessage: (r.body as { fallbackMessage?: unknown })?.fallbackMessage as string | undefined,
+  };
   let updated = false;
   if (DISABLE_AUTH) {
     const existing = findChatbot(r.params.id);
     if (!existing) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
-    updated = updateChatbotSettings(r.params.id, (existing as { userId: string }).userId, { avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim() });
+    updated = updateChatbotSettings(r.params.id, (existing as { userId: string }).userId, {
+      avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
+      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
+    });
   } else {
-    updated = updateChatbotSettings(r.params.id, r.user.userId, { avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim() });
+    updated = updateChatbotSettings(r.params.id, r.user.userId, {
+      avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
+      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
+    });
   }
   if (!updated) {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
@@ -576,6 +604,54 @@ app.post("/api/providers/models", authenticate, async (req: unknown, res) => {
   } catch (e) {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: e instanceof Error ? e.message : "Failed to fetch models" });
   }
+});
+
+app.get("/api/chatbots/:id/messages", authenticate, async (req: unknown, res) => {
+  const r = req as { user: { userId: string }; params: { id: string }; query: { limit?: string } };
+  if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  const limit = Math.min(500, Math.max(1, parseInt(String(r.query.limit || "200"), 10) || 200));
+  return (res as unknown as { json:(o:unknown)=>void }).json(listMessages(r.params.id, limit));
+});
+
+app.get("/api/chatbots/:id/stats", authenticate, async (req: unknown, res) => {
+  const r = req as { user: { userId: string }; params: { id: string } };
+  if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  return (res as unknown as { json:(o:unknown)=>void }).json(getChatStats(r.params.id));
+});
+
+app.get("/api/chatbots/:id/messages/export", authenticate, async (req: unknown, res) => {
+  const r = req as { user: { userId: string }; params: { id: string }; query: { format?: string } };
+  if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  const format = String(r.query.format || "csv").toLowerCase();
+  const msgs = listMessages(r.params.id, 1000);
+  if (format === "json") {
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Disposition", `attachment; filename="chats-${r.params.id}.json"`);
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", "application/json");
+    return (res as unknown as { json:(o:unknown)=>void }).json(msgs);
+  }
+  // default CSV (Excel-compatible)
+  const esc = (v: string) => `"${String(v).replace(/"/g, '""')}"`;
+  const header = ["id","role","content","ip","userIdentifier","model","createdAt"].map(esc).join(",");
+  const rows = msgs.map(m => [m.id, m.role, m.content, m.ip, m.userIdentifier, m.model, m.createdAt].map(v => esc(v as string)).join(",")).join("\n");
+  const csv = header + "\n" + rows;
+  (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Disposition", `attachment; filename="chats-${r.params.id}.csv"`);
+  (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", "text/csv; charset=utf-8");
+  return (res as unknown as { send:(b:string)=>void }).send(csv);
+});
+
+app.get("/api/chatbots/:id/appearance", authenticate, async (req: unknown, res) => {
+  const r = req as { user: { userId: string }; params: { id: string } };
+  if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  return (res as unknown as { json:(o:unknown)=>void }).json(getChatbotAppearance(r.params.id));
+});
+
+app.delete("/api/knowledge/sources/:sourceId", authenticate, async (req: unknown, res) => {
+  const r = req as { user: { userId: string }; params: { sourceId: string }; query: { chatbotId?: string } };
+  const chatbotId = String(r.query.chatbotId || "");
+  if (!chatbotId) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "chatbotId required" });
+  if (!findChatbotForRequest(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  if (!deleteSource(r.params.sourceId, chatbotId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Source not found" });
+  return (res as unknown as { json:(o:unknown)=>void }).json({ success: true });
 });
 
 app.delete("/api/chatbots/:id", authenticate, async (req: unknown, res) => {

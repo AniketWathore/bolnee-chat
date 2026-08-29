@@ -16,6 +16,11 @@ export interface DbChatbot {
   name: string;
   createdAt: string;
   avatar?: string;
+  accentColor?: string;
+  theme?: string;
+  greeting?: string;
+  defaultMessage?: string;
+  fallbackMessage?: string;
 }
 
 const dataDir = path.join(process.cwd(), "data");
@@ -76,6 +81,14 @@ for (const statement of [
   "ALTER TABLE chatbots ADD COLUMN model TEXT NOT NULL DEFAULT 'gpt-4o-mini'",
   "ALTER TABLE chatbots ADD COLUMN api_key TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE chatbots ADD COLUMN base_url TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE chatbots ADD COLUMN accent_color TEXT NOT NULL DEFAULT '#111111'",
+  "ALTER TABLE chatbots ADD COLUMN theme TEXT NOT NULL DEFAULT 'light'",
+  "ALTER TABLE chatbots ADD COLUMN greeting TEXT NOT NULL DEFAULT 'Hi! How can I help?'",
+  "ALTER TABLE chatbots ADD COLUMN default_message TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE chatbots ADD COLUMN fallback_message TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE messages ADD COLUMN ip TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE messages ADD COLUMN user_identifier TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE messages ADD COLUMN model TEXT NOT NULL DEFAULT ''",
 ]) {
   try { db.exec(statement); } catch { /* Column already exists. */ }
 }
@@ -125,15 +138,19 @@ export function insertUser(user: DbUser): void {
 }
 
 export function listChatbots(userId: string): DbChatbot[] {
-  return db.prepare("SELECT id, user_id as userId, name, avatar, created_at as createdAt FROM chatbots WHERE user_id = ? ORDER BY created_at DESC")
+  return db.prepare("SELECT id, user_id as userId, name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage, created_at as createdAt FROM chatbots WHERE user_id = ? ORDER BY created_at DESC")
     .all(userId) as DbChatbot[];
 }
 
-export function updateChatbotSettings(id: string, userId: string, settings: { avatar?: string; provider?: string; model?: string; apiKey?: string; baseUrl?: string }): boolean {
+export function updateChatbotSettings(id: string, userId: string, settings: { avatar?: string; provider?: string; model?: string; apiKey?: string; baseUrl?: string; accentColor?: string; theme?: string; greeting?: string; defaultMessage?: string; fallbackMessage?: string; name?: string }): boolean {
   const encryptedKey = settings.apiKey !== undefined ? (settings.apiKey ? encryptApiKey(settings.apiKey) : "") : null;
-  const result = db.prepare(`UPDATE chatbots SET avatar = COALESCE(?, avatar), provider = COALESCE(?, provider), model = COALESCE(?, model), api_key = COALESCE(?, api_key), base_url = COALESCE(?, base_url) WHERE id = ? AND user_id = ?`)
-    .run(settings.avatar ?? null, settings.provider ?? null, settings.model ?? null, encryptedKey ?? null, settings.baseUrl ?? null, id, userId);
+  const result = db.prepare(`UPDATE chatbots SET name = COALESCE(?, name), avatar = COALESCE(?, avatar), provider = COALESCE(?, provider), model = COALESCE(?, model), api_key = COALESCE(?, api_key), base_url = COALESCE(?, base_url), accent_color = COALESCE(?, accent_color), theme = COALESCE(?, theme), greeting = COALESCE(?, greeting), default_message = COALESCE(?, default_message), fallback_message = COALESCE(?, fallback_message) WHERE id = ? AND user_id = ?`)
+    .run(settings.name ?? null, settings.avatar ?? null, settings.provider ?? null, settings.model ?? null, encryptedKey ?? null, settings.baseUrl ?? null, settings.accentColor ?? null, settings.theme ?? null, settings.greeting ?? null, settings.defaultMessage ?? null, settings.fallbackMessage ?? null, id, userId);
   return result.changes > 0;
+}
+
+export function getChatbotAppearance(id: string): { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string } | undefined {
+  return db.prepare("SELECT name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage FROM chatbots WHERE id = ?").get(id) as { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string } | undefined;
 }
 
 export function getChatbotSettings(id: string): { provider: string; model: string; apiKey: string; baseUrl: string } | undefined {
@@ -148,8 +165,8 @@ export function getChatbotSettingsRaw(id: string): { provider: string; model: st
 
 export function findChatbot(id: string, userId?: string): DbChatbot | undefined {
   const query = userId
-    ? "SELECT id, user_id as userId, name, avatar, created_at as createdAt FROM chatbots WHERE id = ? AND user_id = ?"
-    : "SELECT id, user_id as userId, name, avatar, created_at as createdAt FROM chatbots WHERE id = ?";
+    ? "SELECT id, user_id as userId, name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage, created_at as createdAt FROM chatbots WHERE id = ? AND user_id = ?"
+    : "SELECT id, user_id as userId, name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage, created_at as createdAt FROM chatbots WHERE id = ?";
   return (userId ? db.prepare(query).get(id, userId) : db.prepare(query).get(id)) as DbChatbot | undefined;
 }
 
@@ -199,13 +216,32 @@ export function listChunks(chatbotId: string): Array<{ content: string; metadata
   return db.prepare("SELECT content, metadata FROM chunks WHERE chatbot_id = ?").all(chatbotId) as Array<{ content: string; metadata: string }>;
 }
 
-export function insertMessage(chatbotId: string, role: string, content: string): void {
+export function insertMessage(chatbotId: string, role: string, content: string, meta: { ip?: string; userIdentifier?: string; model?: string } = {}): void {
   const id = `msg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  db.prepare("INSERT INTO messages (id, chatbot_id, role, content, created_at) VALUES (?, ?, ?, ?, ?)")
-    .run(id, chatbotId, role, content, new Date().toISOString());
+  db.prepare("INSERT INTO messages (id, chatbot_id, role, content, ip, user_identifier, model, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+    .run(id, chatbotId, role, content, meta.ip || "", meta.userIdentifier || "", meta.model || "", new Date().toISOString());
+}
+
+export function listMessages(chatbotId: string, limit = 200): Array<{ id: string; role: string; content: string; ip: string; userIdentifier: string; model: string; createdAt: string }> {
+  return db.prepare("SELECT id, role, content, ip, user_identifier as userIdentifier, model, created_at as createdAt FROM messages WHERE chatbot_id = ? ORDER BY created_at DESC LIMIT ?")
+    .all(chatbotId, limit) as Array<{ id: string; role: string; content: string; ip: string; userIdentifier: string; model: string; createdAt: string }>;
+}
+
+export function getChatStats(chatbotId: string): { total: number; users: number } {
+  const total = (db.prepare("SELECT COUNT(*) as c FROM messages WHERE chatbot_id = ?").get(chatbotId) as { c: number }).c;
+  const users = (db.prepare("SELECT COUNT(DISTINCT user_identifier) as c FROM messages WHERE chatbot_id = ?").get(chatbotId) as { c: number }).c;
+  return { total, users };
 }
 
 export function listSources(chatbotId: string): Array<Record<string, unknown>> {
   return db.prepare("SELECT id, type, locator, status, error, content_hash as contentHash, created_at as createdAt, updated_at as updatedAt FROM sources WHERE chatbot_id = ? ORDER BY created_at DESC")
     .all(chatbotId) as Array<Record<string, unknown>>;
+}
+
+export function deleteSource(sourceId: string, chatbotId: string): boolean {
+  const del = db.prepare("DELETE FROM sources WHERE id = ? AND chatbot_id = ?").run(sourceId, chatbotId);
+  if (del.changes) {
+    db.prepare("DELETE FROM chunks WHERE source_id = ?").run(sourceId);
+  }
+  return del.changes > 0;
 }
