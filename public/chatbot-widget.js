@@ -16,6 +16,9 @@
       return v;
     } catch(e){ return 'vid_'+Math.random().toString(36).slice(2,9); }
   })();
+  var BOT_ID = (function(){ try { var m = (CHAT_URL||'').match(/\/chat\/([^\/\?#]+)/); return m ? m[1] : null; } catch(e){ return null; } })();
+  var HISTORY_KEY = BOT_ID ? 'bolnee_msgs_' + BOT_ID : null;
+  var GREETED_KEY = BOT_ID ? 'bolnee_greeted_' + BOT_ID : null;
 
   document.head.insertAdjacentHTML('beforeend', '<style>' +
     '#_cw,#_cw *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}' +
@@ -109,6 +112,51 @@
     }
   } catch(e){}
 
+  // --- persistence helpers: store history so greeting shows only once and chat survives open/close ---
+  function saveHistory() {
+    if (!HISTORY_KEY) return;
+    try {
+      var nodes = msgs.querySelectorAll('._m');
+      var arr = [];
+      for (var i=0;i<nodes.length;i++) {
+        var n = nodes[i];
+        var who = n.classList.contains('u') ? 'user' : 'bot';
+        var txt = n.querySelector('._mb'); txt = txt ? txt.textContent : '';
+        // skip typing indicator
+        if (n.id === '_cwt') continue;
+        arr.push({ who: who, text: txt });
+      }
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+      if (arr.length) localStorage.setItem(GREETED_KEY, '1');
+    } catch(e){}
+  }
+  function loadHistory() {
+    if (!HISTORY_KEY) return false;
+    try {
+      var raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return false;
+      var arr = JSON.parse(raw);
+      if (!arr || !arr.length) return false;
+      for (var i=0;i<arr.length;i++) {
+        var item = arr[i];
+        // render without saving again
+        var d = document.createElement('div');
+        d.className = '_m ' + (item.who === 'user' ? 'u' : 'b');
+        var label = document.createElement('div');
+        label.className = '_ml';
+        label.textContent = item.who === 'user' ? 'You' : BOT_NAME;
+        var bubble2 = document.createElement('div');
+        bubble2.className = '_mb';
+        bubble2.textContent = item.text || '';
+        d.appendChild(label);
+        d.appendChild(bubble2);
+        msgs.appendChild(d);
+      }
+      msgs.scrollTop = msgs.scrollHeight;
+      return true;
+    } catch(e){ return false; }
+  }
+
   bubble.addEventListener('click', function() {
     isOpen = !isOpen;
     win.classList.toggle('open', isOpen);
@@ -121,19 +169,21 @@
   });
 
   function boot() {
+    engine = true;
+    ready = true;
+    enableInput();
+    // Restore previous conversation if any - prevents greeting duplication on open/close
+    var hadHistory = loadHistory();
+    if (hadHistory) return;
+    // Also guard against stale GREETED flag without history (edge case)
+    try { if (GREETED_KEY && localStorage.getItem(GREETED_KEY)) return; } catch(e){}
+    // If container already has a greeting (should not happen due to history check), skip
+    if (msgs.querySelector('._m')) return;
     if (CHAT_URL) {
-      ready = true;
-      enableInput();
       addMsg('bot', GREETING);
       return;
     }
-
-    ready = true;
-    enableInput();
     addMsg('bot', 'This chatbot is not configured with a server chat URL yet.');
-    return;
-
-    addMsg('bot', GREETING);
   }
 
   function streamText(text, onDone) {
@@ -209,6 +259,7 @@
           return response.text().then(function(t){
             var saw = handleSSEText(t, answer);
             if (!saw) answer.querySelector('._mb').textContent = 'No response from server.';
+            try{saveHistory();}catch(e){}
           }).catch(function(err2){
             // If text() also fails due to locked, re-fetch bypassing SW
             if (navigator.serviceWorker && navigator.serviceWorker.controller) {
@@ -257,7 +308,7 @@
             if (!sawToken) throw err;
           });
         }
-        return read().then(function(){ if (!sawToken) answer.querySelector('._mb').textContent = 'No response from server.'; });
+        return read().then(function(){ if (!sawToken) answer.querySelector('._mb').textContent = 'No response from server.'; try{saveHistory();}catch(e){} });
       }
       function doFetchWithBypass(url) {
         // Bypass service worker cache for SSE, include visitorId for grouping
@@ -295,13 +346,14 @@
           : 'Sorry, I could not process that question right now. (' + (error.message || 'unknown') + ')';
         // If we already created an answer bubble but it is empty, reuse it, else create new
         var last = msgs.querySelector('._m.b:last-child ._mb');
-        if (last && !last.textContent.trim()) last.textContent = msg;
+        if (last && !last.textContent.trim()) { last.textContent = msg; try{saveHistory();}catch(e){} }
         else addMsg('bot', msg);
       })
         .finally(function() {
           rmTyping();
           waiting = false;
           enableInput();
+          try{saveHistory();}catch(e){}
         });
       return;
     }
@@ -352,6 +404,7 @@
     d.appendChild(bubble2);
     msgs.appendChild(d);
     msgs.scrollTop = msgs.scrollHeight;
+    try { saveHistory(); } catch(e){}
     return d;
   }
 
