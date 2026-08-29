@@ -1,0 +1,17 @@
+name = "bolnee-dashboard"
+type = "javascript"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = "./dist"
+entry-point = "./"
+
+# For Cloudflare Workers with Express via wrangler + nodejs compat
+# If deploying as Pages, set DISABLE_AUTH=true in dashboard env
+# Endpoints auto-resolve to same origin: /api/chatbots, /api/public/chat/:id, /chatbot-widget.js
+
+[vars]
+DISABLE_AUTH = "true"

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #E4E3E0;
-  --color-ink: #141414;
-  --color-line: #141414;
+  --color-bg: #f8fafc;
+  --color-ink: #0f172a;
+  --color-line: #e2e8f0;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -18,48 +18,52 @@
   }
 }
 
+/* Keep brutal-* names for compatibility but render as simple minimal */
 @utility brutal-border {
   border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
 }
 
 @utility brutal-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--color-line);
-  font-family: var(--font-mono);
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: -0.05em;
-  transition: all 0.2s ease;
-  background-color: transparent;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  background-color: white;
+  color: var(--color-ink);
+  border-color: var(--color-line);
   cursor: pointer;
-
   &:hover {
-    background-color: var(--color-ink);
-    color: var(--color-bg);
+    background-color: #f1f5f9;
   }
-
   &:active {
-    transform: translate(2px, 2px);
+    transform: none;
   }
 }
 
 @utility brutal-card {
   border: 1px solid var(--color-line);
+  border-radius: 1rem;
   padding: 1.5rem;
   background-color: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 @utility brutal-input {
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 0.75rem;
   border: 1px solid var(--color-line);
+  border-radius: 0.6rem;
   background-color: white;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 1px var(--color-ink);
+    border-color: #94a3b8;
+    box-shadow: 0 0 0 3px rgba(148,163,184,0.15);
   }
 }
 
@@ -67,25 +71,23 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: all 0.2s ease;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease;
   width: 100%;
   text-align: left;
-
+  color: #64748b;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #f1f5f9;
+    color: var(--color-ink);
   }
-
   &.active {
     background-color: white;
-    border-top: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
-    margin-left: -1px;
-    margin-right: -1px;
-    font-weight: 700;
+    color: var(--color-ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    border: 1px solid var(--color-line);
+    font-weight: 600;
   }
 }

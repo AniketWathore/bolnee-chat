@@ -34,6 +34,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "development-secret-change-me";
 const DATA_DIR = path.join(process.cwd(), "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const CHATBOTS_FILE = path.join(DATA_DIR, "chatbots.json");
+const DEFAULT_USER_ID = "user_local";
+const DISABLE_AUTH = process.env.DISABLE_AUTH === "true" || process.env.VITE_DISABLE_AUTH === "true";
 
 // Validate env at startup
 function validateEnv() {
@@ -116,11 +118,15 @@ async function readData(filePath: string, defaultValue: unknown = []) {
   return defaultValue;
 }
 
-// Auth Middleware
+// Auth Middleware — supports DISABLE_AUTH for simple self-hosted dashboard (no login)
 const authenticate = (req: unknown, res: unknown, next: unknown) => {
   const r = req as { headers: Record<string,string>; user?: unknown };
   const s = res as { status: (c:number)=> { json:(o:unknown)=>void } };
   const n = next as ()=>void;
+  if (DISABLE_AUTH) {
+    r.user = { userId: DEFAULT_USER_ID, email: "local@bolnee.local", name: "Local User" };
+    return n();
+  }
   const token = r.headers.authorization?.split(" ")[1];
   if (!token) return (s.status(401) as unknown as { json:(o:unknown)=>void }).json({ error: "Unauthorized" });
 
@@ -133,8 +139,49 @@ const authenticate = (req: unknown, res: unknown, next: unknown) => {
   }
 };
 
+// Optional auth — allows unauthenticated when DISABLE_AUTH, otherwise requires token
+const maybeAuthenticate = (req: unknown, _res: unknown, next: unknown) => {
+  const r = req as { headers: Record<string,string>; user?: unknown };
+  const n = next as ()=>void;
+  if (DISABLE_AUTH) {
+    r.user = { userId: DEFAULT_USER_ID, email: "local@bolnee.local", name: "Local User" };
+    return n();
+  }
+  // delegate to authenticate (will 401 if no token)
+  return authenticate(req, _res, next);
+};
+
+function findChatbotForRequest(id: string, userId?: string) {
+  if (DISABLE_AUTH) return findChatbot(id);
+  return findChatbot(id, userId);
+}
+function listChatbotsForRequest(userId: string) {
+  if (DISABLE_AUTH) {
+    // In no-auth mode, show all chatbots (single-tenant dashboard)
+    // Use a direct query via listChatbots for default user + any legacy demo user bots by falling back to raw list
+    const all = listChatbots(userId);
+    if (all.length > 0) return all;
+    // Fallback: try demo user bots if local has none (helps migration)
+    const demo = findUserByEmail("demo@example.com");
+    if (demo && demo.id !== userId) {
+      return listChatbots(demo.id);
+    }
+    return all;
+  }
+  return listChatbots(userId);
+}
+
 async function initData() {
   await fs.ensureDir(DATA_DIR);
+
+  // Ensure local user exists for DISABLE_AUTH / simple dashboard
+  if (!findUserByEmail("local@bolnee.local")) {
+    const hashed = await bcrypt.hash("local-pass", 10);
+    try {
+      insertUser({ id: DEFAULT_USER_ID, email: "local@bolnee.local", password: hashed, name: "Local User" });
+      console.log("Local user created: local@bolnee.local (DISABLE_AUTH mode)");
+    } catch { /* already exists */ }
+  }
 
   const users = await readData(USERS_FILE) as Array<{email:string; password:string; id:string; name:string}>;
   if (users.length === 0 && !findUserByEmail("demo@example.com")) {
@@ -412,7 +459,7 @@ app.post("/api/auth/login", async (req, res) => {
 app.get("/api/chatbots", authenticate, async (req: unknown, res) => {
   try {
     const r = req as { user: { userId:string } };
-    const userChatbots = listChatbots(r.user.userId).map((chatbot) => ({
+    const userChatbots = listChatbotsForRequest(r.user.userId).map((chatbot) => ({
       _id: chatbot.id,
       name: chatbot.name,
       avatar: chatbot.avatar || "",
@@ -427,7 +474,7 @@ app.get("/api/chatbots", authenticate, async (req: unknown, res) => {
 app.get("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   try {
     const r = req as { user:{userId:string}; params:{id:string} };
-    const chatbot = findChatbot(r.params.id, r.user.userId);
+    const chatbot = findChatbotForRequest(r.params.id, r.user.userId);
     if (!chatbot) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     return (res as unknown as { json:(o:unknown)=>void}).json({ _id: chatbot.id, name: chatbot.name, avatar: chatbot.avatar || "", createdAt: chatbot.createdAt });
   } catch {
@@ -473,7 +520,15 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (baseUrl !== undefined && typeof baseUrl !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "baseUrl must be a string" });
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
   if (typeof avatar === "string" && avatar.length > 2.5 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
-  if (!updateChatbotSettings(r.params.id, r.user.userId, { avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim() })) {
+  let updated = false;
+  if (DISABLE_AUTH) {
+    const existing = findChatbot(r.params.id);
+    if (!existing) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    updated = updateChatbotSettings(r.params.id, (existing as { userId: string }).userId, { avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim() });
+  } else {
+    updated = updateChatbotSettings(r.params.id, r.user.userId, { avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim() });
+  }
+  if (!updated) {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
   }
   return (res as unknown as { json:(o:unknown)=>void}).json({ success: true });
@@ -527,8 +582,15 @@ app.delete("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   try {
     const r = req as { user:{userId:string}; params:{id:string} };
     const { id } = r.params;
-
-    if (!removeChatbot(id, r.user.userId)) {
+    let removed = false;
+    if (DISABLE_AUTH) {
+      const existing = findChatbot(id);
+      if (!existing) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+      removed = removeChatbot(id, (existing as { userId: string }).userId);
+    } else {
+      removed = removeChatbot(id, r.user.userId);
+    }
+    if (!removed) {
       return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     }
 
@@ -549,7 +611,7 @@ app.get("/api/knowledge", authenticate, async (req: unknown, res) => {
     const r = req as { user:{userId:string}; query:{chatbotId?:unknown} };
     const { chatbotId } = r.query as { chatbotId?:string };
     if (!chatbotId) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "chatbotId is required" });
-    if (!findChatbot(String(chatbotId), r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    if (!findChatbotForRequest(String(chatbotId), r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     return (res as unknown as { json:(o:unknown)=>void}).json(getKnowledge(String(chatbotId), {
       chatbotId,
       userId: r.user.userId,
@@ -570,7 +632,7 @@ app.post("/api/knowledge", authenticate, async (req: unknown, res) => {
     const data = r.body as Record<string, unknown>;
     const chatbotId = data.chatbotId as string | undefined;
     if (!chatbotId) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "chatbotId is required" });
-    if (!findChatbot(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    if (!findChatbotForRequest(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     saveKnowledge(chatbotId, data);
     return (res as unknown as { json:(o:unknown)=>void}).json({ success: true, data });
   } catch {
@@ -581,7 +643,7 @@ app.post("/api/knowledge", authenticate, async (req: unknown, res) => {
 app.get("/api/knowledge/sources", authenticate, async (req: unknown, res) => {
   const r = req as { user:{userId:string}; query:{chatbotId?:unknown} };
   const chatbotId = typeof r.query.chatbotId === "string" ? r.query.chatbotId : "";
-  if (!findChatbot(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  if (!findChatbotForRequest(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
   return (res as unknown as { json:(o:unknown)=>void}).json(listSources(chatbotId));
 });
 
@@ -589,7 +651,7 @@ app.post("/api/knowledge/sources/:chatbotId", authenticate, upload.single("file"
   try {
     const r = req as { user:{userId:string}; params:{chatbotId:string}; body:{url?:unknown}; file?: Express.Multer.File };
     const { chatbotId } = r.params;
-    if (!findChatbot(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    if (!findChatbotForRequest(chatbotId, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     const url = typeof r.body?.url === "string" ? (r.body.url as string).trim() : "";
     if (!url && !r.file) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Provide a URL or file" });
     if (url) {
