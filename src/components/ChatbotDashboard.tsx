@@ -108,7 +108,8 @@ export default function ChatbotDashboard({
     avatar: "${avatarForEmbed}",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${chatbot._id}",
     accentColor: "${appearance.accentColor}",
-    greeting: "${appearance.greeting}"
+    greeting: "${appearance.greeting}",
+    theme: "${appearance.theme || 'light'}"
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;

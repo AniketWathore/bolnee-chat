@@ -60,7 +60,8 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
     avatar: "",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${data.chatbotId}",
     accentColor: "#111111",
-    greeting: "Hi! How can I help?"
+    greeting: "Hi! How can I help?",
+    theme: "light"
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;
