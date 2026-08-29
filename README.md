@@ -1,134 +1,228 @@
-# Bolnee — Self-Hosted RAG Chatbot Platform
+<h1 align="center">
+  <a href="#"><img src="public/img/logo.webp" alt="Bolnee" width="64" valign="middle" /></a> Bolnee-Chat
+</h1>
 
-> Create a bot, add website/PDF knowledge, configure any OpenAI-compatible provider, and embed a 2-line snippet. No vendor lock-in. No login required for self-hosted.
-
-<p>
-  <img src="https://img.shields.io/badge/Node-18%2B-339933?style=flat&logo=node.js&logoColor=white" alt="Node" />
-  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/DB-SQLite-003B57?style=flat&logo=sqlite&logoColor=white" alt="SQLite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat" alt="License" />
-  <img src="https://img.shields.io/badge/Deploy-Vercel%20%7C%20Cloudflare-black?style=flat" alt="Deploy" />
+<p align="center">
+  <strong>Chatbot integration in your business website. Self hosted, free forever!</strong>
 </p>
 
-![Bolnee Dashboard — Your Chatbots](images/main.png)
+<p align="center">
+  <a href="https://github.com/AniketWathore/bolnee-chat"><img src="https://img.shields.io/badge/GitHub-Bolnee--Chat-0A0A0A?style=flat-square&logo=github&logoColor=white" alt="GitHub" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License: MIT" /></a>
+  <a href="https://github.com/AniketWathore/bolnee-chat/releases"><img src="https://img.shields.io/github/v/release/AniketWathore/bolnee-chat?style=flat-square&logo=github" alt="Release" /></a>
+  <img src="https://img.shields.io/badge/Node-18%2B-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node 18+" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+" />
+</p>
 
-**Ground rules (Bolnee):**
-- No vendor lock-in — any OpenAI-compatible provider (OpenRouter, OpenAI, Groq, Ollama, vLLM, LM Studio).
-- RAG-first — grounded answers from your own website + PDFs, with sources cited.
-- Self-hosted in minutes — `DISABLE_AUTH=true`, SQLite, no external DB.
+<p align="center">
+  <img src="images/main.png" alt="Bolnee Dashboard — Your Chatbots" width="960" style="border-radius: 8px;" />
+</p>
 
----
-
-## Status Board
-
-| Area | Goal | Status |
-|---|---|---|
-| Dashboard | Dark-mode console, bot lifecycle | ✅ Done |
-| Crawler | Same-origin crawl, robots.txt, `data/{id}_website.json` | ✅ Done |
-| Ingestion | PDF/TXT/MD/DOCX/FAQ → chunk → SQLite FTS | ✅ Done |
-| RAG Chat | `POST /api/public/chat/:id` SSE, grounded prompt, visitor grouping | ✅ Done |
-| Widget | Greeting once, history in localStorage, theme (light/dark/auto), avatar | ✅ Done |
-| Providers | OpenRouter/OpenAI/Groq/Together/Ollama/vLLM, `Fetch models`, AES-256-GCM keys | ✅ Done |
-| Hosting | `vercel.json` / `wrangler.toml`, `dist` static | ✅ Done |
+Bolnee-Chat is a self-hosted RAG chatbot platform. Create a bot, add your website + PDFs as knowledge, pick any OpenAI-compatible provider (OpenRouter, OpenAI, Groq, Ollama, vLLM), and embed a 2-line snippet. Answers are grounded in your sources with citations, visitor chats are grouped and exportable, and everything runs on your infrastructure with SQLite.
 
 ---
 
-## Features
+## Why Bolnee-Chat?
 
-### 1. Create Chatbots — Brand in Seconds
-Name + avatar (PNG/JPG/WEBP ≤2MB, preview) → stored as `/api/public/avatar/:id`.
+<table>
+<tr>
+<td width="33%" align="center" valign="top">
 
-![Create Chatbot](images/create_chatbot.png)
+### Self-Hosted & Free Forever
 
-### 2. Add Knowledge — Website + Files
-URL-only, files-only, or both. Same-origin crawler (`crawler/crawler.py` + `crawler/run_crawler_for_bolnee.py`) respects `robots.txt`, extracts `h1/h2/p/li`, dedups, saves `data/{chatbotId}_website.json`. PDFs/TXT/MD/DOCX/CSV/FAQ chunked to SQLite. Status polled: `queued → crawling → parsing → indexing → indexed`.
+No vendor lock-in, no per-message billing. Run on your server, Vercel or Cloudflare Pages — SQLite, no external DB.
 
-![Add Knowledge](images/add_knowledge.png)
+</td>
+<td width="33%" align="center" valign="top">
 
-### 3. Configure Provider — Any OpenAI-Compatible API
-Pick provider → Base URL auto-fills → paste API key → **Fetch models** lists live models (prioritizes `:free` for OpenRouter). Stored encrypted (AES-256-GCM), never in embed code. Works with OpenRouter, OpenAI, Groq, Together, Anthropic, Ollama (`http://localhost:11434/v1`), vLLM, LM Studio, Custom.
+### RAG-Grounded Answers
 
-![Configure Provider](images/configure_provider.png)
+Crawls your site + ingests PDFs/TXT/MD/DOCX, chunks to SQLite FTS and builds grounded prompts. Sources are cited, fallback is configurable.
 
-### 4. Embed — 2 Lines
-Copy from **Overview → Embed code** or **Knowledge → Step 4**. Auto-configures origin, works on any site.
+</td>
+<td width="33%" align="center" valign="top">
 
-![Embed Code](images/embed_code.png)
+### 2-Line Embed, Any Stack
 
-### 5. Bot Console — Your Chatbots
-Live status, messages, users, sources, creation date — at a glance. Dark-mode only, border `slate-800`.
+Copy `window.BotConfig` + `chatbot-widget.js` and paste before `</body>`. Works on any site, accent/theme/greeting live via dashboard.
 
-![Main Console](images/main.png)
-
-### 6. Appearance — Live Preview
-Bot name, avatar upload/preview, accent/background colour, theme `light/dark/auto`, greeting. Preview updates live; saved via `PATCH /api/chatbots/:id`.
-
-![Appearance](images/chatbot_appearance.png)
-
-### 7. Chats — Grouped by Visitor
-Grouped by `visitorId` → `IP`, then by date, chronological. CSV (Excel) / JSON / PDF (print) export. Polls `/api/chatbots/:id/stats` every 5s (`activeSessions` = distinct visitors last 5m).
-
-![Chats](images/chatbot_chats.png)
-
-### 8. Knowledge Base — Manage Sources
-Lists `locator · type · status · error · date` with delete. Append more via **Add knowledge**. Sources under `data/` + chunks in SQLite.
-
-*(see `images/add_knowledge.png` flow)*
-
-### 9. Settings — Provider, Prompts, Danger Zone
-Provider/model/baseUrl/apiKey, default message (pre-first-turn), fallback message (no sources matched), delete bot + chats + sources + chunks.
-
-![Settings](images/chatbot_settings.png)
-
-### 10. Widget — Embed on Any Site
-Fixed bottom-right bubble → sliding window (`360×520`, `75vh` mobile). Header with accent + avatar, typing dots, SSE streaming, sources cited, `VISITOR_ID` in `localStorage` for grouping, history in `localStorage` so greeting shows once and chats survive close/open.
-
-![Widget](images/chatbot_widget.png)
-
-### 11. Bot Overview — Embed + Stats
-Per-bot: status `Live`, message/user counts, creation date, source count, embed snippet with `botName/avatar/chatUrl/accent/greeting/theme`.
-
-![Bot Overview](images/chatbot_overview.png)
+</td>
+</tr>
+</table>
 
 ---
 
-## Screenshots
+## All Features
 
-| | | |
-|---|---|---|
-| ![Main](images/main.png) Main | ![Create](images/create_chatbot.png) Create | ![Knowledge](images/add_knowledge.png) Add Knowledge |
-| ![Provider](images/configure_provider.png) Provider | ![Embed](images/embed_code.png) Embed | ![Overview](images/chatbot_overview.png) Bot Overview |
-| ![Appearance](images/chatbot_appearance.png) Appearance | ![Chats](images/chatbot_chats.png) Chats | ![Settings](images/chatbot_settings.png) Settings |
-| ![Widget](images/chatbot_widget.png) Widget | | |
+<table>
+<tr>
+<td width="50%" valign="middle">
+
+### Create Chatbot — Brand in Seconds
+
+Name + avatar (PNG/JPG/WEBP ≤2MB, preview) → stored as `/api/public/avatar/:id` and shown in the widget header.
+
+</td>
+<td width="50%">
+  <img src="images/create_chatbot.png" alt="Create Chatbot" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Add Knowledge — Website + Files
+
+URL-only, files-only, or both. Same-origin crawler (`crawler/crawler.py`) respects `robots.txt`, extracts `h1/h2/p/li`, dedups, saves `data/{chatbotId}_website.json`. Status: `queued → crawling → parsing → indexing → indexed`.
+
+</td>
+<td width="50%">
+  <img src="images/add_knowledge.png" alt="Add Knowledge" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Configure Provider — Any OpenAI-Compatible API
+
+Pick provider → Base URL auto-fills → paste API key → **Fetch models** lists live models (prioritizes `:free` for OpenRouter). Keys stored encrypted (AES-256-GCM), never in embed.
+
+</td>
+<td width="50%">
+  <img src="images/configure_provider.png" alt="Configure Provider" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Embed — 2 Lines
+
+Copy from **Overview → Embed code** or **Knowledge → Step 4**. Auto-configures origin via `window.location.origin`; widget loads via `chatbot-widget.js` with SSE streaming.
+
+</td>
+<td width="50%">
+  <img src="images/embed_code.png" alt="Embed Code" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Bot Overview — Stats & Snippet
+
+Per-bot: `Live` status, message/user counts, creation date, source count, embed snippet with `botName/avatar/chatUrl/accent/greeting/theme`.
+
+</td>
+<td width="50%">
+  <img src="images/chatbot_overview.png" alt="Bot Overview" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Appearance — Live Preview
+
+Edit bot name, avatar (upload/preview), accent/background colour, theme `light/dark/auto`, greeting. Live preview; saved via `PATCH /api/chatbots/:id`.
+
+</td>
+<td width="50%">
+  <img src="images/chatbot_appearance.png" alt="Appearance" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Chats — Grouped by Visitor
+
+Grouped by `visitorId` → `IP`, then by date, chronological. Refresh + download **CSV (Excel)** / **JSON** / **PDF** (print). Active sessions = distinct visitors last 5m.
+
+</td>
+<td width="50%">
+  <img src="images/chatbot_chats.png" alt="Chats" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Settings — Provider, Prompts, Danger Zone
+
+`provider/model/baseUrl/apiKey`, default message (pre-first-turn), fallback message (no sources matched), delete bot + chats + sources + chunks.
+
+</td>
+<td width="50%">
+  <img src="images/chatbot_settings.png" alt="Settings" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### Widget — Floating, Theme-Aware, Persistent
+
+Bottom-right bubble → sliding window (`360×520`, `75vh` mobile). Header with accent + avatar, typing dots, SSE streaming, sources cited, `VISITOR_ID` + history in `localStorage` so greeting shows once and chats survive close/open. Theme `light/dark/auto` (`#0f172a` / `#fff`).
+
+</td>
+<td width="50%">
+  <img src="images/chatbot_widget.png" alt="Widget" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+</table>
+
+**Also in the box:**
+
+- **Knowledge management** — lists `locator · type · status · error · date` with delete; append more via **Add knowledge**.
+- **Avatar file storage** — data URLs converted to `/api/public/avatar/:id` (2MB limit, `data/avatars/`).
+- **Encrypted provider keys** — per-bot `apiKey/baseUrl/model` via AES-256-GCM, never exposed in snippet.
+- **Dark-mode console** — `#020617` bg, `#1e293b` cards, `slate-800` inputs, no white surfaces.
 
 ---
 
-## Quick Start
+## Requirements
 
-### Requirements
-- Node.js 18+
-- Python 3.10+ (crawler, optional but recommended)
-- `pip install aiohttp beautifulsoup4 lxml requests brotli` (+ `playwright` for JS-heavy sites)
+| Requirement | Details |
+|:------------|:--------|
+| **OS** | macOS, Linux, Windows (WSL) |
+| **Runtime** | Node.js 18+ |
+| **Package Manager** | npm |
+| **Python** | 3.10+ (crawler, optional but recommended) |
+| **Python Deps** | `aiohttp`, `beautifulsoup4`, `lxml`, `requests`, `brotli` (+ `playwright` for JS-heavy sites) |
 
-### Installation
+---
+
+## Tech Stack
+
+<p>
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React" /></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white" alt="Vite" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind" /></a>
+  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express" /></a>
+  <a href="https://github.com/WiseLibs/better-sqlite3"><img src="https://img.shields.io/badge/SQLite-better--sqlite3-003B57?logo=sqlite&logoColor=white" alt="SQLite" /></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white" alt="Python" /></a>
+</p>
+
+---
+
+## Installation
 
 ```bash
+# Clone
 git clone https://github.com/AniketWathore/bolnee-chat.git
 cd bolnee-chat
 
+# Env
 cp .env.example .env
 # edit .env — simplest self-hosted:
 # DISABLE_AUTH=true
 # JWT_SECRET=change-me-32-chars
 # LLM_BASE_URL=https://openrouter.ai/api/v1   # optional global fallback
 # LLM_API_KEY=sk-or-v1-...                     # optional global fallback
+# LLM_MODEL=inclusionai/ling-3.0-flash-fin:free
 
+# Install
 npm install
 
-# Python crawler deps (site crawl)
+# Python crawler deps (optional)
 pip install aiohttp beautifulsoup4 lxml requests brotli
 
-# verify
+# Verify
 npm run lint    # tsc --noEmit
 npm run build   # vite + esbuild → dist/
 npm run dev     # http://localhost:3000 (auto-fallback to 3001 if busy)
@@ -136,7 +230,9 @@ npm run dev     # http://localhost:3000 (auto-fallback to 3001 if busy)
 
 SQLite is created at `data/bolnee.db` (git-ignored). Crawled sites → `data/{chatbotId}_website.json`, chunks in SQLite.
 
-### Usage — Dashboard Flow
+---
+
+## Usage — Dashboard Flow
 
 1. **Create chatbot** — `+ New chatbot` → name + avatar (preview ≤2MB).
 2. **Add knowledge** — enter `https://your-site.com` and/or upload PDF/TXT/MD/DOCX/FAQ → status `queued → indexed`.
@@ -180,12 +276,12 @@ Paste before `</body>`. Widget stores `VISITOR_ID` + chat history in `localStora
 | `POST` | `/api/chatbots` | Create bot |
 | `GET` | `/api/chatbots` | List bots |
 | `PATCH` | `/api/chatbots/:id` | Appearance + provider (`name/avatar/accent/theme/greeting` + `provider/model/apiKey/baseUrl`) |
-| `GET` | `/api/chatbots/:id/appearance` | Get appearance (`src/server.ts:728`) |
+| `GET` | `/api/chatbots/:id/appearance` | Get appearance (`server.ts:728`) |
 | `GET` | `/api/chatbots/:id/messages?limit=200` | Grouped messages |
 | `GET` | `/api/chatbots/:id/stats` | `total/users` |
 | `GET` | `/api/chatbots/:id/messages/export?format=csv\|json` | Export |
 | `GET` | `/api/knowledge/sources?chatbotId=ID` | List sources |
-| `POST` | `/api/knowledge/sources/:chatbotId` | Add URL (`{url}`) or file (`multipart`) → status `queued` |
+| `POST` | `/api/knowledge/sources/:chatbotId` | Add URL (`{url}`) or file (`multipart`) → `queued` |
 | `DELETE` | `/api/knowledge/sources/:sourceId?chatbotId=ID` | Delete source + chunks |
 | `POST` | `/api/public/chat/:chatbotId` | SSE chat `{message, visitorId}` → `data: {token\|error\|sources}` + `data: [DONE]` |
 | `GET` | `/api/public/knowledge/:chatbotId` | Public knowledge (cached) |
@@ -193,7 +289,7 @@ Paste before `</body>`. Widget stores `VISITOR_ID` + chat history in `localStora
 | `POST` | `/api/providers/models` | List models for `provider/baseUrl/apiKey` |
 | `GET` | `/api/stats` | Global `totalMessages/activeSessions` |
 
-Streaming details: `public/chatbot-widget.js:311` reads SSE via `getReader()`, falls back to `text()` + SW bypass for `locked` streams. Visitor grouping via `X-Visitor-Id` (`VISITOR_ID` in `localStorage`).
+Streaming: `public/chatbot-widget.js:311` reads SSE via `getReader()`, falls back to `text()` + SW bypass for `locked` streams. Visitor grouping via `X-Visitor-Id` (`VISITOR_ID` in `localStorage`).
 
 ---
 
@@ -201,7 +297,7 @@ Streaming details: `public/chatbot-widget.js:311` reads SSE via `getReader()`, f
 
 | Path | Role |
 |---|---|
-| `server.ts` | Express + Vite dev, auth (`DISABLE_AUTH`), ingestion, RAG, SSE chat (`src/server.ts:282`) |
+| `server.ts` | Express + Vite dev, auth (`DISABLE_AUTH`), ingestion, RAG, SSE chat (`server.ts:282`) |
 | `server/db.ts` | SQLite (`better-sqlite3`) — `chatbots/sources/chunks/messages`, `getChatbotAppearance` |
 | `server/ingestion.ts` + `crawler/run_crawler_for_bolnee.py` | Crawl → `/data/{id}_website.json` → chunks |
 | `crawler/crawler.py` | Same-origin crawl, `robots.txt`, `h1/h2/p/li` extraction, sitemap + homepage |
@@ -210,7 +306,7 @@ Streaming details: `public/chatbot-widget.js:311` reads SSE via `getReader()`, f
 | `src/components/KnowledgeSection.tsx` | 4-step wizard: Knowledge → Provider → Processing (polls status) → Embed |
 | `src/components/Overview.tsx` | Stats + grid of 4 bots + `View all` |
 | `src/components/BotCreationWizard.tsx` | Name + avatar upload (2MB limit) |
-| `src/index.css` | Dark-mode design tokens (`--color-bg #020617`, `--color-card #1e293b`) |
+| `src/index.css` | Dark-mode tokens (`--color-bg #020617`, `--color-card #1e293b`) |
 | `vercel.json` / `wrangler.toml` | Hosting rewrites, `bucket = "./dist"`, `DISABLE_AUTH` |
 
 ---
@@ -288,8 +384,4 @@ npm run dev       # http://localhost:3000
 
 ## License
 
-MIT — see `LICENSE` (if not present, treat as MIT). Contributions welcome. Self-host freely, no vendor lock-in.
-
-## Credits
-
-Built with Vite + React + Express + `better-sqlite3` + Tailwind. Crawler in Python (`aiohttp`, `beautifulsoup4`, `lxml`). RAG via grounded prompts with source citation.
+Distributed under the [MIT License](LICENSE). See [`LICENSE`](LICENSE) for more information.
