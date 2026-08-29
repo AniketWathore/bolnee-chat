@@ -228,9 +228,16 @@ export function listMessages(chatbotId: string, limit = 200): Array<{ id: string
 }
 
 export function getChatStats(chatbotId: string): { total: number; users: number } {
-  const total = (db.prepare("SELECT COUNT(*) as c FROM messages WHERE chatbot_id = ?").get(chatbotId) as { c: number }).c;
-  const users = (db.prepare("SELECT COUNT(DISTINCT user_identifier) as c FROM messages WHERE chatbot_id = ?").get(chatbotId) as { c: number }).c;
+  const total = (db.prepare("SELECT COUNT(*) as c FROM messages WHERE chatbot_id = ? AND role = 'user'").get(chatbotId) as { c: number }).c;
+  const users = (db.prepare("SELECT COUNT(DISTINCT user_identifier) as c FROM messages WHERE chatbot_id = ? AND user_identifier != '' AND user_identifier != 'system'").get(chatbotId) as { c: number }).c;
   return { total, users };
+}
+
+export function getGlobalStats(): { totalMessages: number; activeSessions: number } {
+  const totalMessages = (db.prepare("SELECT COUNT(*) as c FROM messages WHERE role = 'user'").get() as { c: number }).c;
+  const since = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  const activeSessions = (db.prepare("SELECT COUNT(DISTINCT user_identifier) as c FROM messages WHERE created_at > ? AND user_identifier != '' AND user_identifier != 'system' AND role = 'user'").get(since) as { c: number }).c;
+  return { totalMessages, activeSessions };
 }
 
 export function listSources(chatbotId: string): Array<Record<string, unknown>> {

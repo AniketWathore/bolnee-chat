@@ -4,9 +4,18 @@
   var cfg          = window.BotConfig || {};
   var ACCENT       = cfg.accentColor  || '#6366f1';
   var BOT_NAME     = cfg.botName      || 'AI Assistant';
+  var AVATAR       = cfg.avatar     || '';
   var GREETING      = cfg.greeting      || 'Hi! How can I help you today?';
   var KNOWLEDGE_URL = cfg.knowledgeUrl  || null;
   var CHAT_URL      = cfg.chatUrl      || null;
+  var VISITOR_ID = (function(){
+    try {
+      var k='bolnee_vid';
+      var v=localStorage.getItem(k);
+      if(!v){ v='vid_'+Math.random().toString(36).slice(2,9)+'_'+Date.now().toString(36); localStorage.setItem(k,v); }
+      return v;
+    } catch(e){ return 'vid_'+Math.random().toString(36).slice(2,9); }
+  })();
 
   document.head.insertAdjacentHTML('beforeend', '<style>' +
     '#_cw,#_cw *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}' +
@@ -87,6 +96,18 @@
     }
     return '/public/';
   })();
+
+  // Show avatar image if provided (data URL or http URL)
+  try {
+    var avEl = document.getElementById('_cw_av');
+    if (avEl && AVATAR) {
+      var esc = AVATAR.replace(/"/g, '&quot;');
+      avEl.innerHTML = '<img src="' + esc + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
+      avEl.style.background = 'transparent';
+      avEl.style.overflow = 'hidden';
+      avEl.style.padding = '0';
+    }
+  } catch(e){}
 
   bubble.addEventListener('click', function() {
     isOpen = !isOpen;
@@ -239,11 +260,11 @@
         return read().then(function(){ if (!sawToken) answer.querySelector('._mb').textContent = 'No response from server.'; });
       }
       function doFetchWithBypass(url) {
-        // Bypass service worker cache for SSE
+        // Bypass service worker cache for SSE, include visitorId for grouping
         return fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
-          body: JSON.stringify({ message: text }),
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'X-Visitor-Id': VISITOR_ID },
+          body: JSON.stringify({ message: text, visitorId: VISITOR_ID }),
           cache: 'no-store'
         });
       }

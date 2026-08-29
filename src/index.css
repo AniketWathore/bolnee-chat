@@ -4,8 +4,7 @@
   --color-bg: #f8fafc;
   --color-ink: #0f172a;
   --color-line: #e2e8f0;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -18,7 +17,6 @@
   }
 }
 
-/* Keep brutal-* names for compatibility but render as simple minimal */
 @utility brutal-border {
   border: 1px solid var(--color-line);
   border-radius: 0.75rem;
@@ -27,20 +25,16 @@
 @utility brutal-btn {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-line);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.15s ease;
   background-color: white;
   color: var(--color-ink);
-  border-color: var(--color-line);
   cursor: pointer;
   &:hover {
     background-color: #f1f5f9;
-  }
-  &:active {
-    transform: none;
   }
 }
 

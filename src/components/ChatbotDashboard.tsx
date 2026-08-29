@@ -101,10 +101,11 @@ export default function ChatbotDashboard({
   };
 
   const DEPLOY_URL = window.location.origin;
+  const avatarForEmbed = appearance.avatar ? (appearance.avatar.startsWith('/') ? `${DEPLOY_URL}${appearance.avatar}` : appearance.avatar) : "";
   const embedCode = `<script>
   window.BotConfig = {
     botName: "${appearance.name || chatbot.name}",
-    avatar: "${appearance.avatar}",
+    avatar: "${avatarForEmbed}",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${chatbot._id}",
     accentColor: "${appearance.accentColor}",
     greeting: "${appearance.greeting}"
@@ -302,7 +303,13 @@ export default function ChatbotDashboard({
             </label>
             {appearance.avatar && <button onClick={()=>setAppearance({...appearance, avatar:''})} className="text-xs text-gray-500"><X className="w-3 h-3 inline" /> Clear</button>}
           </div>
-          <input value={appearance.avatar} onChange={e=>setAppearance({...appearance, avatar:e.target.value})} placeholder="https://... or data:image/..." className="brutal-input text-xs" />
+          {appearance.avatar && appearance.avatar.startsWith('data:image') ? (
+            <div className="text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
+          ) : appearance.avatar && appearance.avatar.startsWith('/api/public/avatar/') ? (
+            <div className="text-xs text-gray-600 bg-green-50 border border-green-200 rounded p-2">Avatar stored ✓ — preview above. Upload new image to replace.</div>
+          ) : (
+            <input value={appearance.avatar} onChange={e=>setAppearance({...appearance, avatar:e.target.value})} placeholder="https://... or leave empty for default icon" className="brutal-input text-xs" />
+          )}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -343,18 +350,36 @@ export default function ChatbotDashboard({
     </motion.div>
   );
 
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const grouped = (() => {
+    const map = new Map<string, MessageRow[]>();
+    for (const m of messages) {
+      const key = (m.userIdentifier && m.userIdentifier !== 'anon' ? m.userIdentifier : m.ip) || m.ip || 'unknown';
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(m);
+    }
+    // sort each group by time asc for conversation order
+    for (const arr of map.values()) arr.sort((a,b)=> new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    return Array.from(map.entries()).map(([user, msgs]) => {
+      const last = msgs[msgs.length - 1];
+      const first = msgs[0];
+      return { user, msgs, count: msgs.length, lastAt: last.createdAt, firstAt: first.createdAt, lastIp: last.ip };
+    }).sort((a,b)=> new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime());
+  })();
+  const selectedGroup = selectedUser ? grouped.find(g=>g.user===selectedUser) : null;
+
   const renderChats = () => (
     <motion.div key="chats" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-semibold">Conversations</h3>
+        <h3 className="font-semibold">Conversations {selectedUser ? `— ${selectedUser.slice(0,24)}` : `(${grouped.length} users, ${messages.length} msgs)`}</h3>
         <div className="flex items-center gap-2">
+          {selectedUser && <button onClick={()=>setSelectedUser(null)} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50"><ArrowLeft className="w-3 h-3" /> Back to users</button>}
           <button onClick={fetchMessages} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50"><RefreshCw className="w-3 h-3" /> Refresh</button>
           <button onClick={()=>downloadChats('csv')} className="inline-flex items-center gap-1 bg-gray-900 text-white rounded-lg px-3 py-1.5 text-xs"><Download className="w-3 h-3" /> CSV (Excel)</button>
           <button onClick={()=>downloadChats('json')} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">JSON</button>
           <button onClick={()=>{
-            // simple PDF via window.print of table
-            const w=window.open('','_blank'); if(!w) return;
             const rows=messages.map(m=>`<tr><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${new Date(m.createdAt).toLocaleString()}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.ip||'-'}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.userIdentifier||'-'}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.role}</td><td style="border:1px solid #e2e8f0;padding:6px;max-width:400px;word-break:break-word;font-size:11px">${m.content.replace(/</g,'&lt;')}</td></tr>`).join('');
+            const w=window.open('','_blank'); if(!w) return;
             w.document.write(`<html><head><title>Chats ${chatbot._id}</title></head><body><h2>Chats for ${chatbot.name}</h2><table style="border-collapse:collapse;width:100%"><tr><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc;text-align:left">Time</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">IP</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Visitor</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Role</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Message</th></tr>${rows}</table><script>window.print()<`+`/script></body></html>`);
             w.document.close();
           }} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">PDF</button>
@@ -365,33 +390,56 @@ export default function ChatbotDashboard({
         <div className="brutal-card text-center py-16 border-dashed bg-transparent">
           <MessageSquare className="w-10 h-10 opacity-10 mx-auto" />
           <div className="mt-3 font-medium">No conversations yet</div>
-          <div className="text-xs text-gray-500 max-w-sm mx-auto mt-1">When visitors chat via the embed, their IP, identifier, date/time and messages appear here.</div>
+          <div className="text-xs text-gray-500 max-w-sm mx-auto mt-1">When visitors chat via the embed, their IP, identifier, date/time and messages appear here — grouped by visitor.</div>
+        </div>
+      ) : selectedUser && selectedGroup ? (
+        <div className="space-y-3">
+          <div className="text-xs text-gray-500">Visitor <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{selectedGroup.user}</span> • {selectedGroup.count} messages • IP {selectedGroup.lastIp || '-'} • from {new Date(selectedGroup.firstAt).toLocaleDateString()} to {new Date(selectedGroup.lastAt).toLocaleDateString()}</div>
+          <div className="brutal-card p-0 overflow-hidden">
+            <div className="max-h-[480px] overflow-y-auto divide-y divide-gray-100">
+              {(() => {
+                // group by date
+                const byDate = new Map<string, MessageRow[]>();
+                for (const m of selectedGroup.msgs) {
+                  const d = new Date(m.createdAt).toLocaleDateString();
+                  if (!byDate.has(d)) byDate.set(d, []);
+                  byDate.get(d)!.push(m);
+                }
+                return Array.from(byDate.entries()).map(([date, list]) => (
+                  <div key={date}>
+                    <div className="sticky top-0 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-500 border-y border-gray-100">{date} — {list.length} msgs</div>
+                    <div className="p-3 space-y-2">
+                      {list.map(m=>(
+                        <div key={m.id} className={`flex ${m.role==='user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role==='user' ? 'bg-gray-900 text-white rounded-br-sm' : 'bg-gray-100 text-gray-900 rounded-bl-sm'}`}>
+                            <div className="break-words whitespace-pre-wrap">{m.content}</div>
+                            <div className={`text-xs mt-1 ${m.role==='user' ? 'text-white/60' : 'text-gray-400'}`}>{new Date(m.createdAt).toLocaleTimeString()} • {m.ip}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="brutal-card p-0 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500">
-                <tr>
-                  <th className="text-left px-3 py-2 font-medium">Time</th>
-                  <th className="text-left px-3 py-2 font-medium">IP / Visitor</th>
-                  <th className="text-left px-3 py-2 font-medium">Role</th>
-                  <th className="text-left px-3 py-2 font-medium">Message</th>
-                  <th className="text-left px-3 py-2 font-medium">Model</th>
-                </tr>
-              </thead>
-              <tbody>
-                {messages.map(m=>(
-                  <tr key={m.id} className="border-t border-gray-100">
-                    <td className="px-3 py-2 text-xs whitespace-nowrap text-gray-500">{new Date(m.createdAt).toLocaleString()}</td>
-                    <td className="px-3 py-2 text-xs"><div className="font-mono text-xs">{m.ip || '-'}</div><div className="text-xs text-gray-400 truncate max-w-[140px]">{m.userIdentifier}</div></td>
-                    <td className="px-3 py-2 text-xs"><span className={`px-2 py-0.5 rounded-full text-xs ${m.role==='user'?'bg-gray-900 text-white':'bg-gray-100'}`}>{m.role}</span></td>
-                    <td className="px-3 py-2 text-sm max-w-lg break-words">{m.content}</td>
-                    <td className="px-3 py-2 text-xs text-gray-400">{m.model}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="divide-y divide-gray-100">
+            {grouped.map(g=>(
+              <button key={g.user} onClick={()=>setSelectedUser(g.user)} className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="font-mono text-sm truncate">{g.user}</div>
+                  <div className="text-xs text-gray-500 truncate">IP {g.lastIp || '-'} • {g.count} msgs • last {new Date(g.lastAt).toLocaleString()}</div>
+                  <div className="text-xs text-gray-400 truncate max-w-md">{g.msgs[g.msgs.length-1]?.content.slice(0,80)}</div>
+                </div>
+                <div className="shrink-0 text-xs text-gray-400 flex items-center gap-2">
+                  <span>{new Date(g.lastAt).toLocaleDateString()}</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </div>
+              </button>
+            ))}
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import ChatbotDashboard from './components/ChatbotDashboard';
 import Overview from './components/Overview';
+import AllBotsView from './components/AllBotsView';
 import BotCreationWizard from './components/BotCreationWizard';
 import KnowledgeSection from './components/KnowledgeSection';
 import { Chatbot, KnowledgeData } from './types';
@@ -13,6 +14,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [showBotWizard, setShowBotWizard] = useState(false);
   const [forceWizardFor, setForceWizardFor] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const api = async (url: string, options: RequestInit = {}) => {
     const response = await fetch(url, {
@@ -61,6 +63,7 @@ export default function App() {
     const data = await api(`/api/knowledge?chatbotId=${encodeURIComponent(id)}`);
     setSelectedBot(bot);
     setKnowledge(data);
+    setShowAll(false);
   };
 
   const saveKnowledge = async (data: KnowledgeData) => {
@@ -106,16 +109,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
-      <header className="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-gray-200">
+      <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <button onClick={() => setSelectedBot(null)} className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-gray-900 text-white flex items-center justify-center font-bold text-sm">B</span>
+          <button onClick={() => { setSelectedBot(null); setShowAll(false); }} className="flex items-center gap-3">
+            <img src="/img/logo.webp" alt="Bolnee" className="w-9 h-9 rounded-lg object-contain" />
             <span className="font-semibold tracking-tight text-gray-900">Bolnee</span>
-            <span className="ml-2 hidden sm:inline text-xs text-gray-500 border border-gray-200 rounded-full px-2 py-0.5">Dashboard</span>
           </button>
           <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-xs text-gray-500">Self-hosted • No login required</span>
-            {!selectedBot && (
+            {!selectedBot && !showAll && (
               <button onClick={() => setShowBotWizard(true)} className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm px-4 py-2 rounded-lg hover:bg-black transition">
                 <Plus className="w-4 h-4" /> New chatbot
               </button>
@@ -125,25 +126,21 @@ export default function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {!selectedBot && (
-          <div className="mb-8">
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Bot console</h1>
-            <p className="text-sm text-gray-500 mt-1">Create, edit, and manage chatbots. Configure website sources, API provider, and embed code. Host this dashboard on Vercel or Cloudflare — it auto-configures endpoints.</p>
-          </div>
-        )}
-
         {selectedBot && knowledge ? (
           <ChatbotDashboard chatbot={selectedBot} knowledgeData={knowledge} onSaveKnowledge={saveKnowledge} onUploadSources={uploadSources} onAddUrl={addUrlSource} onSaveSettings={saveBotSettings} onBack={() => { setForceWizardFor(null); setSelectedBot(null); }} onDeleteBot={deleteBot} />
+        ) : showAll ? (
+          <AllBotsView chatbots={chatbots} onSelectBot={selectBot} onBack={() => setShowAll(false)} onCreateRequest={() => setShowBotWizard(true)} />
         ) : (
           <>
+            <div className="mb-6">
+              <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Your Chatbots</h1>
+              <p className="text-sm text-gray-500 mt-1">Manage your chatbots and their knowledge.</p>
+            </div>
             {loading ? (
               <div className="text-sm text-gray-500">Loading…</div>
             ) : (
-              <Overview chatbots={chatbots} onCreateRequest={() => setShowBotWizard(true)} onSelectBot={selectBot} onViewAll={() => {}} />
+              <Overview chatbots={chatbots} onCreateRequest={() => setShowBotWizard(true)} onSelectBot={selectBot} onViewAll={() => setShowAll(true)} />
             )}
-            <div className="mt-8 text-xs text-gray-400 border-t border-gray-200 pt-4">
-              Tip: Deploy to Vercel/Cloudflare — set <code className="bg-gray-100 px-1 py-0.5 rounded">DISABLE_AUTH=true</code> and <code>JWT_SECRET</code> is not required. Endpoints like <code>/api/chatbots</code>, <code>/api/public/chat/:id</code> and <code>/chatbot-widget.js</code> are auto-routed via <code>vercel.json</code> / Cloudflare Pages.
-            </div>
           </>
         )}
       </main>

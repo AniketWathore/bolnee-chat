@@ -29,6 +29,7 @@ import {
   insertMessage,
   listMessages,
   getChatStats,
+  getGlobalStats,
 } from "./server/db.ts";
 import { hashContent, ingestFile, ingestUrl, validateUrlForSSRF } from "./server/ingestion.ts";
 
@@ -36,10 +37,35 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "development-secret-change-me";
 const DATA_DIR = path.join(process.cwd(), "data");
+const AVATAR_DIR = path.join(DATA_DIR, "avatars");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const CHATBOTS_FILE = path.join(DATA_DIR, "chatbots.json");
 const DEFAULT_USER_ID = "user_local";
 const DISABLE_AUTH = process.env.DISABLE_AUTH === "true" || process.env.VITE_DISABLE_AUTH === "true";
+
+async function storeAvatar(chatbotId: string, dataUrl: string): Promise<string> {
+  try {
+    if (!dataUrl) return "";
+    if (dataUrl.startsWith("/api/public/avatar/")) return dataUrl;
+    if (/^https?:\/\//.test(dataUrl)) return dataUrl;
+    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/);
+    if (!match) return dataUrl;
+    const ext = match[2] === "jpeg" ? "jpg" : match[2];
+    const base64 = match[3];
+    const buffer = Buffer.from(base64, "base64");
+    if (buffer.length > 2 * 1024 * 1024) throw new Error("Avatar too large");
+    await fs.ensureDir(AVATAR_DIR);
+    const filePath = path.join(AVATAR_DIR, `${chatbotId}.${ext}`);
+    // Clean old avatars for this bot with different ext
+    const existing = await fs.readdir(AVATAR_DIR).catch(() => []);
+    for (const f of existing) if (f.startsWith(chatbotId + ".")) await fs.remove(path.join(AVATAR_DIR, f)).catch(() => {});
+    await fs.writeFile(filePath, buffer);
+    return `/api/public/avatar/${chatbotId}`;
+  } catch (e) {
+    console.warn("[avatar] store failed", e);
+    return "";
+  }
+}
 
 // Validate env at startup
 function validateEnv() {
@@ -326,7 +352,7 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
       res.write(`data: ${JSON.stringify({ token: fallback })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
-      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: "system", model }); } catch { /* ignore */ }
+      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: visitorId, model }); } catch { /* ignore */ }
       return res.end();
     }
 
@@ -344,8 +370,8 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
       res.write(`data: ${JSON.stringify({ token: fallback })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
-      // persist fallback as assistant message for history
-      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: "system", model }); } catch { /* ignore */ }
+      // persist fallback as assistant message for history (group with same visitor)
+      try { insertMessage(chatbotId, "assistant", fallback, { ip: visitorIp, userIdentifier: visitorId, model }); } catch { /* ignore */ }
       return res.end();
     }
 
@@ -422,6 +448,29 @@ app.get("/api/public/corpus/:chatbotId", async (req, res) => {
   }
 });
 
+app.get("/api/public/avatar/:chatbotId", async (req, res) => {
+  try {
+    const { chatbotId } = req.params;
+    const bot = findChatbot(chatbotId);
+    if (!bot) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    if (!(await fs.pathExists(AVATAR_DIR))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "No avatar" });
+    const files = await fs.readdir(AVATAR_DIR);
+    const match = files.find(f => f.startsWith(chatbotId + "."));
+    if (!match) {
+      if (bot.avatar && /^https?:\/\//.test(bot.avatar)) return (res as unknown as { redirect:(u:string)=>void }).redirect(bot.avatar);
+      return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Avatar not found" });
+    }
+    const filePath = path.join(AVATAR_DIR, match);
+    const ext = path.extname(match).toLowerCase();
+    const mime = ext === ".png" ? "image/png" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "application/octet-stream";
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", mime);
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "public, max-age=86400");
+    return (res as unknown as { sendFile:(p:string)=>void }).sendFile(path.resolve(filePath));
+  } catch {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load avatar" });
+  }
+});
+
 // --- Auth Routes ---
 app.post("/api/auth/register", async (req, res) => {
   try {
@@ -472,11 +521,22 @@ app.post("/api/auth/login", async (req, res) => {
 app.get("/api/chatbots", authenticate, async (req: unknown, res) => {
   try {
     const r = req as { user: { userId:string } };
-    const userChatbots = listChatbotsForRequest(r.user.userId).map((chatbot) => ({
-      _id: chatbot.id,
-      name: chatbot.name,
-      avatar: chatbot.avatar || "",
-      createdAt: chatbot.createdAt,
+    const userChatbots = await Promise.all(listChatbotsForRequest(r.user.userId).map(async (chatbot) => {
+      let avatar = chatbot.avatar || "";
+      if (avatar.startsWith("data:image/")) {
+        const url = await storeAvatar(chatbot.id, avatar);
+        if (url) {
+          const bot = findChatbot(chatbot.id);
+          if (bot) updateChatbotSettings(chatbot.id, (bot as { userId: string }).userId, { avatar: url } as unknown as Record<string, unknown> as never);
+          avatar = url;
+        }
+      }
+      return {
+        _id: chatbot.id,
+        name: chatbot.name,
+        avatar,
+        createdAt: chatbot.createdAt,
+      };
     }));
     return (res as unknown as { json:(o:unknown)=>void}).json(userChatbots);
   } catch {
@@ -489,7 +549,16 @@ app.get("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
     const r = req as { user:{userId:string}; params:{id:string} };
     const chatbot = findChatbotForRequest(r.params.id, r.user.userId);
     if (!chatbot) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
-    return (res as unknown as { json:(o:unknown)=>void}).json({ _id: chatbot.id, name: chatbot.name, avatar: chatbot.avatar || "", createdAt: chatbot.createdAt });
+    let avatar = chatbot.avatar || "";
+    if (avatar.startsWith("data:image/")) {
+      const url = await storeAvatar(chatbot.id, avatar);
+      if (url) {
+        const bot = findChatbot(chatbot.id);
+        if (bot) updateChatbotSettings(chatbot.id, (bot as { userId: string }).userId, { avatar: url } as unknown as Record<string, unknown> as never);
+        avatar = url;
+      }
+    }
+    return (res as unknown as { json:(o:unknown)=>void}).json({ _id: chatbot.id, name: chatbot.name, avatar, createdAt: chatbot.createdAt });
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to fetch chatbot" });
   }
@@ -500,8 +569,8 @@ app.post("/api/chatbots", authenticate, async (req: unknown, res) => {
     const r = req as { user:{userId:string}; body:{ name?:unknown; avatar?:unknown } };
     const { name, avatar = "" } = r.body;
     if (!isValidChatbotName(name as string)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Chatbot name is required (1-80 chars)" });
-    if (typeof avatar === "string" && avatar.length > 2.5 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large (max 2MB)" });
-    if (typeof avatar === "string" && avatar && !avatar.startsWith("data:image/")) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar must be a data URL image" });
+    if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large (max 2MB)" });
+    if (typeof avatar === "string" && avatar && !(avatar.startsWith("data:image/") || avatar.startsWith("/api/public/avatar/") || /^https?:\/\//.test(avatar))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar must be an image data URL or http URL" });
     const newChatbot = {
       id: "bot_" + uuidv4(),
       userId: r.user.userId,
@@ -509,12 +578,16 @@ app.post("/api/chatbots", authenticate, async (req: unknown, res) => {
       createdAt: new Date().toISOString()
     };
     
-    insertChatbot({ ...newChatbot, avatar: typeof avatar === "string" ? avatar : "" });
+    let avatarUrl = typeof avatar === "string" ? avatar : "";
+    if (avatarUrl.startsWith("data:image/")) {
+      avatarUrl = await storeAvatar(newChatbot.id, avatarUrl);
+    }
+    insertChatbot({ ...newChatbot, avatar: avatarUrl });
     
     return (res as unknown as { json:(o:unknown)=>void}).json({
       _id: newChatbot.id,
       name: newChatbot.name,
-      avatar: typeof avatar === "string" ? avatar : "",
+      avatar: avatarUrl,
       createdAt: newChatbot.createdAt
     });
   } catch {
@@ -532,7 +605,7 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (model !== undefined && String(model).trim() && !isValidModel(String(model))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid model" });
   if (baseUrl !== undefined && typeof baseUrl !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "baseUrl must be a string" });
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
-  if (typeof avatar === "string" && avatar.length > 2.5 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
+  if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
   // Handle appearance fields (name, accentColor, etc.) plus provider fields
   const appearanceFields = {
     name: (r.body as { name?: unknown })?.name as string | undefined,
@@ -542,17 +615,22 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
     defaultMessage: (r.body as { defaultMessage?: unknown })?.defaultMessage as string | undefined,
     fallbackMessage: (r.body as { fallbackMessage?: unknown })?.fallbackMessage as string | undefined,
   };
+  // Convert data URL avatar to file URL
+  let avatarToStore = avatar as string | undefined;
+  if (typeof avatarToStore === "string" && avatarToStore.startsWith("data:image/")) {
+    avatarToStore = await storeAvatar(r.params.id, avatarToStore);
+  }
   let updated = false;
   if (DISABLE_AUTH) {
     const existing = findChatbot(r.params.id);
     if (!existing) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     updated = updateChatbotSettings(r.params.id, (existing as { userId: string }).userId, {
-      avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
+      avatar: avatarToStore, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
       name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
     });
   } else {
     updated = updateChatbotSettings(r.params.id, r.user.userId, {
-      avatar: avatar as string|undefined, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
+      avatar: avatarToStore, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
       name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
     });
   }
@@ -606,6 +684,14 @@ app.post("/api/providers/models", authenticate, async (req: unknown, res) => {
   }
 });
 
+app.get("/api/stats", async (_req, res) => {
+  try {
+    return (res as unknown as { json:(o:unknown)=>void }).json(getGlobalStats());
+  } catch {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed" });
+  }
+});
+
 app.get("/api/chatbots/:id/messages", authenticate, async (req: unknown, res) => {
   const r = req as { user: { userId: string }; params: { id: string }; query: { limit?: string } };
   if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
@@ -642,7 +728,17 @@ app.get("/api/chatbots/:id/messages/export", authenticate, async (req: unknown, 
 app.get("/api/chatbots/:id/appearance", authenticate, async (req: unknown, res) => {
   const r = req as { user: { userId: string }; params: { id: string } };
   if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
-  return (res as unknown as { json:(o:unknown)=>void }).json(getChatbotAppearance(r.params.id));
+  let appearance = getChatbotAppearance(r.params.id);
+  // Lazily migrate data URL avatars to file URLs for existing bots
+  if (appearance && appearance.avatar && appearance.avatar.startsWith("data:image/")) {
+    const url = await storeAvatar(r.params.id, appearance.avatar);
+    if (url) {
+      const bot = findChatbot(r.params.id);
+      if (bot) updateChatbotSettings(r.params.id, (bot as { userId: string }).userId, { avatar: url } as unknown as Record<string, unknown> as never);
+      appearance = { ...appearance, avatar: url };
+    }
+  }
+  return (res as unknown as { json:(o:unknown)=>void }).json(appearance);
 });
 
 app.delete("/api/knowledge/sources/:sourceId", authenticate, async (req: unknown, res) => {
