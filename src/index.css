@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f8fafc;
-  --color-ink: #0f172a;
-  --color-line: #e2e8f0;
+  --color-bg: #020617;
+  --color-ink: #f1f5f9;
+  --color-line: #334155;
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --color-card: #ffffff;
-  --color-input-bg: #ffffff;
+  --color-card: #1e293b;
+  --color-input-bg: #1e293b;
+  --color-btn: #334155;
 }
 
 @layer base {
@@ -32,11 +33,11 @@
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.15s ease;
-  background-color: white;
+  background-color: var(--color-btn, #1e293b);
   color: var(--color-ink);
   cursor: pointer;
   &:hover {
-    background-color: #f1f5f9;
+    background-color: #334155;
   }
 }
 
@@ -80,7 +81,7 @@
     color: var(--color-ink);
   }
   &.active {
-    background-color: white;
+    background-color: var(--color-btn, #1e293b);
     color: var(--color-ink);
     box-shadow: 0 1px 2px rgba(0,0,0,0.06);
     border: 1px solid var(--color-line);
@@ -88,21 +89,12 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    --color-card: #1e293b;
-    --color-input-bg: #1e293b;
-    --color-bg: #0f172a;
-    --color-ink: #f1f5f9;
-    --color-line: #334155;
-  }
-}
-
-/* Always apply dark vars when html has .dark class */
-html.dark {
+/* Dark mode only - no light variant */
+html, html.dark {
   --color-card: #1e293b;
-  --color-input-bg: #1e293b;
-  --color-bg: #0f172a;
+  --color-input-bg: #0f172a;
+  --color-btn: #334155;
+  --color-bg: #020617;
   --color-ink: #f1f5f9;
   --color-line: #334155;
 }

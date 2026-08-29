@@ -249,10 +249,10 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
   };
 
   const statusColor = (s: string) => {
-    if (s === "indexed") return "text-green-600 border-green-200 bg-green-50";
-    if (s === "failed" || s === "empty") return "text-red-600 border-red-200 bg-red-50";
-    if (["queued","crawling","parsing","indexing"].includes(s)) return "text-amber-600 border-amber-200 bg-amber-50";
-    return "text-gray-600 border-line bg-white";
+    if (s === "indexed") return "text-emerald-400 border-emerald-800 bg-emerald-950";
+    if (s === "failed" || s === "empty") return "text-red-400 border-red-800 bg-red-950";
+    if (["queued","crawling","parsing","indexing"].includes(s)) return "text-amber-400 border-amber-800 bg-amber-950";
+    return "text-slate-400 border-slate-700 bg-slate-900";
   };
 
   const renderStepIndicator = () => (
@@ -261,7 +261,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
         <div key={s} className="flex items-center gap-2">
           <div className={`w-8 h-8 flex items-center justify-center brutal-border text-[10px] font-mono font-bold transition-all duration-300 ${
             step > s ? 'bg-green-500 text-white border-green-500' :
-            step === s ? 'bg-ink text-bg scale-110' : 'bg-white text-ink opacity-30'
+            step === s ? 'bg-ink text-bg scale-110' : 'bg-slate-800 text-slate-400 opacity-50'
           }`}>
             {step > s ? <Check className="w-4 h-4" /> : s}
           </div>
@@ -292,7 +292,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
         <p className="font-mono text-[10px] opacity-40">We crawl same-origin pages, respect robots.txt and crawl limits.</p>
       </div>
       <div className="text-center font-mono text-[10px] uppercase opacity-40">or upload documents</div>
-      <label className="flex flex-col items-center justify-center p-10 brutal-border border-dashed bg-white cursor-pointer hover:bg-line/5 transition-colors">
+      <label className="flex flex-col items-center justify-center p-10 brutal-border border-dashed bg-slate-900 cursor-pointer hover:bg-slate-800 border-slate-700 transition-colors">
         <Upload className="w-8 h-8 mb-3 opacity-40" />
         <span className="font-mono text-xs uppercase tracking-wider opacity-60">PDF, DOCX, TXT, Markdown or FAQ file</span>
         <span className="font-mono text-[10px] opacity-40 mt-1">Max 15 MB per file</span>
@@ -302,7 +302,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
         <div className="space-y-2">
           <p className="font-mono text-[10px] uppercase tracking-widest opacity-50">{files.length} document(s) selected</p>
           {files.map((file, i) => (
-            <div key={i} className="flex items-center justify-between p-3 brutal-border bg-white">
+            <div key={i} className="flex items-center justify-between p-3 brutal-border bg-slate-900">
               <div className="flex items-center gap-3">
                 <FileText className="w-4 h-4 opacity-50" />
                 <span className="font-mono text-xs">{file.name}</span>
@@ -459,7 +459,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
         </div>
       )}
 
-      <div className="bg-blue-50 border border-blue-200 p-6 flex items-start gap-4">
+      <div className="bg-blue-950 border border-blue-800 p-6 flex items-start gap-4">
         <div className="w-10 h-10 bg-blue-600 text-white flex items-center justify-center brutal-border shrink-0">
           <Building2 className="w-5 h-5" />
         </div>
@@ -492,7 +492,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="relative w-full max-w-2xl bg-white brutal-border shadow-[12px_12px_0_0_rgba(0,0,0,1)] overflow-hidden max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-2xl bg-[#0f172a] brutal-border shadow-[12px_12px_0_0_rgba(0,0,0,1)] overflow-hidden max-h-[90vh] overflow-y-auto"
       >
         <div className="p-8">
           <div className="flex items-start justify-between mb-2">
@@ -500,7 +500,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
             {step < 4 && onCancel && (
               <button
                 onClick={onCancel}
-                className="brutal-btn bg-white p-2 flex items-center justify-center ml-4"
+                className="brutal-btn bg-slate-800 text-slate-200 border-slate-700 p-2 flex items-center justify-center ml-4"
               >
                 <X className="w-4 h-4" />
               </button>

@@ -41,7 +41,7 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={onCancel} />
-      <form onSubmit={submit} className="relative w-full max-w-lg bg-white brutal-border shadow-[12px_12px_0_0_rgba(0,0,0,1)] p-8 space-y-8">
+      <form onSubmit={submit} className="relative w-full max-w-lg bg-[#0f172a] brutal-border border-slate-700 shadow-[12px_12px_0_0_rgba(0,0,0,1)] p-8 space-y-8">
         <button type="button" onClick={onCancel} className="absolute top-5 right-5 brutal-btn p-2"><X className="w-4 h-4" /></button>
         <div className="space-y-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Step 01 / Identity</p>
@@ -49,7 +49,7 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
           <p className="font-mono text-xs opacity-60">Give your assistant a name and a recognizable avatar.</p>
         </div>
         <div className="flex items-center gap-5">
-          <label className="w-24 h-24 brutal-border bg-bg flex items-center justify-center cursor-pointer overflow-hidden" title="Upload chatbot avatar">
+          <label className="w-24 h-24 brutal-border bg-slate-800 flex items-center justify-center cursor-pointer overflow-hidden" title="Upload chatbot avatar">
             {avatar ? <img src={avatar} alt="Chatbot avatar preview" className="w-full h-full object-cover" /> : <ImagePlus className="w-7 h-7 opacity-40" />}
             <input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseAvatar} className="hidden" />
           </label>

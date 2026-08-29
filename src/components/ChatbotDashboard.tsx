@@ -60,7 +60,7 @@ export default function ChatbotDashboard({
     name: chatbot.name,
     avatar: chatbot.avatar || '',
     accentColor: (chatbot as unknown as { accentColor?: string }).accentColor || '#111111',
-    theme: (chatbot as unknown as { theme?: string }).theme || 'light',
+    theme: (chatbot as unknown as { theme?: string }).theme || 'dark',
     greeting: (chatbot as unknown as { greeting?: string }).greeting || 'Hi! How can I help?',
   });
   const [appearanceSaving, setAppearanceSaving] = useState(false);
@@ -148,7 +148,7 @@ export default function ChatbotDashboard({
           name: data.name || chatbot.name,
           avatar: data.avatar || '',
           accentColor: data.accentColor || '#111111',
-          theme: data.theme || 'light',
+          theme: data.theme || 'dark',
           greeting: data.greeting || 'Hi! How can I help?',
         });
         setSettings(prev => ({
@@ -245,36 +245,36 @@ export default function ChatbotDashboard({
     <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="brutal-card p-5">
-          <div className="flex items-center gap-2 text-gray-500 text-xs"><Bot className="w-3 h-3" /> Status</div>
-          <div className="mt-2 text-xl font-semibold text-green-600">Live</div>
+          <div className="flex items-center gap-2 text-slate-400 text-xs"><Bot className="w-3 h-3" /> Status</div>
+          <div className="mt-2 text-xl font-semibold text-emerald-400">Live</div>
         </div>
         <div className="brutal-card p-5">
-          <div className="flex items-center gap-2 text-gray-500 text-xs"><MessageSquare className="w-3 h-3" /> Messages</div>
+          <div className="flex items-center gap-2 text-slate-400 text-xs"><MessageSquare className="w-3 h-3" /> Messages</div>
           <div className="mt-2 text-xl font-semibold">{stats?.total ?? '--'}</div>
-          <div className="text-xs text-gray-400">{stats?.users ?? 0} users</div>
+          <div className="text-xs text-slate-500">{stats?.users ?? 0} users</div>
         </div>
         <div className="brutal-card p-5">
-          <div className="flex items-center gap-2 text-gray-500 text-xs"><Clock className="w-3 h-3" /> Created</div>
+          <div className="flex items-center gap-2 text-slate-400 text-xs"><Clock className="w-3 h-3" /> Created</div>
           <div className="mt-2 text-sm font-medium">{new Date(chatbot.createdAt).toLocaleDateString()}</div>
         </div>
         <div className="brutal-card p-5">
-          <div className="flex items-center gap-2 text-gray-500 text-xs"><Globe className="w-3 h-3" /> Sources</div>
+          <div className="flex items-center gap-2 text-slate-400 text-xs"><Globe className="w-3 h-3" /> Sources</div>
           <div className="mt-2 text-xl font-semibold">{sources.length}</div>
-          <div className="text-xs text-gray-400">{sources.filter(s=>s.status==='indexed').length} indexed</div>
+          <div className="text-xs text-slate-500">{sources.filter(s=>s.status==='indexed').length} indexed</div>
         </div>
       </div>
 
       <div className="brutal-card p-6 space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold">Embed code</h3>
-          <button onClick={copyToClipboard} className="inline-flex items-center gap-2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg">
+          <button onClick={copyToClipboard} className="inline-flex items-center gap-2 bg-white text-black text-xs px-3 py-1.5 rounded-lg">
             {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} {copied ? 'Copied' : 'Copy'}
           </button>
         </div>
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto whitespace-pre-wrap break-all max-h-40">
+        <pre className="bg-slate-950 text-slate-100 p-4 rounded-lg text-xs overflow-x-auto whitespace-pre-wrap break-all max-h-40">
           {embedCode}
         </pre>
-        <p className="text-xs text-gray-500">Paste this before <code className="bg-gray-100 px-1 rounded">&lt;/body&gt;</code> on your site. Uses <code className="bg-gray-100 px-1 rounded">{DEPLOY_URL}/api/public/chat/{chatbot._id}</code>.</p>
+        <p className="text-xs text-slate-400">Paste this before <code className="bg-slate-800 px-1 rounded">&lt;/body&gt;</code> on your site. Uses <code className="bg-slate-800 px-1 rounded">{DEPLOY_URL}/api/public/chat/{chatbot._id}</code>.</p>
       </div>
     </motion.div>
   );
@@ -284,16 +284,16 @@ export default function ChatbotDashboard({
       <div className="brutal-card space-y-5">
         <h3 className="font-semibold">Appearance</h3>
         <div className="space-y-3">
-          <label className="text-xs font-medium text-gray-600">Bot name</label>
+          <label className="text-xs font-medium text-slate-400">Bot name</label>
           <input value={appearance.name} onChange={e=>setAppearance({...appearance, name:e.target.value})} className="brutal-input" placeholder="Customer Bot" />
         </div>
         <div className="space-y-3">
-          <label className="text-xs font-medium text-gray-600">Avatar / Logo (data URL or leave empty)</label>
+          <label className="text-xs font-medium text-slate-400">Avatar / Logo (data URL or leave empty)</label>
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
-              {appearance.avatar ? <img src={appearance.avatar} alt="avatar" className="w-full h-full object-cover" /> : <Bot className="w-6 h-6 text-gray-400" />}
+            <div className="w-16 h-16 rounded-xl border border-slate-700 bg-slate-800 flex items-center justify-center overflow-hidden">
+              {appearance.avatar ? <img src={appearance.avatar} alt="avatar" className="w-full h-full object-cover" /> : <Bot className="w-6 h-6 text-slate-500" />}
             </div>
-            <label className="inline-flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-gray-50">
+            <label className="inline-flex items-center gap-2 border border-slate-700 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-800">
               <Upload className="w-4 h-4" /> Upload
               <input type="file" accept="image/*" className="hidden" onChange={e=>{
                 const f=e.target.files?.[0]; if(!f) return;
@@ -301,26 +301,26 @@ export default function ChatbotDashboard({
                 const r=new FileReader(); r.onload=()=>setAppearance({...appearance, avatar: String(r.result)}); r.readAsDataURL(f);
               }} />
             </label>
-            {appearance.avatar && <button onClick={()=>setAppearance({...appearance, avatar:''})} className="text-xs text-gray-500"><X className="w-3 h-3 inline" /> Clear</button>}
+            {appearance.avatar && <button onClick={()=>setAppearance({...appearance, avatar:''})} className="text-xs text-slate-400"><X className="w-3 h-3 inline" /> Clear</button>}
           </div>
           {appearance.avatar && appearance.avatar.startsWith('data:image') ? (
-            <div className="text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
+            <div className="text-xs text-slate-400 bg-amber-950 border border-amber-800 text-amber-400 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
           ) : appearance.avatar && appearance.avatar.startsWith('/api/public/avatar/') ? (
-            <div className="text-xs text-gray-600 bg-green-50 border border-green-200 rounded p-2">Avatar stored ✓ — preview above. Upload new image to replace.</div>
+            <div className="text-xs text-slate-400 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded p-2">Avatar stored ✓ — preview above. Upload new image to replace.</div>
           ) : (
             <input value={appearance.avatar} onChange={e=>setAppearance({...appearance, avatar:e.target.value})} placeholder="https://... or leave empty for default icon" className="brutal-input text-xs" />
           )}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-600">Accent / Background colour</label>
+            <label className="text-xs font-medium text-slate-400">Accent / Background colour</label>
             <div className="flex items-center gap-2">
-              <input type="color" value={appearance.accentColor} onChange={e=>setAppearance({...appearance, accentColor:e.target.value})} className="w-10 h-10 rounded border border-gray-200" />
+              <input type="color" value={appearance.accentColor} onChange={e=>setAppearance({...appearance, accentColor:e.target.value})} className="w-10 h-10 rounded border border-slate-700" />
               <input value={appearance.accentColor} onChange={e=>setAppearance({...appearance, accentColor:e.target.value})} className="brutal-input" />
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-600">Theme</label>
+            <label className="text-xs font-medium text-slate-400">Theme</label>
             <select value={appearance.theme} onChange={e=>setAppearance({...appearance, theme:e.target.value})} className="brutal-input">
               <option value="light">Light</option>
               <option value="dark">Dark</option>
@@ -329,21 +329,21 @@ export default function ChatbotDashboard({
           </div>
         </div>
         <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-600">Greeting (first message)</label>
+          <label className="text-xs font-medium text-slate-400">Greeting (first message)</label>
           <input value={appearance.greeting} onChange={e=>setAppearance({...appearance, greeting:e.target.value})} className="brutal-input" placeholder="Hi! How can I help?" />
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={handleAppearanceSave} disabled={appearanceSaving} className="bg-gray-900 text-white px-5 py-2 rounded-lg text-sm disabled:opacity-50">{appearanceSaving ? 'Saving…' : 'Save appearance'}</button>
-          {appearanceMsg && <span className="text-xs text-gray-500">{appearanceMsg}</span>}
+          <button onClick={handleAppearanceSave} disabled={appearanceSaving} className="bg-white text-black px-5 py-2 rounded-lg text-sm disabled:opacity-50">{appearanceSaving ? 'Saving…' : 'Save appearance'}</button>
+          {appearanceMsg && <span className="text-xs text-slate-400">{appearanceMsg}</span>}
         </div>
-        <div className="rounded-lg border border-gray-200 p-4 bg-gray-50">
-          <div className="text-xs text-gray-500 mb-2">Preview</div>
-          <div className="rounded-xl overflow-hidden border border-gray-200 bg-white max-w-sm">
+        <div className="rounded-lg border border-slate-700 p-4 bg-slate-800">
+          <div className="text-xs text-slate-400 mb-2">Preview</div>
+          <div className="rounded-xl overflow-hidden border border-slate-700 bg-slate-900 max-w-sm">
             <div className="px-4 py-3 flex items-center gap-3" style={{ background: appearance.accentColor }}>
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">{appearance.avatar ? <img src={appearance.avatar} alt="" className="w-full h-full object-cover" /> : '🤖'}</div>
+              <div className="w-8 h-8 rounded-full bg-slate-900/20 flex items-center justify-center overflow-hidden">{appearance.avatar ? <img src={appearance.avatar} alt="" className="w-full h-full object-cover" /> : '🤖'}</div>
               <div className="text-white text-sm font-medium">{appearance.name}</div>
             </div>
-            <div className="p-4 text-sm text-gray-700">{appearance.greeting}</div>
+            <div className="p-4 text-sm text-slate-200">{appearance.greeting}</div>
           </div>
         </div>
       </div>
@@ -373,30 +373,30 @@ export default function ChatbotDashboard({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="font-semibold">Conversations {selectedUser ? `— ${selectedUser.slice(0,24)}` : `(${grouped.length} users, ${messages.length} msgs)`}</h3>
         <div className="flex items-center gap-2">
-          {selectedUser && <button onClick={()=>setSelectedUser(null)} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50"><ArrowLeft className="w-3 h-3" /> Back to users</button>}
-          <button onClick={fetchMessages} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50"><RefreshCw className="w-3 h-3" /> Refresh</button>
-          <button onClick={()=>downloadChats('csv')} className="inline-flex items-center gap-1 bg-gray-900 text-white rounded-lg px-3 py-1.5 text-xs"><Download className="w-3 h-3" /> CSV (Excel)</button>
-          <button onClick={()=>downloadChats('json')} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">JSON</button>
+          {selectedUser && <button onClick={()=>setSelectedUser(null)} className="inline-flex items-center gap-1 border border-slate-700 rounded-lg px-3 py-1.5 text-xs hover:bg-slate-800"><ArrowLeft className="w-3 h-3" /> Back to users</button>}
+          <button onClick={fetchMessages} className="inline-flex items-center gap-1 border border-slate-700 rounded-lg px-3 py-1.5 text-xs hover:bg-slate-800"><RefreshCw className="w-3 h-3" /> Refresh</button>
+          <button onClick={()=>downloadChats('csv')} className="inline-flex items-center gap-1 bg-white text-black rounded-lg px-3 py-1.5 text-xs"><Download className="w-3 h-3" /> CSV (Excel)</button>
+          <button onClick={()=>downloadChats('json')} className="inline-flex items-center gap-1 border border-slate-700 rounded-lg px-3 py-1.5 text-xs">JSON</button>
           <button onClick={()=>{
             const rows=messages.map(m=>`<tr><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${new Date(m.createdAt).toLocaleString()}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.ip||'-'}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.userIdentifier||'-'}</td><td style="border:1px solid #e2e8f0;padding:6px;font-size:11px">${m.role}</td><td style="border:1px solid #e2e8f0;padding:6px;max-width:400px;word-break:break-word;font-size:11px">${m.content.replace(/</g,'&lt;')}</td></tr>`).join('');
             const w=window.open('','_blank'); if(!w) return;
             w.document.write(`<html><head><title>Chats ${chatbot._id}</title></head><body><h2>Chats for ${chatbot.name}</h2><table style="border-collapse:collapse;width:100%"><tr><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc;text-align:left">Time</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">IP</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Visitor</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Role</th><th style="border:1px solid #e2e8f0;padding:6px;background:#f8fafc">Message</th></tr>${rows}</table><script>window.print()<`+`/script></body></html>`);
             w.document.close();
-          }} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">PDF</button>
+          }} className="inline-flex items-center gap-1 border border-slate-700 rounded-lg px-3 py-1.5 text-xs">PDF</button>
         </div>
       </div>
 
-      {loadingChats ? <div className="text-sm text-gray-500">Loading…</div> : messages.length === 0 ? (
+      {loadingChats ? <div className="text-sm text-slate-400">Loading…</div> : messages.length === 0 ? (
         <div className="brutal-card text-center py-16 border-dashed bg-transparent">
           <MessageSquare className="w-10 h-10 opacity-10 mx-auto" />
           <div className="mt-3 font-medium">No conversations yet</div>
-          <div className="text-xs text-gray-500 max-w-sm mx-auto mt-1">When visitors chat via the embed, their IP, identifier, date/time and messages appear here — grouped by visitor.</div>
+          <div className="text-xs text-slate-400 max-w-sm mx-auto mt-1">When visitors chat via the embed, their IP, identifier, date/time and messages appear here — grouped by visitor.</div>
         </div>
       ) : selectedUser && selectedGroup ? (
         <div className="space-y-3">
-          <div className="text-xs text-gray-500">Visitor <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{selectedGroup.user}</span> • {selectedGroup.count} messages • IP {selectedGroup.lastIp || '-'} • from {new Date(selectedGroup.firstAt).toLocaleDateString()} to {new Date(selectedGroup.lastAt).toLocaleDateString()}</div>
+          <div className="text-xs text-slate-400">Visitor <span className="font-mono bg-slate-800 px-1.5 py-0.5 rounded">{selectedGroup.user}</span> • {selectedGroup.count} messages • IP {selectedGroup.lastIp || '-'} • from {new Date(selectedGroup.firstAt).toLocaleDateString()} to {new Date(selectedGroup.lastAt).toLocaleDateString()}</div>
           <div className="brutal-card p-0 overflow-hidden">
-            <div className="max-h-[480px] overflow-y-auto divide-y divide-gray-100">
+            <div className="max-h-[480px] overflow-y-auto divide-y divide-slate-800">
               {(() => {
                 // group by date
                 const byDate = new Map<string, MessageRow[]>();
@@ -407,13 +407,13 @@ export default function ChatbotDashboard({
                 }
                 return Array.from(byDate.entries()).map(([date, list]) => (
                   <div key={date}>
-                    <div className="sticky top-0 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-500 border-y border-gray-100">{date} — {list.length} msgs</div>
+                    <div className="sticky top-0 bg-slate-800 px-3 py-1 text-xs font-medium text-slate-400 border-y border-slate-800">{date} — {list.length} msgs</div>
                     <div className="p-3 space-y-2">
                       {list.map(m=>(
                         <div key={m.id} className={`flex ${m.role==='user' ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role==='user' ? 'bg-gray-900 text-white rounded-br-sm' : 'bg-gray-100 text-gray-900 rounded-bl-sm'}`}>
+                          <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${m.role==='user' ? 'bg-white text-black rounded-br-sm' : 'bg-slate-800 text-white rounded-bl-sm'}`}>
                             <div className="break-words whitespace-pre-wrap">{m.content}</div>
-                            <div className={`text-xs mt-1 ${m.role==='user' ? 'text-white/60' : 'text-gray-400'}`}>{new Date(m.createdAt).toLocaleTimeString()} • {m.ip}</div>
+                            <div className={`text-xs mt-1 ${m.role==='user' ? 'text-white/60' : 'text-slate-500'}`}>{new Date(m.createdAt).toLocaleTimeString()} • {m.ip}</div>
                           </div>
                         </div>
                       ))}
@@ -426,15 +426,15 @@ export default function ChatbotDashboard({
         </div>
       ) : (
         <div className="brutal-card p-0 overflow-hidden">
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-slate-800">
             {grouped.map(g=>(
-              <button key={g.user} onClick={()=>setSelectedUser(g.user)} className="w-full text-left px-4 py-3 hover:bg-gray-50 flex items-center justify-between gap-3">
+              <button key={g.user} onClick={()=>setSelectedUser(g.user)} className="w-full text-left px-4 py-3 hover:bg-slate-800 flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="font-mono text-sm truncate">{g.user}</div>
-                  <div className="text-xs text-gray-500 truncate">IP {g.lastIp || '-'} • {g.count} msgs • last {new Date(g.lastAt).toLocaleString()}</div>
-                  <div className="text-xs text-gray-400 truncate max-w-md">{g.msgs[g.msgs.length-1]?.content.slice(0,80)}</div>
+                  <div className="text-xs text-slate-400 truncate">IP {g.lastIp || '-'} • {g.count} msgs • last {new Date(g.lastAt).toLocaleString()}</div>
+                  <div className="text-xs text-slate-500 truncate max-w-md">{g.msgs[g.msgs.length-1]?.content.slice(0,80)}</div>
                 </div>
-                <div className="shrink-0 text-xs text-gray-400 flex items-center gap-2">
+                <div className="shrink-0 text-xs text-slate-500 flex items-center gap-2">
                   <span>{new Date(g.lastAt).toLocaleDateString()}</span>
                   <ArrowUpRight className="w-3 h-3" />
                 </div>
@@ -451,17 +451,17 @@ export default function ChatbotDashboard({
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Knowledge base</h3>
         <div className="flex items-center gap-2">
-          <button onClick={fetchSources} className="inline-flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs"><RefreshCw className="w-3 h-3" /> Refresh</button>
-          <button onClick={() => setShowKnowledgeWizard(true)} className="inline-flex items-center gap-1 bg-gray-900 text-white rounded-lg px-3 py-1.5 text-xs"><Upload className="w-3 h-3" /> Add knowledge</button>
+          <button onClick={fetchSources} className="inline-flex items-center gap-1 border border-slate-700 rounded-lg px-3 py-1.5 text-xs"><RefreshCw className="w-3 h-3" /> Refresh</button>
+          <button onClick={() => setShowKnowledgeWizard(true)} className="inline-flex items-center gap-1 bg-white text-black rounded-lg px-3 py-1.5 text-xs"><Upload className="w-3 h-3" /> Add knowledge</button>
         </div>
       </div>
 
-      {loadingSources ? <div className="text-sm text-gray-500">Loading…</div> : sources.length === 0 ? (
+      {loadingSources ? <div className="text-sm text-slate-400">Loading…</div> : sources.length === 0 ? (
         <div className="brutal-card text-center py-16 border-dashed bg-transparent">
           <BookOpen className="w-10 h-10 opacity-10 mx-auto" />
           <div className="mt-3 font-medium">No knowledge yet</div>
-          <p className="text-xs text-gray-500 max-w-sm mx-auto mt-1">Add a website link or upload PDFs/docs. Already added sources will appear here with status <code className="bg-gray-100 px-1 rounded">queued→indexed</code>.</p>
-          <button onClick={()=>setShowKnowledgeWizard(true)} className="mt-4 inline-flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm">
+          <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">Add a website link or upload PDFs/docs. Already added sources will appear here with status <code className="bg-slate-800 px-1 rounded">queued→indexed</code>.</p>
+          <button onClick={()=>setShowKnowledgeWizard(true)} className="mt-4 inline-flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg text-sm">
             Add knowledge <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
@@ -471,20 +471,20 @@ export default function ChatbotDashboard({
             <div key={s.id} className="brutal-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full border ${s.status==='indexed'?'bg-green-50 text-green-700 border-green-200': s.status==='failed'?'bg-red-50 text-red-700 border-red-200': s.status==='empty'?'bg-amber-50 text-amber-700 border-amber-200':'bg-gray-50 text-gray-600 border-gray-200'}`}>{s.status}</span>
-                  <span className="text-xs text-gray-500">{s.type}</span>
-                  <span className="text-xs text-gray-400">{new Date(s.createdAt).toLocaleString()}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full border ${s.status==='indexed'?'bg-emerald-950 text-emerald-400 border-emerald-800': s.status==='failed'?'bg-red-950 text-red-400 border-red-800': s.status==='empty'?'bg-amber-950 text-amber-400 border-amber-800':'bg-slate-800 text-slate-400 border-slate-700'}`}>{s.status}</span>
+                  <span className="text-xs text-slate-400">{s.type}</span>
+                  <span className="text-xs text-slate-500">{new Date(s.createdAt).toLocaleString()}</span>
                 </div>
                 <div className="font-medium text-sm truncate mt-1">{s.locator}</div>
                 {s.error && <div className="text-xs text-red-500 mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {s.error}</div>}
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs text-gray-400 hidden sm:block">{s.id.slice(0,8)}</span>
-                <button onClick={()=>handleDeleteSource(s.id)} className="inline-flex items-center gap-1 border border-red-200 text-red-600 rounded-lg px-3 py-1.5 text-xs hover:bg-red-50"><Trash2 className="w-3 h-3" /> Delete</button>
+                <span className="text-xs text-slate-500 hidden sm:block">{s.id.slice(0,8)}</span>
+                <button onClick={()=>handleDeleteSource(s.id)} className="inline-flex items-center gap-1 border border-red-800 text-red-600 rounded-lg px-3 py-1.5 text-xs hover:bg-red-950"><Trash2 className="w-3 h-3" /> Delete</button>
               </div>
             </div>
           ))}
-          <div className="text-xs text-gray-400">Sources are stored under <code className="bg-gray-100 px-1 rounded">/data/{chatbot._id}_website.json</code> and chunked in SQLite.</div>
+          <div className="text-xs text-slate-500">Sources are stored under <code className="bg-slate-800 px-1 rounded">/data/{chatbot._id}_website.json</code> and chunked in SQLite.</div>
         </div>
       )}
     </motion.div>
@@ -495,8 +495,8 @@ export default function ChatbotDashboard({
       <div className="brutal-card space-y-5">
         <h3 className="font-semibold">Bot identity</h3>
         <div className="grid grid-cols-2 gap-4 text-xs">
-          <div><div className="text-gray-500">Bot ID</div><div className="font-mono break-all bg-gray-50 border border-gray-200 rounded p-2 mt-1">{chatbot._id}</div></div>
-          <div><div className="text-gray-500">Created</div><div className="bg-gray-50 border border-gray-200 rounded p-2 mt-1">{new Date(chatbot.createdAt).toLocaleString()}</div></div>
+          <div><div className="text-slate-400">Bot ID</div><div className="font-mono break-all bg-slate-800 border border-slate-700 rounded p-2 mt-1">{chatbot._id}</div></div>
+          <div><div className="text-slate-400">Created</div><div className="bg-slate-800 border border-slate-700 rounded p-2 mt-1">{new Date(chatbot.createdAt).toLocaleString()}</div></div>
         </div>
       </div>
 
@@ -504,7 +504,7 @@ export default function ChatbotDashboard({
         <h3 className="font-semibold">Provider & model</h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Provider</label>
+            <label className="text-xs font-medium text-slate-400">Provider</label>
             <select value={settings.provider} onChange={e=>setSettings({...settings, provider:e.target.value})} className="brutal-input">
               <option value="openrouter">OpenRouter</option>
               <option value="openai">OpenAI</option>
@@ -518,39 +518,39 @@ export default function ChatbotDashboard({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Model</label>
+            <label className="text-xs font-medium text-slate-400">Model</label>
             <input value={settings.model} onChange={e=>setSettings({...settings, model:e.target.value})} className="brutal-input" placeholder="openai/gpt-4o-mini" />
           </div>
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">Base URL</label>
+          <label className="text-xs font-medium text-slate-400">Base URL</label>
           <input value={settings.baseUrl} onChange={e=>setSettings({...settings, baseUrl:e.target.value})} className="brutal-input" placeholder="https://openrouter.ai/api/v1" />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">API key</label>
+          <label className="text-xs font-medium text-slate-400">API key</label>
           <input type="password" value={settings.apiKey} onChange={e=>setSettings({...settings, apiKey:e.target.value})} className="brutal-input" placeholder="sk-or-v1-..." />
-          <div className="text-xs text-gray-400">Stored encrypted, never in embed code. For Ollama leave empty.</div>
+          <div className="text-xs text-slate-500">Stored encrypted, never in embed code. For Ollama leave empty.</div>
         </div>
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Default message (shown before first user message, optional)</label>
+            <label className="text-xs font-medium text-slate-400">Default message (shown before first user message, optional)</label>
             <input value={settings.defaultMessage} onChange={e=>setSettings({...settings, defaultMessage:e.target.value})} className="brutal-input" placeholder="Hello! Ask me anything about our docs…" />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Fallback message (when no sources matched)</label>
+            <label className="text-xs font-medium text-slate-400">Fallback message (when no sources matched)</label>
             <textarea value={settings.fallbackMessage} onChange={e=>setSettings({...settings, fallbackMessage:e.target.value})} className="brutal-input min-h-[80px]" placeholder="I could not find that in our knowledge base. Try rephrasing…" />
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={handleSettingsSave} disabled={settingsSaving} className="bg-gray-900 text-white px-5 py-2 rounded-lg text-sm disabled:opacity-50">{settingsSaving ? 'Saving…' : 'Save settings'}</button>
-          {settingsMsg && <span className="text-xs text-gray-500">{settingsMsg}</span>}
+          <button onClick={handleSettingsSave} disabled={settingsSaving} className="bg-white text-black px-5 py-2 rounded-lg text-sm disabled:opacity-50">{settingsSaving ? 'Saving…' : 'Save settings'}</button>
+          {settingsMsg && <span className="text-xs text-slate-400">{settingsMsg}</span>}
         </div>
       </div>
 
-      <div className="brutal-card border-red-200">
+      <div className="brutal-card border-red-800">
         <h3 className="font-semibold text-red-600">Danger zone</h3>
-        <p className="text-xs text-gray-500 mt-1">Delete bot and all its chats, sources, and chunks.</p>
-        <button onClick={() => onDeleteBot?.(chatbot._id)} className="mt-4 inline-flex items-center gap-2 border border-red-200 text-red-600 rounded-lg px-4 py-2 text-sm hover:bg-red-50">
+        <p className="text-xs text-slate-400 mt-1">Delete bot and all its chats, sources, and chunks.</p>
+        <button onClick={() => onDeleteBot?.(chatbot._id)} className="mt-4 inline-flex items-center gap-2 border border-red-800 text-red-600 rounded-lg px-4 py-2 text-sm hover:bg-red-950">
           <Trash2 className="w-4 h-4" /> Delete chatbot
         </button>
       </div>
@@ -560,21 +560,21 @@ export default function ChatbotDashboard({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={handleBack} className="inline-flex items-center gap-2 border border-gray-200 bg-white rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50">
+        <button onClick={handleBack} className="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-lg px-3 py-1.5 text-xs hover:bg-slate-800">
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
         <div>
           <h2 className="text-xl font-semibold tracking-tight">{appearance.name || chatbot.name}</h2>
-          <div className="text-xs text-gray-500">Bot dashboard • {chatbot._id.slice(0,8)}</div>
+          <div className="text-xs text-slate-400">Bot dashboard • {chatbot._id.slice(0,8)}</div>
         </div>
       </div>
 
-      <div className="flex gap-2 border-b border-gray-200 pb-3 overflow-x-auto">
+      <div className="flex gap-2 border-b border-slate-700 pb-3 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium border whitespace-nowrap ${activeTab === tab.id ? 'bg-gray-900 text-white border-gray-900' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium border whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-black border-white' : 'bg-slate-900 border-slate-700 text-slate-400 hover:bg-slate-800'}`}
           >
             <tab.icon className="w-3.5 h-3.5" />
             {tab.label}
