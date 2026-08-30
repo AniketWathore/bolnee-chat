@@ -123,9 +123,9 @@ _PRICE_RE = re.compile(
     re.I,
 )
 
-_CONTENT_TAGS = {"h1","h2","h3","h4","h5","h6","p","li","td","th","strong","em"}
+_CONTENT_TAGS = {"h1","h2","h3","h4","h5","h6","p","li","td","th","strong","em","a","button","span"}
 _INLINE_TAGS   = {"strong","em"}
-_INLINE_MIN    = 30
+_INLINE_MIN    = 15
 
 _BOILERPLATE_RE = re.compile(
     r"\b(?:nav(?:bar|igation)?|menu|footer|sidebar|breadcrumb|cookie|popup|modal|"
@@ -360,6 +360,7 @@ def _extract_content(soup: BeautifulSoup) -> List[dict]:
     rich_selectors = [
         {"class": re.compile(r"(product.description|product__desc|product__description|rte|product-info|product-detail|desc|specs|features|accordion|tab-content|metafield|rich.text|custom-liquid|product-single__description|pdp-description)", re.I)},
         {"id": re.compile(r"(description|product-description|product-info|specs|details|accordion|tab|productDescription|product-detail)", re.I)},
+        {"class": re.compile(r"(project|grid|card|option|choice|type|select|picker|domain)", re.I)},
     ]
     for sel in rich_selectors:
         for el in main.find_all("div", attrs=sel):
@@ -1068,7 +1069,7 @@ class CrawlStore:
                 k = item["text"].lower()
                 counts[k] = counts.get(k, 0) + 1
         total = len(all_entries)
-        threshold = max(3, int(total * 0.30))
+        threshold = max(3, int(total * 0.50))
         common = {k for k, v in counts.items() if v >= threshold}
         removed = 0
         for e in all_entries:
