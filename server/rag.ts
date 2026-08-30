@@ -25,6 +25,15 @@ function tokenize(value: string): string[] {
   return value.toLowerCase().match(/[\p{L}\p{N}_]+/gu) || [];
 }
 
+const STOPWORDS = new Set([
+  "a","an","the","is","are","was","were","be","been","being","am","are","is",
+  "what","who","whom","which","when","where","why","how","whose","whos",
+  "is","are","was","do","does","did","can","could","would","should","will","shall",
+  "i","you","we","they","he","she","it","me","him","her","us","them",
+  "and","or","but","if","then","so","as","at","by","for","of","on","in","to","with","about","from","up","out","into","over","after",
+  "this","that","these","those","there","here","my","your","our","its","isnt","arent","whats","whos"
+]);
+
 export async function retrieveFromCorpus(
   chatbotId: string,
   query: string,
@@ -47,8 +56,11 @@ export async function retrieveFromCorpus(
     const corpus = (await fs.readJson(corpusPath)) as CorpusFile;
     documents = (corpus.documents || []).filter((document) => document.text?.trim());
   }
-  const queryTerms = tokenize(query);
-  if (queryTerms.length === 0) return [];
+  const rawQueryTerms = tokenize(query);
+  if (rawQueryTerms.length === 0) return [];
+  // Filter stopwords for better relevance (e.g. "what is price" -> "price"), keep original if all filtered
+  const filtered = rawQueryTerms.filter((t) => !STOPWORDS.has(t));
+  const queryTerms = filtered.length > 0 ? filtered : rawQueryTerms;
 
   const documentTerms = documents.map((document) => tokenize(document.text || ""));
   const averageLength = documentTerms.reduce((sum, terms) => sum + terms.length, 0) /

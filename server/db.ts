@@ -178,7 +178,15 @@ export function insertChatbot(bot: DbChatbot): void {
 }
 
 export function removeChatbot(id: string, userId: string): boolean {
-  return db.prepare("DELETE FROM chatbots WHERE id = ? AND user_id = ?").run(id, userId).changes > 0;
+  const txn = db.transaction(() => {
+    db.prepare("DELETE FROM chunks WHERE chatbot_id = ?").run(id);
+    db.prepare("DELETE FROM messages WHERE chatbot_id = ?").run(id);
+    db.prepare("DELETE FROM sources WHERE chatbot_id = ?").run(id);
+    db.prepare("DELETE FROM knowledge WHERE chatbot_id = ?").run(id);
+    const res = db.prepare("DELETE FROM chatbots WHERE id = ? AND user_id = ?").run(id, userId);
+    return res.changes > 0;
+  });
+  return txn() as unknown as boolean;
 }
 
 export function getKnowledge(chatbotId: string, fallback: unknown): unknown {
