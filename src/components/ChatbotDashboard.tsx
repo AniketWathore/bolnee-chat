@@ -357,11 +357,29 @@ export default function ChatbotDashboard({
             </div>
             <label className="inline-flex items-center gap-2 border border-slate-700 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-800">
               <Upload className="w-4 h-4" /> Upload
-              <input type="file" accept="image/*" className="hidden" onChange={e=>{
-                const f=e.target.files?.[0]; if(!f) return;
-                if(f.size>2*1024*1024) { setAppearanceMsg('Avatar must be <2MB'); return; }
-                const r=new FileReader(); r.onload=()=>setAppearance({...appearance, avatar: String(r.result)}); r.readAsDataURL(f);
-              }} />
+<input type="file" accept="image/*" className="hidden" onChange={e=>{
+  const f=e.target.files?.[0]; if(!f) return;
+  if(f.size>2*1024*1024) { setAppearanceMsg('Avatar must be <2MB'); return; }
+  const r=new FileReader();
+  r.onload=()=>{
+    const dataUrl = String(r.result);
+    const img = new Image();
+    img.onload=()=>{
+      if(img.width!==img.height){
+        setAppearanceMsg('Avatar must be square (equal width and height)');
+        return;
+      }
+      if(img.width>1000){
+        setAppearanceMsg('Avatar dimensions must not exceed 1000x1000 pixels');
+        return;
+      }
+      setAppearance({...appearance, avatar: dataUrl});
+    };
+    img.onerror=()=>{ setAppearanceMsg('Failed to load image'); };
+    img.src=dataUrl;
+  };
+  r.readAsDataURL(f);
+}} />
             </label>
             {appearance.avatar && <button onClick={()=>setAppearance({...appearance, avatar:''})} className="text-xs text-slate-400"><X className="w-3 h-3 inline" /> Clear</button>}
           </div>
