@@ -58,54 +58,6 @@ Copy `window.BotConfig` + `chatbot-widget.js` and paste before `</body>`. Works 
 <tr>
 <td width="50%" valign="middle">
 
-### Create Chatbot — Brand in Seconds
-
-Name + avatar (PNG/JPG/WEBP ≤2MB, preview) → stored as `/api/public/avatar/:id` and shown in the widget header.
-
-</td>
-<td width="50%">
-  <img src="images/create_chatbot.png" alt="Create Chatbot" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
-</td>
-</tr>
-<tr>
-<td width="50%" valign="middle">
-
-### Add Knowledge — Website + Files
-
-URL-only, files-only, or both. Same-origin crawler (`crawler/crawler.py`) respects `robots.txt`, extracts `h1/h2/p/li`, dedups, saves `data/{chatbotId}_website.json`. Status: `queued → crawling → parsing → indexing → indexed`.
-
-</td>
-<td width="50%">
-  <img src="images/add_knowledge.png" alt="Add Knowledge" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
-</td>
-</tr>
-<tr>
-<td width="50%" valign="middle">
-
-### Configure Provider — Any OpenAI-Compatible API
-
-Pick provider → Base URL auto-fills → paste API key → **Fetch models** lists live models (prioritizes `:free` for OpenRouter). Keys stored encrypted (AES-256-GCM), never in embed.
-
-</td>
-<td width="50%">
-  <img src="images/configure_provider.png" alt="Configure Provider" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
-</td>
-</tr>
-<tr>
-<td width="50%" valign="middle">
-
-### Embed — 2 Lines
-
-Copy from **Overview → Embed code** or **Knowledge → Step 4**. Auto-configures origin via `window.location.origin`; widget loads via `chatbot-widget.js` with SSE streaming.
-
-</td>
-<td width="50%">
-  <img src="images/embed_code.png" alt="Embed Code" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
-</td>
-</tr>
-<tr>
-<td width="50%" valign="middle">
-
 ### Bot Overview — Stats & Snippet
 
 Per-bot: `Live` status, message/user counts, creation date, source count, embed snippet with `botName/avatar/chatUrl/accent/greeting/theme`.
@@ -171,6 +123,61 @@ Bottom-right bubble → sliding window (`360×520`, `75vh` mobile). Header with 
 - **Avatar file storage** — data URLs converted to `/api/public/avatar/:id` (2MB limit, `data/avatars/`).
 - **Encrypted provider keys** — per-bot `apiKey/baseUrl/model` via AES-256-GCM, never exposed in snippet.
 - **Dark-mode console** — `#020617` bg, `#1e293b` cards, `slate-800` inputs, no white surfaces.
+
+---
+
+## Workflow
+
+<table>
+<tr>
+<td width="50%" valign="middle">
+
+### 1. Create Chatbot — Brand in Seconds
+
+Name + avatar (PNG/JPG/WEBP ≤2MB, preview) → stored as `/api/public/avatar/:id` and shown in the widget header.
+
+</td>
+<td width="50%">
+  <img src="images/create_chatbot.png" alt="Create Chatbot" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### 2. Add Knowledge — Website + Files
+
+URL-only, files-only, or both. Same-origin crawler (`crawler/crawler.py`) respects `robots.txt`, extracts `h1/h2/p/li`, dedups, saves `data/{chatbotId}_website.json`. Status: `queued → crawling → parsing → indexing → indexed`.
+
+</td>
+<td width="50%">
+  <img src="images/add_knowledge.png" alt="Add Knowledge" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### 3. Configure Provider — Any OpenAI-Compatible API
+
+Pick provider → Base URL auto-fills → paste API key → **Fetch models** lists live models (prioritizes `:free` for OpenRouter). Keys stored encrypted (AES-256-GCM), never in embed.
+
+</td>
+<td width="50%">
+  <img src="images/configure_provider.png" alt="Configure Provider" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+<tr>
+<td width="50%" valign="middle">
+
+### 4. Embed — 2 Lines
+
+Copy from **Overview → Embed code** or **Knowledge → Step 4**. Auto-configures origin via `window.location.origin`; widget loads via `chatbot-widget.js` with SSE streaming.
+
+</td>
+<td width="50%">
+  <img src="images/embed_code.png" alt="Embed Code" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+</td>
+</tr>
+</table>
 
 ---
 
