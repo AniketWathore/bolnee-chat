@@ -281,7 +281,7 @@ export default function ChatbotDashboard({
   );
 
   const renderAppearance = () => (
-    <motion.div key="appearance" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="max-w-2xl space-y-6">
+    <motion.div key="appearance" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
       <div className="brutal-card space-y-5">
         <h3 className="font-semibold">Appearance</h3>
         <div className="space-y-3">
@@ -492,7 +492,7 @@ export default function ChatbotDashboard({
   );
 
   const renderSettings = () => (
-    <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="max-w-2xl space-y-6">
+    <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
       <div className="brutal-card space-y-5">
         <h3 className="font-semibold">Bot identity</h3>
         <div className="grid grid-cols-2 gap-4 text-xs">
@@ -559,7 +559,7 @@ export default function ChatbotDashboard({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ zoom: 1.25 }}>
       <div className="flex items-center gap-3">
         <button onClick={handleBack} className="inline-flex items-center gap-2 border border-slate-700 bg-slate-900 rounded-lg px-3 py-1.5 text-xs hover:bg-slate-800">
           <ArrowLeft className="w-4 h-4" /> Back
