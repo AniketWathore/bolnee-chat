@@ -40,9 +40,9 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-ink/80 backdrop-blur-sm" onClick={onCancel} />
+      <div className="absolute inset-0 bg-[#020617]/80 backdrop-blur-sm" onClick={onCancel} />
       <form onSubmit={submit} className="relative w-full max-w-lg bg-[#0f172a] brutal-border border-slate-700 shadow-[12px_12px_0_0_rgba(0,0,0,1)] p-8 space-y-8">
-        <button type="button" onClick={onCancel} className="absolute top-5 right-5 brutal-btn p-2"><X className="w-4 h-4" /></button>
+        <button type="button" onClick={onCancel} aria-label="Close" className="absolute top-5 right-5 brutal-btn bg-slate-800 border-slate-700 w-10 h-10 p-0 flex items-center justify-center shrink-0 cursor-pointer z-10"><X className="w-4 h-4 pointer-events-none" /></button>
         <div className="space-y-2">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-50">Step 01 / Identity</p>
           <h2 className="text-3xl font-black uppercase italic">Create your chatbot</h2>
@@ -63,7 +63,7 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
           <label htmlFor="bot-name" className="font-mono text-[10px] uppercase font-bold tracking-widest opacity-50">Chatbot name</label>
           <input id="bot-name" autoFocus required value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Support Assistant" className="brutal-input" />
         </div>
-        <button disabled={saving || !name.trim()} className="brutal-btn bg-ink text-bg w-full py-4 flex items-center justify-center gap-3 disabled:opacity-40">{saving ? 'Creating...' : 'Continue'} <ArrowRight className="w-4 h-4" /></button>
+        <button disabled={saving || !name.trim()} className="brutal-btn bg-slate-800 text-slate-100 border-slate-700 w-full py-4 flex items-center justify-center gap-3 disabled:opacity-40 cursor-pointer">{saving ? 'Creating...' : 'Continue'} <ArrowRight className="w-4 h-4 pointer-events-none" /></button>
       </form>
     </div>
   );

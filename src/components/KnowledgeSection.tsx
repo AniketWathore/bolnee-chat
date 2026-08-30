@@ -309,7 +309,7 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
                 <span className="font-mono text-xs">{file.name}</span>
                 <span className="font-mono text-[10px] opacity-40">{(file.size / 1024).toFixed(1)} KB</span>
               </div>
-              <button onClick={() => removeFile(i)} className="hover:opacity-60"><X className="w-4 h-4" /></button>
+              <button type="button" onClick={() => removeFile(i)} aria-label="Remove file" className="w-8 h-8 p-0 flex items-center justify-center hover:bg-slate-800 rounded cursor-pointer shrink-0"><X className="w-4 h-4 pointer-events-none" /></button>
             </div>
           ))}
         </div>
@@ -436,15 +436,16 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
           <p className="font-mono text-[10px] opacity-50 uppercase tracking-widest">Copy the embed snippet into your website</p>
         </div>
         <button
+          type="button"
           onClick={copyToClipboard}
-          className="brutal-btn bg-ink text-bg py-2 px-4 flex items-center gap-2 text-xs"
+          className="brutal-btn bg-slate-800 text-slate-100 border-slate-700 py-2 px-4 flex items-center gap-2 text-xs cursor-pointer"
         >
           {copied ? <Check className="w-4 h-4 text-green-300" /> : <Copy className="w-4 h-4" />}
           {copied ? 'Copied' : 'Copy Code'}
         </button>
       </div>
 
-      <pre className="bg-ink text-bg p-6 font-mono text-xs overflow-x-auto brutal-border block leading-relaxed whitespace-pre-wrap break-all">
+      <pre className="bg-slate-900 text-slate-100 border-slate-700 p-6 font-mono text-xs overflow-x-auto brutal-border block leading-relaxed whitespace-pre-wrap break-all">
         {getEmbedCode()}
       </pre>
 
@@ -473,8 +474,9 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
       </div>
 
       <button
+        type="button"
         onClick={onDashboard}
-        className="w-full brutal-btn bg-ink text-bg py-4 uppercase font-black flex items-center justify-center gap-2"
+        className="w-full brutal-btn bg-slate-800 text-slate-100 border-slate-700 py-4 uppercase font-black flex items-center justify-center gap-2 cursor-pointer"
       >
         Done
         <ArrowRight className="w-4 h-4" />
@@ -487,23 +489,25 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-ink/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#020617]/80 backdrop-blur-sm"
       />
 
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="relative w-full max-w-2xl bg-[#0f172a] brutal-border shadow-[12px_12px_0_0_rgba(0,0,0,1)] overflow-hidden max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-2xl bg-[#0f172a] brutal-border border-slate-700 shadow-[12px_12px_0_0_rgba(0,0,0,1)] overflow-hidden max-h-[90vh] overflow-y-auto"
       >
         <div className="p-8">
           <div className="flex items-start justify-between mb-2">
             <div className="flex-1">{renderStepIndicator()}</div>
             {step < 4 && onCancel && (
               <button
+                type="button"
                 onClick={onCancel}
-                className="brutal-btn bg-slate-800 text-slate-200 border-slate-700 p-2 flex items-center justify-center ml-4"
+                aria-label="Close"
+                className="brutal-btn bg-slate-800 text-slate-200 border-slate-700 w-10 h-10 p-0 flex items-center justify-center ml-4 shrink-0 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 pointer-events-none" />
               </button>
             )}
           </div>
@@ -519,9 +523,10 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-line">
               <div className="font-mono text-[10px] opacity-40">Step {step} of 4 {queueing && "• Queueing crawl..."}</div>
               <button
+                type="button"
                 onClick={handleNext}
                 disabled={isBuilding || queueing}
-                className="brutal-btn bg-ink text-bg px-10 py-3 flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="brutal-btn bg-slate-800 text-slate-100 border-slate-700 px-10 py-3 flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               >
                 {queueing ? (<><Loader2 className="w-4 h-4 animate-spin"/> Queuing...</>) : (<>Continue <ArrowRight className="w-4 h-4" /></>)}
               </button>
