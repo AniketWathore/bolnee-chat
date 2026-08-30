@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft, Bot, MessageSquare, BookOpen, Settings,
   Zap, Clock, Trash2, ArrowUpRight, Copy, Check, Globe,
-  Palette, Download, RefreshCw, X, Upload, AlertCircle
+  Palette, Download, RefreshCw, X, Upload, AlertCircle, Loader2
 } from 'lucide-react';
 import { Chatbot, KnowledgeData } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
@@ -67,6 +67,17 @@ export default function ChatbotDashboard({
   const [appearanceMsg, setAppearanceMsg] = useState('');
 
   // Settings state
+  const PROVIDER_DEFAULTS: Record<string, { baseUrl: string; label: string; models: string[] }> = {
+    openrouter: { label: "OpenRouter", baseUrl: "https://openrouter.ai/api/v1", models: ["inclusionai/ling-3.0-flash-fin:free","liquid/lfm-2.5-2.6b:free","qwen/qwen-2.5-7b-instruct:free","meta-llama/llama-3.3-70b-instruct:free","mistralai/mistral-7b-instruct:free","openai/gpt-4o-mini","openai/gpt-4o","anthropic/claude-3.5-sonnet"] },
+    openai: { label: "OpenAI", baseUrl: "https://api.openai.com/v1", models: ["gpt-4o-mini","gpt-4o","gpt-4-turbo","gpt-3.5-turbo"] },
+    groq: { label: "Groq", baseUrl: "https://api.groq.com/openai/v1", models: ["llama-3.3-70b-versatile","llama-3.1-8b-instant"] },
+    together: { label: "Together AI", baseUrl: "https://api.together.xyz/v1", models: ["meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"] },
+    anthropic: { label: "Anthropic", baseUrl: "https://api.anthropic.com/v1", models: ["claude-3-5-sonnet-20241022"] },
+    ollama: { label: "Ollama (local)", baseUrl: "http://localhost:11434/v1", models: ["llama3.2","mistral"] },
+    vllm: { label: "vLLM", baseUrl: "http://localhost:8000/v1", models: ["meta-llama/Meta-Llama-3-8B-Instruct"] },
+    lmstudio: { label: "LM Studio", baseUrl: "http://localhost:1234/v1", models: ["local-model"] },
+    custom: { label: "Custom", baseUrl: "", models: [] },
+  };
   const [settings, setSettings] = useState({
     provider: 'openrouter',
     model: 'inclusionai/ling-3.0-flash-fin:free',
@@ -77,6 +88,9 @@ export default function ChatbotDashboard({
   });
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsMsg, setSettingsMsg] = useState('');
+  const [availableModels, setAvailableModels] = useState<string[]>(PROVIDER_DEFAULTS.openrouter.models);
+  const [fetchingModels, setFetchingModels] = useState(false);
+  const [modelsError, setModelsError] = useState('');
 
   const isKnowledgeConfigured = sources.length > 0 || !!(knowledgeData.about);
 
@@ -160,6 +174,43 @@ export default function ChatbotDashboard({
         }));
       }
     } catch { /* ignore */ }
+  };
+
+  const handleSettingsProviderChange = (next: string) => {
+    const def = PROVIDER_DEFAULTS[next];
+    if (def) {
+      setSettings(prev => ({ ...prev, provider: next, baseUrl: def.baseUrl, model: def.models[0] || prev.model }));
+      setAvailableModels(def.models || []);
+    } else {
+      setSettings(prev => ({ ...prev, provider: next }));
+      setAvailableModels([]);
+    }
+    setModelsError('');
+  };
+
+  const fetchSettingsModels = async () => {
+    if (!settings.apiKey.trim()) { setModelsError('Enter API key first'); return; }
+    if (!settings.baseUrl.trim()) { setModelsError('Base URL is required'); return; }
+    setFetchingModels(true);
+    setModelsError('');
+    try {
+      const token = (() => { try { return JSON.parse(localStorage.getItem('bolnee_session') || '{}').token; } catch { return ''; } })();
+      const res = await fetch('/api/providers/models', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ provider: settings.provider, baseUrl: settings.baseUrl.trim(), apiKey: settings.apiKey.trim() }),
+      });
+      const body = await res.json().catch(() => ({} as Record<string, unknown>));
+      if (!res.ok) throw new Error((body as { error?: string }).error || 'Failed to fetch models');
+      const models = (body as { models?: string[] }).models || [];
+      setAvailableModels(models);
+      if (models.length && !models.includes(settings.model)) setSettings(prev => ({ ...prev, model: models[0] }));
+      if (!models.length) setModelsError('No models returned — you can still type one manually');
+    } catch (e: unknown) {
+      setModelsError((e as Error).message || 'Failed to fetch models');
+    } finally {
+      setFetchingModels(false);
+    }
   };
 
   useEffect(() => {
@@ -508,7 +559,7 @@ export default function ChatbotDashboard({
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-xs font-medium text-slate-400">Provider</label>
-            <select value={settings.provider} onChange={e=>setSettings({...settings, provider:e.target.value})} className="brutal-input">
+            <select value={settings.provider} onChange={e=>handleSettingsProviderChange(e.target.value)} className="brutal-input">
               <option value="openrouter">OpenRouter</option>
               <option value="openai">OpenAI</option>
               <option value="groq">Groq</option>
@@ -521,8 +572,22 @@ export default function ChatbotDashboard({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-400">Model</label>
-            <input value={settings.model} onChange={e=>setSettings({...settings, model:e.target.value})} className="brutal-input" placeholder="openai/gpt-4o-mini" />
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-slate-400">Model</label>
+              <button type="button" onClick={fetchSettingsModels} disabled={fetchingModels || !settings.apiKey.trim()} className="brutal-btn py-1 px-3 text-[10px] disabled:opacity-40">
+                {fetchingModels ? <><Loader2 className="w-3 h-3 animate-spin inline mr-1"/>Fetching...</> : 'Fetch models'}
+              </button>
+            </div>
+            {availableModels.length > 0 ? (
+              <select value={settings.model} onChange={e=>setSettings({...settings, model:e.target.value})} className="brutal-input">
+                <option value="">-- choose model --</option>
+                {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            ) : (
+              <input value={settings.model} onChange={e=>setSettings({...settings, model:e.target.value})} className="brutal-input" placeholder={settings.provider === 'openrouter' ? 'e.g. openai/gpt-4o-mini or qwen/qwen-2.5-7b-instruct:free' : 'e.g. gpt-4o-mini or llama3.2'} />
+            )}
+            <p className="font-mono text-[10px] opacity-40">For OpenRouter, models like <code>openai/gpt-4o-mini</code>, <code>qwen/qwen-2.5-7b-instruct:free</code>. Click Fetch after entering key to list free models.</p>
+            {modelsError && <p className="font-mono text-[10px] text-amber-600">{modelsError}</p>}
           </div>
         </div>
         <div className="space-y-1">

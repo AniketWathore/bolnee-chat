@@ -52,6 +52,8 @@ Copy `window.BotConfig` + `chatbot-widget.js` and paste before `</body>`. Works 
 
 ---
 
+> **Disclaimer:** This project is still under active development. If you find any bugs, issues, or have suggestions, please open an issue on the [GitHub Issues page](https://github.com/AniketWathore/bolnee-chat/issues).
+
 ## All Features
 
 <table>
