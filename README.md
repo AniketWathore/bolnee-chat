@@ -64,7 +64,7 @@ Per-bot: `Live` status, message/user counts, creation date, source count, embed 
 
 </td>
 <td width="50%">
-  <img src="images/chatbot_overview.png" alt="Bot Overview" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+  <img src="images/overview.png" alt="Bot Overview" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
 </td>
 </tr>
 <tr>
@@ -76,7 +76,7 @@ Edit bot name, avatar (upload/preview), accent/background colour, theme `light/d
 
 </td>
 <td width="50%">
-  <img src="images/chatbot_appearance.png" alt="Appearance" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+  <img src="images/appearance.png" alt="Appearance" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
 </td>
 </tr>
 <tr>
@@ -88,7 +88,7 @@ Grouped by `visitorId` → `IP`, then by date, chronological. Refresh + download
 
 </td>
 <td width="50%">
-  <img src="images/chatbot_chats.png" alt="Chats" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+  <img src="images/chats.png" alt="Chats" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ Grouped by `visitorId` → `IP`, then by date, chronological. Refresh + download
 
 </td>
 <td width="50%">
-  <img src="images/chatbot_settings.png" alt="Settings" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
+  <img src="images/settings.png" alt="Settings" width="100%" style="border-radius: 8px; border: 1px solid #334155; height: auto; display: block;" />
 </td>
 </tr>
 <tr>
