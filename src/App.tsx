@@ -151,7 +151,7 @@ export default function App() {
             <ChatbotDashboard chatbot={selectedBot} knowledgeData={knowledge} onSaveKnowledge={saveKnowledge} onUploadSources={uploadSources} onAddUrl={addUrlSource} onSaveSettings={saveBotSettings} onBack={() => { setForceWizardFor(null); setSelectedBot(null); }} onDeleteBot={deleteBot} />
             <div className="mt-10 border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
               <div>Need help? <button onClick={()=>setPage('docs')} className="underline hover:text-white">Read docs</button> • <button onClick={()=>setPage('guides')} className="underline hover:text-white">Follow guides</button></div>
-              <div className="text-slate-500">Dark mode</div>
+              <div className="flex items-center gap-1">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>
             </div>
           </>
         ) : showAll ? (
@@ -169,7 +169,7 @@ export default function App() {
             )}
             <div className="mt-10 border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
               <div>New here? <button onClick={()=>setPage('docs')} className="underline hover:text-white font-medium">Read docs</button> to create your first bot, or <button onClick={()=>setPage('guides')} className="underline hover:text-white font-medium">follow guides</button> for best practices.</div>
-              <div className="text-slate-500">Bolnee • self-hosted</div>
+              <div className="flex items-center gap-1">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>
             </div>
           </>
         )}

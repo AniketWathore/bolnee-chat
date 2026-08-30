@@ -132,9 +132,10 @@ export default function ChatbotDashboard({
   const fetchMessages = async () => {
     setLoadingChats(true);
     try {
-      const res = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/messages`);
+      const res = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/messages`, { cache: 'no-store' });
       if (res.ok) setMessages(await res.json());
-      const sres = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/stats`);
+      else setMessages([]);
+      const sres = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/stats`, { cache: 'no-store' });
       if (sres.ok) setStats(await sres.json());
     } catch { /* ignore */ }
     setLoadingChats(false);
@@ -164,13 +165,14 @@ export default function ChatbotDashboard({
   useEffect(() => {
     fetchSources();
     fetchAppearance();
+    fetchMessages();
   }, [chatbot._id]);
 
   useEffect(() => {
     if (activeTab === 'chats') fetchMessages();
     if (activeTab === 'knowledge') fetchSources();
     if (activeTab === 'appearance') fetchAppearance();
-  }, [activeTab]);
+  }, [activeTab, chatbot._id]);
 
   const handleDeleteSource = async (id: string) => {
     if (!confirm('Delete this source and its chunks?')) return;
@@ -262,6 +264,14 @@ export default function ChatbotDashboard({
           <div className="flex items-center gap-2 text-slate-400 text-xs"><Globe className="w-3 h-3" /> Sources</div>
           <div className="mt-2 text-xl font-semibold">{sources.length}</div>
           <div className="text-xs text-slate-500">{sources.filter(s=>s.status==='indexed').length} indexed</div>
+        </div>
+      </div>
+
+      <div className="brutal-card space-y-3">
+        <h3 className="text-sm font-semibold">Bot identity</h3>
+        <div className="grid grid-cols-2 gap-4 text-xs">
+          <div><div className="text-slate-400">Bot ID</div><div className="font-mono break-all bg-slate-800 border border-slate-700 rounded p-2 mt-1">{chatbot._id}</div></div>
+          <div><div className="text-slate-400">Created</div><div className="bg-slate-800 border border-slate-700 rounded p-2 mt-1">{new Date(chatbot.createdAt).toLocaleString()}</div></div>
         </div>
       </div>
 
@@ -493,14 +503,6 @@ export default function ChatbotDashboard({
 
   const renderSettings = () => (
     <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
-      <div className="brutal-card space-y-5">
-        <h3 className="font-semibold">Bot identity</h3>
-        <div className="grid grid-cols-2 gap-4 text-xs">
-          <div><div className="text-slate-400">Bot ID</div><div className="font-mono break-all bg-slate-800 border border-slate-700 rounded p-2 mt-1">{chatbot._id}</div></div>
-          <div><div className="text-slate-400">Created</div><div className="bg-slate-800 border border-slate-700 rounded p-2 mt-1">{new Date(chatbot.createdAt).toLocaleString()}</div></div>
-        </div>
-      </div>
-
       <div className="brutal-card space-y-5">
         <h3 className="font-semibold">Provider & model</h3>
         <div className="grid grid-cols-2 gap-4">

@@ -52,8 +52,9 @@ export default function GuidesPage({ onBack }: Props) {
         </div>
       </div>
 
-      <div className="text-xs text-slate-500 border-t border-slate-800 pt-4">
-        Tip: The widget remembers chats via <code className="bg-slate-800 px-1 rounded text-slate-200">localStorage</code> — close/open keeps history, only first open shows greeting.
+      <div className="text-xs text-slate-500 border-t border-slate-800 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div>Tip: The widget remembers chats via <code className="bg-slate-800 px-1 rounded text-slate-200">localStorage</code> — close/open keeps history, only first open shows greeting.</div>
+        <div className="flex items-center gap-1 shrink-0">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>
       </div>
     </div>
   );

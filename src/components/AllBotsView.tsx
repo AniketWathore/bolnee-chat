@@ -44,6 +44,9 @@ export default function AllBotsView({ chatbots, onSelectBot, onBack, onCreateReq
           ))}
         </div>
       )}
+      <div className="pt-6 border-t border-slate-800 flex justify-center text-xs text-slate-400">
+        <div className="flex items-center gap-1">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>
+      </div>
     </div>
   );
 }

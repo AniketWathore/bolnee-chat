@@ -734,12 +734,14 @@ app.get("/api/chatbots/:id/messages", authenticate, async (req: unknown, res) =>
   const r = req as { user: { userId: string }; params: { id: string }; query: { limit?: string } };
   if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
   const limit = Math.min(500, Math.max(1, parseInt(String(r.query.limit || "200"), 10) || 200));
+  (res as unknown as { setHeader:(k:string,v:string)=>void }).setHeader('Cache-Control', 'no-store');
   return (res as unknown as { json:(o:unknown)=>void }).json(listMessages(r.params.id, limit));
 });
 
 app.get("/api/chatbots/:id/stats", authenticate, async (req: unknown, res) => {
   const r = req as { user: { userId: string }; params: { id: string } };
   if (!findChatbotForRequest(r.params.id, r.user.userId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+  (res as unknown as { setHeader:(k:string,v:string)=>void }).setHeader('Cache-Control', 'no-store');
   return (res as unknown as { json:(o:unknown)=>void }).json(getChatStats(r.params.id));
 });
 

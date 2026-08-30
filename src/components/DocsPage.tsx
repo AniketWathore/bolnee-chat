@@ -66,8 +66,9 @@ export default function DocsPage({ onBack }: Props) {
         </section>
       </div>
 
-      <div className="text-xs text-slate-500 border-t border-slate-800 pt-4">
-        Need more? See <button onClick={onBack} className="underline">Guides</button> or open <a href="https://github.com" target="_blank" className="underline inline-flex items-center gap-1">GitHub <ExternalLink className="w-3 h-3" /></a>.
+      <div className="text-xs text-slate-500 border-t border-slate-800 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div>Need more? See <button onClick={onBack} className="underline">Guides</button> or open <a href="https://github.com" target="_blank" className="underline inline-flex items-center gap-1">GitHub <ExternalLink className="w-3 h-3" /></a>.</div>
+        <div className="flex items-center gap-1">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>
       </div>
     </div>
   );
