@@ -82,7 +82,7 @@ for (const statement of [
   "ALTER TABLE chatbots ADD COLUMN api_key TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE chatbots ADD COLUMN base_url TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE chatbots ADD COLUMN accent_color TEXT NOT NULL DEFAULT '#111111'",
-  "ALTER TABLE chatbots ADD COLUMN theme TEXT NOT NULL DEFAULT 'light'",
+  "ALTER TABLE chatbots ADD COLUMN theme TEXT NOT NULL DEFAULT 'dark'",
   "ALTER TABLE chatbots ADD COLUMN greeting TEXT NOT NULL DEFAULT 'Hi! How can I help?'",
   "ALTER TABLE chatbots ADD COLUMN default_message TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE chatbots ADD COLUMN fallback_message TEXT NOT NULL DEFAULT ''",
@@ -173,8 +173,9 @@ export function findChatbot(id: string, userId?: string): DbChatbot | undefined 
 export function insertChatbot(bot: DbChatbot): void {
   // Store avatar if provided via DbChatbot extension
   const avatar = (bot as { avatar?: string }).avatar || "";
-  db.prepare("INSERT INTO chatbots (id, user_id, name, avatar, created_at) VALUES (?, ?, ?, ?, ?)")
-    .run(bot.id, bot.userId, bot.name, avatar, bot.createdAt);
+  const theme = (bot as { theme?: string }).theme || "dark";
+  db.prepare("INSERT INTO chatbots (id, user_id, name, avatar, theme, created_at) VALUES (?, ?, ?, ?, ?, ?)")
+    .run(bot.id, bot.userId, bot.name, avatar, theme, bot.createdAt);
 }
 
 export function removeChatbot(id: string, userId: string): boolean {

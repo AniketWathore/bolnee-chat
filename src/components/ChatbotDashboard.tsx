@@ -109,7 +109,7 @@ export default function ChatbotDashboard({
     chatUrl: "${DEPLOY_URL}/api/public/chat/${chatbot._id}",
     accentColor: "${appearance.accentColor}",
     greeting: "${appearance.greeting}",
-    theme: "${appearance.theme || 'light'}"
+    theme: "${appearance.theme || 'dark'}"
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;

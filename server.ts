@@ -490,6 +490,25 @@ app.get("/api/public/avatar/:chatbotId", async (req, res) => {
   }
 });
 
+app.get("/api/public/appearance/:chatbotId", async (req, res) => {
+  try {
+    const { chatbotId } = req.params;
+    if (!findChatbot(chatbotId)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    const appearance = getChatbotAppearance(chatbotId);
+    if (!appearance) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Appearance not found" });
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    return (res as unknown as { json:(o:unknown)=>void}).json({
+      name: appearance.name,
+      avatar: appearance.avatar,
+      accentColor: appearance.accentColor,
+      theme: appearance.theme || 'dark',
+      greeting: appearance.greeting,
+    });
+  } catch {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load appearance" });
+  }
+});
+
 // --- Auth Routes ---
 app.post("/api/auth/register", async (req, res) => {
   try {
