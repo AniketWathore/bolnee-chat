@@ -44,6 +44,7 @@ export default function DocsPage({ onBack }: Props) {
   window.BotConfig = {
     botName: "Your Bot",
     avatar: "https://your-domain/api/public/avatar/BOT_ID",
+    widgetIcon: "https://your-domain/api/public/widget-icon/BOT_ID",
     chatUrl: "https://your-domain/api/public/chat/BOT_ID",
     accentColor: "#111111",
     greeting: "Hi! How can I help?"

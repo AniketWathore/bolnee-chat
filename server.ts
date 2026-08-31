@@ -38,6 +38,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "development-secret-change-me";
 const DATA_DIR = path.join(process.cwd(), "data");
 const AVATAR_DIR = path.join(DATA_DIR, "avatars");
+const WIDGET_ICON_DIR = path.join(DATA_DIR, "widget-icons");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const CHATBOTS_FILE = path.join(DATA_DIR, "chatbots.json");
 const DEFAULT_USER_ID = "user_local";
@@ -63,6 +64,30 @@ async function storeAvatar(chatbotId: string, dataUrl: string): Promise<string> 
     return `/api/public/avatar/${chatbotId}`;
   } catch (e) {
     console.warn("[avatar] store failed", e);
+    return "";
+  }
+}
+ 
+async function storeWidgetIcon(chatbotId: string, dataUrl: string): Promise<string> {
+  try {
+    if (!dataUrl) return "";
+    if (dataUrl.startsWith("/api/public/widget-icon/")) return dataUrl;
+    if (/^https?:\/\//.test(dataUrl)) return dataUrl;
+    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/);
+    if (!match) return dataUrl;
+    const ext = match[2] === "jpeg" ? "jpg" : match[2];
+    const base64 = match[3];
+    const buffer = Buffer.from(base64, "base64");
+    if (buffer.length > 1 * 1024 * 1024) throw new Error("Widget icon too large (max 1 MB)");
+    await fs.ensureDir(WIDGET_ICON_DIR);
+    const filePath = path.join(WIDGET_ICON_DIR, `${chatbotId}.${ext}`);
+    // Clean old widget icons for this bot with different ext
+    const existing = await fs.readdir(WIDGET_ICON_DIR).catch(() => []);
+    for (const f of existing) if (f.startsWith(chatbotId + ".")) await fs.remove(path.join(WIDGET_ICON_DIR, f)).catch(() => {});
+    await fs.writeFile(filePath, buffer);
+    return `/api/public/widget-icon/${chatbotId}`;
+  } catch (e) {
+    console.warn("[widget-icon] store failed", e);
     return "";
   }
 }
@@ -489,7 +514,30 @@ app.get("/api/public/avatar/:chatbotId", async (req, res) => {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load avatar" });
   }
 });
-
+ 
+app.get("/api/public/widget-icon/:chatbotId", async (req, res) => {
+  try {
+    const { chatbotId } = req.params;
+    const bot = findChatbot(chatbotId);
+    if (!bot) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
+    if (!(await fs.pathExists(WIDGET_ICON_DIR))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "No widget icon" });
+    const files = await fs.readdir(WIDGET_ICON_DIR);
+    const match = files.find(f => f.startsWith(chatbotId + "."));
+    if (!match) {
+      if (bot.widgetIcon && /^https?:\/\//.test(bot.widgetIcon)) return (res as unknown as { redirect:(u:string)=>void }).redirect(bot.widgetIcon);
+      return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Widget icon not found" });
+    }
+    const filePath = path.join(WIDGET_ICON_DIR, match);
+    const ext = path.extname(match).toLowerCase();
+    const mime = ext === ".png" ? "image/png" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "application/octet-stream";
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", mime);
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "public, max-age=86400");
+    return (res as unknown as { sendFile:(p:string)=>void }).sendFile(path.resolve(filePath));
+  } catch {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load widget icon" });
+  }
+});
+ 
 app.get("/api/public/appearance/:chatbotId", async (req, res) => {
   try {
     const { chatbotId } = req.params;
@@ -497,13 +545,14 @@ app.get("/api/public/appearance/:chatbotId", async (req, res) => {
     const appearance = getChatbotAppearance(chatbotId);
     if (!appearance) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Appearance not found" });
     res.setHeader('Cache-Control', 'public, max-age=60');
-    return (res as unknown as { json:(o:unknown)=>void}).json({
-      name: appearance.name,
-      avatar: appearance.avatar,
-      accentColor: appearance.accentColor,
-      theme: appearance.theme || 'dark',
-      greeting: appearance.greeting,
-    });
+return (res as unknown as { json:(o:unknown)=>void}).json({
+       name: appearance.name,
+       avatar: appearance.avatar,
+       accentColor: appearance.accentColor,
+       theme: appearance.theme || 'dark',
+       greeting: appearance.greeting,
+       widgetIcon: appearance.widgetIcon,
+     });
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load appearance" });
   }
@@ -604,11 +653,13 @@ app.get("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
 
 app.post("/api/chatbots", authenticate, async (req: unknown, res) => {
   try {
-    const r = req as { user:{userId:string}; body:{ name?:unknown; avatar?:unknown } };
-    const { name, avatar = "" } = r.body;
+    const r = req as { user:{userId:string}; body:{ name?:unknown; avatar?:unknown; widgetIcon?:unknown } };
+    const { name, avatar = "", widgetIcon = "" } = r.body;
     if (!isValidChatbotName(name as string)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Chatbot name is required (1-80 chars)" });
     if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large (max 2MB)" });
     if (typeof avatar === "string" && avatar && !(avatar.startsWith("data:image/") || avatar.startsWith("/api/public/avatar/") || /^https?:\/\//.test(avatar))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar must be an image data URL or http URL" });
+    if (typeof widgetIcon === "string" && widgetIcon.length > 2 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon too large (max 1 MB)" });
+    if (typeof widgetIcon === "string" && widgetIcon && !(widgetIcon.startsWith("data:image/") || widgetIcon.startsWith("/api/public/widget-icon/") || /^https?:\/\//.test(widgetIcon))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon must be an image data URL or http URL" });
     const newChatbot = {
       id: "bot_" + uuidv4(),
       userId: r.user.userId,
@@ -620,12 +671,17 @@ app.post("/api/chatbots", authenticate, async (req: unknown, res) => {
     if (avatarUrl.startsWith("data:image/")) {
       avatarUrl = await storeAvatar(newChatbot.id, avatarUrl);
     }
-    insertChatbot({ ...newChatbot, avatar: avatarUrl });
+    let widgetIconUrl = typeof widgetIcon === "string" ? widgetIcon : "";
+    if (widgetIconUrl.startsWith("data:image/")) {
+      widgetIconUrl = await storeWidgetIcon(newChatbot.id, widgetIconUrl);
+    }
+    insertChatbot({ ...newChatbot, avatar: avatarUrl, widgetIcon: widgetIconUrl });
     
     return (res as unknown as { json:(o:unknown)=>void}).json({
       _id: newChatbot.id,
       name: newChatbot.name,
       avatar: avatarUrl,
+      widgetIcon: widgetIconUrl,
       createdAt: newChatbot.createdAt
     });
   } catch {
@@ -634,8 +690,8 @@ app.post("/api/chatbots", authenticate, async (req: unknown, res) => {
 });
 
 app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
-  const r = req as { user:{userId:string}; params:{id:string}; body:{ avatar?:unknown; provider?:unknown; model?:unknown; apiKey?:unknown; baseUrl?:unknown } };
-  const { avatar, provider, model, apiKey, baseUrl } = r.body || {};
+  const r = req as { user:{userId:string}; params:{id:string}; body:{ avatar?:unknown; provider?:unknown; model?:unknown; apiKey?:unknown; baseUrl?:unknown; widgetIcon?:unknown } };
+  const { avatar, provider, model, apiKey, baseUrl, widgetIcon } = r.body || {};
   if (apiKey !== undefined && typeof apiKey !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "apiKey must be a string" });
   if (provider !== undefined && typeof provider !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "provider must be a string" });
   if (provider !== undefined && !isValidProvider(String(provider))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid provider" });
@@ -644,6 +700,7 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (baseUrl !== undefined && typeof baseUrl !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "baseUrl must be a string" });
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
   if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
+  if (typeof widgetIcon === "string" && widgetIcon.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon too large" });
   // Handle appearance fields (name, accentColor, etc.) plus provider fields
   const appearanceFields = {
     name: (r.body as { name?: unknown })?.name as string | undefined,
@@ -652,11 +709,17 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
     greeting: (r.body as { greeting?: unknown })?.greeting as string | undefined,
     defaultMessage: (r.body as { defaultMessage?: unknown })?.defaultMessage as string | undefined,
     fallbackMessage: (r.body as { fallbackMessage?: unknown })?.fallbackMessage as string | undefined,
+    widgetIcon: (r.body as { widgetIcon?: unknown })?.widgetIcon as string | undefined,
   };
   // Convert data URL avatar to file URL
   let avatarToStore = avatar as string | undefined;
   if (typeof avatarToStore === "string" && avatarToStore.startsWith("data:image/")) {
     avatarToStore = await storeAvatar(r.params.id, avatarToStore);
+  }
+  // Convert data URL widgetIcon to file URL
+  let widgetIconToStore = widgetIcon as string | undefined;
+  if (typeof widgetIconToStore === "string" && widgetIconToStore.startsWith("data:image/")) {
+    widgetIconToStore = await storeWidgetIcon(r.params.id, widgetIconToStore);
   }
   let updated = false;
   if (DISABLE_AUTH) {
@@ -664,12 +727,12 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
     if (!existing) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Chatbot not found" });
     updated = updateChatbotSettings(r.params.id, (existing as { userId: string }).userId, {
       avatar: avatarToStore, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
-      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
+      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage, widgetIcon: widgetIconToStore
     });
   } else {
     updated = updateChatbotSettings(r.params.id, r.user.userId, {
       avatar: avatarToStore, provider: provider as string|undefined, model: model as string|undefined, apiKey: apiKey as string|undefined, baseUrl: (baseUrl as string|undefined)?.trim(),
-      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage
+      name: appearanceFields.name, accentColor: appearanceFields.accentColor, theme: appearanceFields.theme, greeting: appearanceFields.greeting, defaultMessage: appearanceFields.defaultMessage, fallbackMessage: appearanceFields.fallbackMessage, widgetIcon: widgetIconToStore
     });
   }
   if (!updated) {

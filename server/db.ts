@@ -21,6 +21,7 @@ export interface DbChatbot {
   greeting?: string;
   defaultMessage?: string;
   fallbackMessage?: string;
+  widgetIcon?: string;
 }
 
 const dataDir = path.join(process.cwd(), "data");
@@ -86,6 +87,7 @@ for (const statement of [
   "ALTER TABLE chatbots ADD COLUMN greeting TEXT NOT NULL DEFAULT 'Hi! How can I help?'",
   "ALTER TABLE chatbots ADD COLUMN default_message TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE chatbots ADD COLUMN fallback_message TEXT NOT NULL DEFAULT ''",
+  "ALTER TABLE chatbots ADD COLUMN widget_icon TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE messages ADD COLUMN ip TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE messages ADD COLUMN user_identifier TEXT NOT NULL DEFAULT ''",
   "ALTER TABLE messages ADD COLUMN model TEXT NOT NULL DEFAULT ''",
@@ -142,15 +144,15 @@ export function listChatbots(userId: string): DbChatbot[] {
     .all(userId) as DbChatbot[];
 }
 
-export function updateChatbotSettings(id: string, userId: string, settings: { avatar?: string; provider?: string; model?: string; apiKey?: string; baseUrl?: string; accentColor?: string; theme?: string; greeting?: string; defaultMessage?: string; fallbackMessage?: string; name?: string }): boolean {
+export function updateChatbotSettings(id: string, userId: string, settings: { avatar?: string; provider?: string; model?: string; apiKey?: string; baseUrl?: string; accentColor?: string; theme?: string; greeting?: string; defaultMessage?: string; fallbackMessage?: string; name?: string; widgetIcon?: string }): boolean {
   const encryptedKey = settings.apiKey !== undefined ? (settings.apiKey ? encryptApiKey(settings.apiKey) : "") : null;
-  const result = db.prepare(`UPDATE chatbots SET name = COALESCE(?, name), avatar = COALESCE(?, avatar), provider = COALESCE(?, provider), model = COALESCE(?, model), api_key = COALESCE(?, api_key), base_url = COALESCE(?, base_url), accent_color = COALESCE(?, accent_color), theme = COALESCE(?, theme), greeting = COALESCE(?, greeting), default_message = COALESCE(?, default_message), fallback_message = COALESCE(?, fallback_message) WHERE id = ? AND user_id = ?`)
-    .run(settings.name ?? null, settings.avatar ?? null, settings.provider ?? null, settings.model ?? null, encryptedKey ?? null, settings.baseUrl ?? null, settings.accentColor ?? null, settings.theme ?? null, settings.greeting ?? null, settings.defaultMessage ?? null, settings.fallbackMessage ?? null, id, userId);
+  const result = db.prepare(`UPDATE chatbots SET name = COALESCE(?, name), avatar = COALESCE(?, avatar), provider = COALESCE(?, provider), model = COALESCE(?, model), api_key = COALESCE(?, api_key), base_url = COALESCE(?, base_url), accent_color = COALESCE(?, accent_color), theme = COALESCE(?, theme), greeting = COALESCE(?, greeting), default_message = COALESCE(?, default_message), fallback_message = COALESCE(?, fallback_message), widget_icon = COALESCE(?, widget_icon) WHERE id = ? AND user_id = ?`)
+    .run(settings.name ?? null, settings.avatar ?? null, settings.provider ?? null, settings.model ?? null, encryptedKey ?? null, settings.baseUrl ?? null, settings.accentColor ?? null, settings.theme ?? null, settings.greeting ?? null, settings.defaultMessage ?? null, settings.fallbackMessage ?? null, settings.widgetIcon ?? null, id, userId);
   return result.changes > 0;
 }
 
-export function getChatbotAppearance(id: string): { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string } | undefined {
-  return db.prepare("SELECT name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage FROM chatbots WHERE id = ?").get(id) as { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string } | undefined;
+export function getChatbotAppearance(id: string): { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string; widgetIcon: string } | undefined {
+  return db.prepare("SELECT name, avatar, accent_color as accentColor, theme, greeting, default_message as defaultMessage, fallback_message as fallbackMessage, widget_icon as widgetIcon FROM chatbots WHERE id = ?").get(id) as { name: string; avatar: string; accentColor: string; theme: string; greeting: string; defaultMessage: string; fallbackMessage: string; widgetIcon: string } | undefined;
 }
 
 export function getChatbotSettings(id: string): { provider: string; model: string; apiKey: string; baseUrl: string } | undefined {
@@ -174,8 +176,9 @@ export function insertChatbot(bot: DbChatbot): void {
   // Store avatar if provided via DbChatbot extension
   const avatar = (bot as { avatar?: string }).avatar || "";
   const theme = (bot as { theme?: string }).theme || "dark";
-  db.prepare("INSERT INTO chatbots (id, user_id, name, avatar, theme, created_at) VALUES (?, ?, ?, ?, ?, ?)")
-    .run(bot.id, bot.userId, bot.name, avatar, theme, bot.createdAt);
+  const widgetIcon = (bot as { widgetIcon?: string }).widgetIcon || "";
+  db.prepare("INSERT INTO chatbots (id, user_id, name, avatar, theme, widget_icon, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    .run(bot.id, bot.userId, bot.name, avatar, theme, widgetIcon, bot.createdAt);
 }
 
 export function removeChatbot(id: string, userId: string): boolean {

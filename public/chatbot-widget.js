@@ -5,6 +5,7 @@
   var ACCENT       = cfg.accentColor  || '#6366f1';
   var BOT_NAME     = cfg.botName      || 'AI Assistant';
   var AVATAR       = cfg.avatar     || '';
+  var WIDGET_ICON  = cfg.widgetIcon || '';
   var GREETING      = cfg.greeting      || 'Hi! How can I help you today?';
   var THEME        = (cfg.theme || 'dark').toString().trim().toLowerCase();
   var KNOWLEDGE_URL = cfg.knowledgeUrl  || null;
@@ -51,7 +52,6 @@
     '._m.u ._ml{text-align:right}' +
     '._dots{display:inline-flex;gap:4px;padding:4px 0}' +
     '._dots span{width:6px;height:6px;border-radius:50%;background:' + colors.dotsBg + ';animation:_dt 1.1s infinite ease-in-out}' +
-    '._dots span:nth-child(2){animation-delay:.18s}._dots span:nth-child(3){animation-delay:.36s}' +
     '@keyframes _dt{0%,80%,100%{transform:scale(.6);opacity:.5}40%{transform:scale(1);opacity:1}}' +
     '#_cw_ia{display:flex;align-items:flex-end;gap:8px;padding:10px 12px;border-top:1px solid ' + colors.iaBorder + ';flex-shrink:0;background:' + colors.iaBg + '}' +
     '#_cw_i{flex:1;border:1.5px solid ' + colors.inputBorder + ';border-radius:10px;padding:8px 12px;font-size:13.5px;resize:none;outline:none;max-height:90px;overflow-y:auto;line-height:1.5;background:' + colors.inputBg + ';color:' + colors.inputText + ';transition:border-color .2s;font-family:inherit}' +
@@ -116,6 +116,7 @@
         if (data.botName) BOT_NAME = data.botName;
         if (data.greeting) GREETING = data.greeting;
         if (data.avatar) AVATAR = data.avatar;
+        if (data.widgetIcon) WIDGET_ICON = data.widgetIcon;
         C = getColors(_isDark);
         injectStyle(C, ACCENT);
         // update already-rendered header/button/window colors if DOM exists
@@ -127,9 +128,17 @@
           var ia = document.getElementById('_cw_ia'); if (ia) { ia.style.background = C.iaBg; ia.style.borderTopColor = C.iaBorder; }
           var hn = document.getElementById('_cw_hn'); if (hn && data.botName) hn.textContent = data.botName;
           var avEl2 = document.getElementById('_cw_av'); if (avEl2 && data.avatar) {
-            var esc2 = data.avatar.replace(/"/g, '&quot;');
+            var esc2 = data.avatar.replace(/"/g, '"');
             avEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
             avEl2.style.background = 'transparent'; avEl2.style.overflow = 'hidden'; avEl2.style.padding = '0';
+          }
+          var btnEl2 = document.getElementById('_cw_b'); if (btnEl2) {
+            if (WIDGET_ICON) {
+              var esc2 = WIDGET_ICON.replace(/"/g, '"');
+              btnEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'\\uD83E\\uDD16\';">';
+            } else {
+              btnEl2.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>';
+            }
           }
         } catch(e){}
       }).catch(function(){});
@@ -180,11 +189,20 @@
   try {
     var avEl = document.getElementById('_cw_av');
     if (avEl && AVATAR) {
-      var esc = AVATAR.replace(/"/g, '&quot;');
+      var esc = AVATAR.replace(/"/g, '"');
       avEl.innerHTML = '<img src="' + esc + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
       avEl.style.background = 'transparent';
       avEl.style.overflow = 'hidden';
       avEl.style.padding = '0';
+    }
+    var btnEl = document.getElementById('_cw_b');
+    if (btnEl) {
+      if (WIDGET_ICON) {
+        var esc = WIDGET_ICON.replace(/"/g, '"');
+        btnEl.innerHTML = '<img src="' + esc + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'\\uD83E\\uDD16\';">';
+      } else {
+        btnEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>';
+      }
     }
   } catch(e){}
 
@@ -344,7 +362,6 @@
                 return doFetch(CHAT_URL + (CHAT_URL.indexOf('?')===-1 ? '?' : '&') + 'bypass_sw=' + Date.now()).then(handleStream);
               });
             }
-            throw err2;
           });
         }
         var decoder = new TextDecoder();
@@ -402,7 +419,7 @@
         if (isLocked && navigator.serviceWorker && navigator.serviceWorker.controller) {
           console.warn('[chatbot-widget] Stream locked by old SW, unregistering and retrying');
           return navigator.serviceWorker.getRegistrations().then(function(rs){
-            var ps = rs.map(function(r){ try { return r.unregister(); } catch(_){ return Promise.resolve(); } });
+            var ps = rs.map(function(r){ try { r.unregister(); } catch(_){ return Promise.resolve(); } });
             return Promise.all(ps).then(function(){
               // After unregister, retry with cache-busted URL
               return doFetch(CHAT_URL + (CHAT_URL.indexOf('?')===-1 ? '?' : '&') + 'sw_bypass=' + Date.now()).then(handleStream);

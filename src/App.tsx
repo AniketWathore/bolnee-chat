@@ -54,10 +54,10 @@ export default function App() {
     refreshChatbots();
   }, []);
 
-  const createBot = async (name: string, avatar = '') => {
+  const createBot = async (name: string, avatar = '', widgetIcon = '') => {
     const bot = await api('/api/chatbots', {
       method: 'POST',
-      body: JSON.stringify({ name, avatar }),
+      body: JSON.stringify({ name, avatar, widgetIcon }),
     });
     setChatbots((current) => [...current, bot]);
     setShowBotWizard(false);
