@@ -262,6 +262,7 @@ export default function ChatbotDashboard({
       });
       if (!res.ok) throw new Error((await res.json()).error || 'Failed');
       setAppearanceMsg('Saved');
+      await fetchAppearance();
       setTimeout(() => setAppearanceMsg(''), 2000);
     } catch (e: unknown) {
       setAppearanceMsg((e as Error).message);
