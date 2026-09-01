@@ -59,7 +59,7 @@ export default function App() {
       method: 'POST',
       body: JSON.stringify({ name, avatar, widgetIcon }),
     });
-    setChatbots((current) => [...current, bot]);
+    setChatbots((current) => [bot, ...current]);
     setShowBotWizard(false);
     const data = await api(`/api/knowledge?chatbotId=${encodeURIComponent(bot._id)}`);
     setSelectedBot(bot);
@@ -117,6 +117,11 @@ export default function App() {
     setKnowledge(null);
   };
 
+  const updateChatbot = (id: string, updates: Partial<Chatbot>) => {
+    setChatbots((current) => current.map((bot) => bot._id === id ? { ...bot, ...updates } : bot));
+    setSelectedBot((current) => current && current._id === id ? { ...current, ...updates } : current);
+  };
+
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100 transition-colors">
       <header className="sticky top-0 z-30 bg-[#0f172a] border-b border-slate-800">
@@ -148,7 +153,7 @@ export default function App() {
           <GuidesPage onBack={() => setPage('console')} />
         ) : selectedBot && knowledge ? (
           <>
-            <ChatbotDashboard chatbot={selectedBot} knowledgeData={knowledge} onSaveKnowledge={saveKnowledge} onUploadSources={uploadSources} onAddUrl={addUrlSource} onSaveSettings={saveBotSettings} onBack={() => { setForceWizardFor(null); setSelectedBot(null); }} onDeleteBot={deleteBot} />
+            <ChatbotDashboard chatbot={selectedBot} knowledgeData={knowledge} onSaveKnowledge={saveKnowledge} onUploadSources={uploadSources} onAddUrl={addUrlSource} onSaveSettings={saveBotSettings} onBack={() => { setForceWizardFor(null); setSelectedBot(null); }} onDeleteBot={deleteBot} onChatbotUpdate={updateChatbot} />
             <div className="mt-10 border-t border-slate-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
               <div>Need help? <button onClick={()=>setPage('docs')} className="underline hover:text-white">Read docs</button> • <button onClick={()=>setPage('guides')} className="underline hover:text-white">Follow guides</button></div>
               <div className="flex items-center gap-1">Made with <span className="text-red-500">❤️</span> by <a href="https://github.com/AniketWathore" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">github/AniketWathore</a></div>

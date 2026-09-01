@@ -109,21 +109,22 @@
         var liveTheme = (data.theme || '').toString().trim().toLowerCase();
         var liveAccent = data.accentColor || ACCENT;
         var shouldBeDark = liveTheme === 'dark' ? true : liveTheme === 'light' ? false : liveTheme === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) : _isDark;
-        // Make avatar/widgetIcon absolute if they are relative paths
+        // Make avatar/widgetIcon absolute if they are relative paths; handle both name/botName from API
         var liveAvatar = data.avatar;
         if (liveAvatar && liveAvatar.indexOf('/') === 0) liveAvatar = baseUrl.replace(/\/$/, '') + liveAvatar;
         var liveWidgetIcon = data.widgetIcon;
         if (liveWidgetIcon && liveWidgetIcon.indexOf('/') === 0) liveWidgetIcon = baseUrl.replace(/\/$/, '') + liveWidgetIcon;
+        var liveName = data.botName || data.name;
         var needsUpdate = false;
         if (liveTheme && shouldBeDark !== _isDark) needsUpdate = true;
         if (liveAccent && liveAccent !== ACCENT) needsUpdate = true;
         if (liveWidgetIcon !== undefined && liveWidgetIcon !== WIDGET_ICON) needsUpdate = true;
         if (liveAvatar !== undefined && liveAvatar !== AVATAR) needsUpdate = true;
-        if (data.botName && data.botName !== BOT_NAME) needsUpdate = true;
+        if (liveName && liveName !== BOT_NAME) needsUpdate = true;
         if (!needsUpdate) return;
         _isDark = shouldBeDark;
         if (liveAccent) ACCENT = liveAccent;
-        if (data.botName) BOT_NAME = data.botName;
+        if (liveName) BOT_NAME = liveName;
         if (data.greeting) GREETING = data.greeting;
         if (liveAvatar) AVATAR = liveAvatar;
         if (liveWidgetIcon) WIDGET_ICON = liveWidgetIcon;
@@ -136,7 +137,7 @@
            var win = document.getElementById('_cw_w'); if (win) { win.style.background = C.winBg; win.style.borderColor = C.winBorder; }
            var ms = document.getElementById('_cw_ms'); if (ms) ms.style.background = C.winBg;
            var ia = document.getElementById('_cw_ia'); if (ia) { ia.style.background = C.iaBg; ia.style.borderTopColor = C.iaBorder; }
-           var hn = document.getElementById('_cw_hn'); if (hn && data.botName) hn.textContent = data.botName;
+           var hn = document.getElementById('_cw_hn'); if (hn && liveName) hn.textContent = liveName;
           var avEl2 = document.getElementById('_cw_av'); if (avEl2 && liveAvatar) {
               var src2 = liveAvatar + (liveAvatar.indexOf('/api/public/avatar/') !== -1 && liveAvatar.indexOf('?') === -1 ? '?v=' + Date.now() : '');
               var esc2 = src2.replace(/"/g, '"');

@@ -21,6 +21,7 @@ interface ChatbotDashboardProps {
   onDeleteBot?: (id: string) => void;
   forceOpenWizard?: boolean;
   onWizardClose?: () => void;
+  onChatbotUpdate?: (id: string, updates: Partial<Chatbot>) => void;
 }
 
 interface MessageRow {
@@ -44,7 +45,7 @@ interface SourceRow {
 }
 
 export default function ChatbotDashboard({
-  chatbot, knowledgeData, onSaveKnowledge, onUploadSources, onAddUrl, onSaveSettings, onBack, onDeleteBot, forceOpenWizard, onWizardClose
+  chatbot, knowledgeData, onSaveKnowledge, onUploadSources, onAddUrl, onSaveSettings, onBack, onDeleteBot, forceOpenWizard, onWizardClose, onChatbotUpdate
 }: ChatbotDashboardProps) {
   const [activeTab, setActiveTab] = useState<ChatbotTab>('overview');
   const [showKnowledgeWizard, setShowKnowledgeWizard] = useState(false);
@@ -255,6 +256,11 @@ export default function ChatbotDashboard({
       setAppearanceMsg('Saved');
       const wasDataUrl = appearance.widgetIcon.startsWith('data:image');
       const wasAvatarDataUrl = appearance.avatar.startsWith('data:image');
+      // Immediately update parent list so console shows new name/avatar without refresh
+      if (onChatbotUpdate) {
+        const cleanAvatar = appearance.avatar.startsWith('data:image') ? `/api/public/avatar/${chatbot._id}` : appearance.avatar.split('?')[0];
+        onChatbotUpdate(chatbot._id, { name: appearance.name, avatar: cleanAvatar });
+      }
       await fetchAppearance();
       if (wasDataUrl) {
         setAppearance(prev => ({ ...prev, widgetIcon: `/api/public/widget-icon/${chatbot._id}?v=${Date.now()}` }));
