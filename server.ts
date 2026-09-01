@@ -73,9 +73,9 @@ async function storeWidgetIcon(chatbotId: string, dataUrl: string): Promise<stri
     if (!dataUrl) return "";
     if (dataUrl.startsWith("/api/public/widget-icon/")) return dataUrl;
     if (/^https?:\/\//.test(dataUrl)) return dataUrl;
-    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/);
+    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml));base64,(.+)$/);
     if (!match) return dataUrl;
-    const ext = match[2] === "jpeg" ? "jpg" : match[2];
+    const ext = match[2] === "jpeg" ? "jpg" : match[2] === "svg+xml" ? "svg" : match[2];
     const base64 = match[3];
     const buffer = Buffer.from(base64, "base64");
     if (buffer.length > 1 * 1024 * 1024) throw new Error("Widget icon too large (max 1 MB)");
@@ -508,7 +508,7 @@ app.get("/api/public/avatar/:chatbotId", async (req, res) => {
     const ext = path.extname(match).toLowerCase();
     const mime = ext === ".png" ? "image/png" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "application/octet-stream";
     (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", mime);
-    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "public, max-age=86400");
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "no-cache, no-store, must-revalidate");
     return (res as unknown as { sendFile:(p:string)=>void }).sendFile(path.resolve(filePath));
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load avatar" });
@@ -529,9 +529,9 @@ app.get("/api/public/widget-icon/:chatbotId", async (req, res) => {
     }
     const filePath = path.join(WIDGET_ICON_DIR, match);
     const ext = path.extname(match).toLowerCase();
-    const mime = ext === ".png" ? "image/png" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : "application/octet-stream";
+    const mime = ext === ".png" ? "image/png" : (ext === ".jpg" || ext === ".jpeg") ? "image/jpeg" : ext === ".webp" ? "image/webp" : ext === ".gif" ? "image/gif" : ext === ".svg" ? "image/svg+xml" : "application/octet-stream";
     (res as unknown as { set:(k:string,v:string)=>void }).set("Content-Type", mime);
-    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "public, max-age=86400");
+    (res as unknown as { set:(k:string,v:string)=>void }).set("Cache-Control", "no-cache, no-store, must-revalidate");
     return (res as unknown as { sendFile:(p:string)=>void }).sendFile(path.resolve(filePath));
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Failed to load widget icon" });
@@ -841,6 +841,15 @@ app.get("/api/chatbots/:id/appearance", authenticate, async (req: unknown, res) 
       appearance = { ...appearance, avatar: url };
     }
   }
+  // Lazily migrate data URL widget icons to file URLs for existing bots
+  if (appearance && appearance.widgetIcon && appearance.widgetIcon.startsWith("data:image/")) {
+    const url = await storeWidgetIcon(r.params.id, appearance.widgetIcon);
+    if (url) {
+      const bot = findChatbot(r.params.id);
+      if (bot) updateChatbotSettings(r.params.id, (bot as { userId: string }).userId, { widgetIcon: url } as unknown as Record<string, unknown> as never);
+      appearance = { ...appearance, widgetIcon: url };
+    }
+  }
   return (res as unknown as { json:(o:unknown)=>void }).json(appearance);
 });
 
@@ -1020,6 +1029,13 @@ if (process.env.NODE_ENV === "production") {
     (res as unknown as { set:(k:string,v:string)=>void }).set('Expires', '0');
     (res as unknown as { set:(k:string,v:string)=>void }).set('Content-Type', 'application/javascript');
     (res as unknown as { sendFile:(p:string)=>void}).sendFile(path.join(distPath, 'sw.js'));
+  });
+  app.get('/chatbot-widget.js', (_req, res) => {
+    (res as unknown as { set:(k:string,v:string)=>void }).set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    (res as unknown as { set:(k:string,v:string)=>void }).set('Pragma', 'no-cache');
+    (res as unknown as { set:(k:string,v:string)=>void }).set('Expires', '0');
+    (res as unknown as { set:(k:string,v:string)=>void }).set('Content-Type', 'application/javascript');
+    (res as unknown as { sendFile:(p:string)=>void}).sendFile(path.join(distPath, 'chatbot-widget.js'));
   });
   app.use(express.static(distPath));
   app.get('*', (_req, res) => {

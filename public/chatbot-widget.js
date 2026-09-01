@@ -85,65 +85,80 @@
   var GREETED_KEY = BOT_ID ? 'bolnee_greeted_' + BOT_ID : null;
 
   // Live theme/accent sync - fetch actual dashboard settings so old embeds respect dark mode without re-copy
-  (function fetchLiveAppearance(){
-    try {
-      if (!BOT_ID) return;
-      var scripts = document.getElementsByTagName('script');
-      var baseUrl = '';
-      for (var i = 0; i < scripts.length; i++) {
-        var src = scripts[i].src;
-        if (src && src.includes('chatbot-widget.js')) {
-          baseUrl = src.substring(0, src.lastIndexOf('/') + 1);
-          break;
-        }
-      }
-      if (!baseUrl && CHAT_URL) {
-        try { baseUrl = new URL(CHAT_URL).origin + '/'; } catch(e) { baseUrl = '/'; }
-      }
-      if (!baseUrl) baseUrl = '/';
-      var url = baseUrl.replace(/\/$/, '') + '/api/public/appearance/' + encodeURIComponent(BOT_ID);
-      fetch(url, { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
-        if (!data) return;
+   function fetchLiveAppearance(){
+     try {
+       if (!BOT_ID) return;
+       var baseUrl = '';
+       if (CHAT_URL) {
+         try { baseUrl = new URL(CHAT_URL).origin + '/'; } catch(e) { baseUrl = ''; }
+       }
+       if (!baseUrl) {
+         var scripts = document.getElementsByTagName('script');
+         for (var i = 0; i < scripts.length; i++) {
+           var src = scripts[i].src;
+           if (src && src.includes('chatbot-widget.js')) {
+             baseUrl = src.substring(0, src.lastIndexOf('/') + 1);
+             break;
+           }
+         }
+       }
+       if (!baseUrl) baseUrl = '/';
+       var url = baseUrl.replace(/\/$/, '') + '/api/public/appearance/' + encodeURIComponent(BOT_ID);
+       fetch(url, { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
+         if (!data) return;
         var liveTheme = (data.theme || '').toString().trim().toLowerCase();
         var liveAccent = data.accentColor || ACCENT;
         var shouldBeDark = liveTheme === 'dark' ? true : liveTheme === 'light' ? false : liveTheme === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) : _isDark;
+        // Make avatar/widgetIcon absolute if they are relative paths
+        var liveAvatar = data.avatar;
+        if (liveAvatar && liveAvatar.indexOf('/') === 0) liveAvatar = baseUrl.replace(/\/$/, '') + liveAvatar;
+        var liveWidgetIcon = data.widgetIcon;
+        if (liveWidgetIcon && liveWidgetIcon.indexOf('/') === 0) liveWidgetIcon = baseUrl.replace(/\/$/, '') + liveWidgetIcon;
         var needsUpdate = false;
         if (liveTheme && shouldBeDark !== _isDark) needsUpdate = true;
         if (liveAccent && liveAccent !== ACCENT) needsUpdate = true;
+        if (liveWidgetIcon !== undefined && liveWidgetIcon !== WIDGET_ICON) needsUpdate = true;
+        if (liveAvatar !== undefined && liveAvatar !== AVATAR) needsUpdate = true;
+        if (data.botName && data.botName !== BOT_NAME) needsUpdate = true;
         if (!needsUpdate) return;
         _isDark = shouldBeDark;
         if (liveAccent) ACCENT = liveAccent;
         if (data.botName) BOT_NAME = data.botName;
         if (data.greeting) GREETING = data.greeting;
-        if (data.avatar) AVATAR = data.avatar;
-        if (data.widgetIcon) WIDGET_ICON = data.widgetIcon;
-        C = getColors(_isDark);
-        injectStyle(C, ACCENT);
-        // update already-rendered header/button/window colors if DOM exists
-        try {
-          var hdr = document.getElementById('_cw_h'); if (hdr) hdr.style.background = ACCENT;
-          var btn = document.getElementById('_cw_b'); if (btn) btn.style.background = ACCENT;
-          var win = document.getElementById('_cw_w'); if (win) { win.style.background = C.winBg; win.style.borderColor = C.winBorder; }
-          var ms = document.getElementById('_cw_ms'); if (ms) ms.style.background = C.winBg;
-          var ia = document.getElementById('_cw_ia'); if (ia) { ia.style.background = C.iaBg; ia.style.borderTopColor = C.iaBorder; }
-          var hn = document.getElementById('_cw_hn'); if (hn && data.botName) hn.textContent = data.botName;
-          var avEl2 = document.getElementById('_cw_av'); if (avEl2 && data.avatar) {
-            var esc2 = data.avatar.replace(/"/g, '"');
-            avEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
-            avEl2.style.background = 'transparent'; avEl2.style.overflow = 'hidden'; avEl2.style.padding = '0';
-          }
-          var btnEl2 = document.getElementById('_cw_b'); if (btnEl2) {
-            if (WIDGET_ICON) {
-              var esc2 = WIDGET_ICON.replace(/"/g, '"');
-              btnEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'\\uD83E\\uDD16\';">';
-            } else {
-              btnEl2.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>';
+        if (liveAvatar) AVATAR = liveAvatar;
+        if (liveWidgetIcon) WIDGET_ICON = liveWidgetIcon;
+         C = getColors(_isDark);
+         injectStyle(C, ACCENT);
+         // update already-rendered header/button/window colors if DOM exists
+         try {
+           var hdr = document.getElementById('_cw_h'); if (hdr) hdr.style.background = ACCENT;
+           var btn = document.getElementById('_cw_b'); if (btn) btn.style.background = ACCENT;
+           var win = document.getElementById('_cw_w'); if (win) { win.style.background = C.winBg; win.style.borderColor = C.winBorder; }
+           var ms = document.getElementById('_cw_ms'); if (ms) ms.style.background = C.winBg;
+           var ia = document.getElementById('_cw_ia'); if (ia) { ia.style.background = C.iaBg; ia.style.borderTopColor = C.iaBorder; }
+           var hn = document.getElementById('_cw_hn'); if (hn && data.botName) hn.textContent = data.botName;
+          var avEl2 = document.getElementById('_cw_av'); if (avEl2 && liveAvatar) {
+              var src2 = liveAvatar + (liveAvatar.indexOf('/api/public/avatar/') !== -1 && liveAvatar.indexOf('?') === -1 ? '?v=' + Date.now() : '');
+              var esc2 = src2.replace(/"/g, '"');
+              avEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
+              avEl2.style.background = 'transparent'; avEl2.style.overflow = 'hidden'; avEl2.style.padding = '0';
             }
-          }
-        } catch(e){}
-      }).catch(function(){});
-    } catch(e){}
-  })();
+            var btnEl2 = document.getElementById('_cw_b'); if (btnEl2) {
+              if (WIDGET_ICON) {
+                var src2 = WIDGET_ICON + (WIDGET_ICON.indexOf('/api/public/widget-icon/') !== -1 && WIDGET_ICON.indexOf('?') === -1 ? '?v=' + Date.now() : '');
+               var esc2 = src2.replace(/"/g, '"');
+               btnEl2.innerHTML = '<img src="' + esc2 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'\\uD83E\\uDD16\';">';
+             } else {
+               btnEl2.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>';
+             }
+           }
+         } catch(e){}
+       }).catch(function(){});
+     } catch(e){}
+   }
+   // Initial fetch and periodic updates every 15 seconds
+   fetchLiveAppearance();
+   setInterval(fetchLiveAppearance, 15000);
 
   document.body.insertAdjacentHTML('beforeend',
     '<div id="_cw">' +
@@ -189,7 +204,8 @@
   try {
     var avEl = document.getElementById('_cw_av');
     if (avEl && AVATAR) {
-      var esc = AVATAR.replace(/"/g, '"');
+      var avSrc = AVATAR + (AVATAR.indexOf('/api/public/avatar/') !== -1 && AVATAR.indexOf('?') === -1 ? '?v=' + Date.now() : '');
+      var esc = avSrc.replace(/"/g, '"');
       avEl.innerHTML = '<img src="' + esc + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.textContent=\'\\uD83E\\uDD16\';">';
       avEl.style.background = 'transparent';
       avEl.style.overflow = 'hidden';
@@ -198,7 +214,8 @@
     var btnEl = document.getElementById('_cw_b');
     if (btnEl) {
       if (WIDGET_ICON) {
-        var esc = WIDGET_ICON.replace(/"/g, '"');
+        var src = WIDGET_ICON + (WIDGET_ICON.indexOf('/api/public/widget-icon/') !== -1 && WIDGET_ICON.indexOf('?') === -1 ? '?v=' + Date.now() : '');
+        var esc = src.replace(/"/g, '"');
         btnEl.innerHTML = '<img src="' + esc + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'\\uD83E\\uDD16\';">';
       } else {
         btnEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>';

@@ -67,15 +67,6 @@ export default function ChatbotDashboard({
   const [appearanceSaving, setAppearanceSaving] = useState(false);
   const [appearanceMsg, setAppearanceMsg] = useState('');
 
-  // Default widget icon (single)
-  const DEFAULT_WIDGET_ICONS = [
-    { label: 'Default', fill: '#6366f1' },
-  ] as const;
-  const widgetIconDefaultDataUrls = DEFAULT_WIDGET_ICONS.map(({ fill }) => {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path fill="${fill}" d="M12 3C6.48 3 2 6.92 2 11.8c0 2.2.87 4.2 2.32 5.74L3 21l4.13-1.59A10.97 10.97 0 0012 20.6c5.52 0 10-3.92 10-8.8C22 6.92 17.52 3 12 3z"/></svg>`;
-    return 'data:image/svg+xml;base64,' + btoa(svg);
-  });
-
   // Settings state
   const PROVIDER_DEFAULTS: Record<string, { baseUrl: string; label: string; models: string[] }> = {
     openrouter: { label: "OpenRouter", baseUrl: "https://openrouter.ai/api/v1", models: ["inclusionai/ling-3.0-flash-fin:free","liquid/lfm-2.5-2.6b:free","qwen/qwen-2.5-7b-instruct:free","meta-llama/llama-3.3-70b-instruct:free","mistralai/mistral-7b-instruct:free","openai/gpt-4o-mini","openai/gpt-4o","anthropic/claude-3.5-sonnet"] },
@@ -169,7 +160,7 @@ export default function ChatbotDashboard({
 
   const fetchAppearance = async () => {
     try {
-      const res = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/appearance`);
+      const res = await fetch(`/api/chatbots/${encodeURIComponent(chatbot._id)}/appearance`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setAppearance({
@@ -262,7 +253,15 @@ export default function ChatbotDashboard({
       });
       if (!res.ok) throw new Error((await res.json()).error || 'Failed');
       setAppearanceMsg('Saved');
+      const wasDataUrl = appearance.widgetIcon.startsWith('data:image');
+      const wasAvatarDataUrl = appearance.avatar.startsWith('data:image');
       await fetchAppearance();
+      if (wasDataUrl) {
+        setAppearance(prev => ({ ...prev, widgetIcon: `/api/public/widget-icon/${chatbot._id}?v=${Date.now()}` }));
+      }
+      if (wasAvatarDataUrl) {
+        setAppearance(prev => ({ ...prev, avatar: `/api/public/avatar/${chatbot._id}?v=${Date.now()}` }));
+      }
       setTimeout(() => setAppearanceMsg(''), 2000);
     } catch (e: unknown) {
       setAppearanceMsg((e as Error).message);
@@ -398,12 +397,8 @@ export default function ChatbotDashboard({
             </label>
             {appearance.avatar && <button onClick={()=>setAppearance({...appearance, avatar:''})} className="text-xs text-slate-400"><X className="w-3 h-3 inline" /> Clear</button>}
           </div>
-          {appearance.avatar && appearance.avatar.startsWith('data:image') ? (
-            <div className="text-xs text-slate-400 bg-amber-950 border border-amber-800 text-amber-400 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
-          ) : appearance.avatar && appearance.avatar.startsWith('/api/public/avatar/') ? (
-            <div className="text-xs text-slate-400 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded p-2">Avatar stored ✓ — preview above. Upload new image to replace.</div>
-          ) : (
-            <input value={appearance.avatar} onChange={e=>setAppearance({...appearance, avatar:e.target.value})} placeholder="https://... or leave empty for default icon" className="brutal-input text-xs" />
+          {appearance.avatar && appearance.avatar.startsWith('data:image') && (
+            <div className="text-xs bg-amber-950 border border-amber-800 text-amber-400 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
           )}
         </div>
         <div className="space-y-3">
@@ -413,51 +408,32 @@ export default function ChatbotDashboard({
               {appearance.widgetIcon ? <img src={appearance.widgetIcon} alt="widget icon" className="w-full h-full object-cover" /> : <Bot className="w-6 h-6 text-slate-500" />}
             </div>
             <div className="space-y-2">
-              <div className="flex flex-wrap gap-3">
-                {DEFAULT_WIDGET_ICONS.map(({ label }, idx) => (
-                  <label key={idx} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="widgetIconDefault"
-                      checked={appearance.widgetIcon === widgetIconDefaultDataUrls[idx]}
-                      onChange={() => setAppearance({...appearance, widgetIcon: widgetIconDefaultDataUrls[idx]})}
-                      className="h-4 w-4 text-slate-600"
-                    />
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <img src={widgetIconDefaultDataUrls[idx]} alt={label} className="w-full h-full object-contain" />
-                    </div>
-                    <span className="font-mono text-[10px]">{label}</span>
-                  </label>
-                ))}
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="inline-flex items-center gap-1.5 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs cursor-pointer hover:bg-slate-800">
+                  <Upload className="w-3.5 h-3.5" /> Upload
+                  <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={e=>{
+                    const f=e.target.files?.[0]; if(!f) return;
+                    const allowed = ["image/png", "image/jpeg", "image/webp", "image/gif"];
+                    if (!allowed.includes(f.type)) {
+                      setAppearanceMsg('Only PNG, JPG, WEBP, or GIF allowed');
+                      return;
+                    }
+                    if (f.size > 1 * 1024 * 1024) {
+                      setAppearanceMsg('Widget icon must be under 1 MB');
+                      return;
+                    }
+                    setAppearanceMsg('');
+                    const r=new FileReader();
+                    r.onload = () => {
+                      setAppearance({...appearance, widgetIcon: String(r.result)});
+                    };
+                    r.readAsDataURL(f);
+                  }} />
+                </label>
+                {appearance.widgetIcon && <button onClick={()=>setAppearance({...appearance, widgetIcon:''})} className="text-xs text-slate-400"><X className="w-3 h-3 inline" /> Clear</button>}
               </div>
-              <label className="inline-flex items-center gap-2 border border-slate-700 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-slate-800">
-                <Upload className="w-4 h-4" /> Upload
-                <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={e=>{
-                  const f=e.target.files?.[0]; if(!f) return;
-                  const allowed = ["image/png", "image/jpeg", "image/webp", "image/gif"];
-                  if (!allowed.includes(f.type)) {
-                    setAppearanceMsg('Only PNG, JPG, WEBP, or GIF allowed');
-                    return;
-                  }
-                  if (f.size > 1 * 1024 * 1024) {
-                    setAppearanceMsg('Widget icon must be under 1 MB');
-                    return;
-                  }
-                  setAppearanceMsg('');
-                  const r=new FileReader();
-                  r.onload = () => {
-                    setAppearance({...appearance, widgetIcon: String(r.result)});
-                  };
-                  r.readAsDataURL(f);
-                }} />
-              </label>
-              {appearance.widgetIcon && <button onClick={()=>setAppearance({...appearance, widgetIcon:''})} className="text-xs text-slate-400"><X className="w-3 h-3 inline" /> Clear</button>}
-              {appearance.widgetIcon && appearance.widgetIcon.startsWith('data:image') ? (
-                <div className="text-xs text-slate-400 bg-amber-950 border border-amber-800 text-amber-400 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
-              ) : appearance.widgetIcon && appearance.widgetIcon.startsWith('/api/public/widget-icon/') ? (
-                <div className="text-xs text-slate-400 bg-emerald-950 border border-emerald-800 text-emerald-400 rounded p-2">Widget icon stored ✓ — preview above. Upload new image to replace.</div>
-              ) : (
-                <input value={appearance.widgetIcon} onChange={e=>setAppearance({...appearance, widgetIcon:e.target.value})} placeholder="https://... or leave empty for default icon" className="brutal-input text-xs" />
+              {appearance.widgetIcon && appearance.widgetIcon.startsWith('data:image') && (
+                <div className="text-xs bg-amber-950 border border-amber-800 text-amber-400 rounded p-2">New image selected — preview above. Click <b>Save appearance</b> to store.</div>
               )}
             </div>
           </div>
