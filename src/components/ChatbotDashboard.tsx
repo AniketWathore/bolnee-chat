@@ -270,6 +270,15 @@ export default function ChatbotDashboard({
   };
 
   const handleSettingsSave = async () => {
+    const isLocal = settings.provider === 'ollama' || settings.provider === 'vllm' || settings.provider === 'lmstudio' || settings.baseUrl.toLowerCase().includes('localhost') || settings.baseUrl.toLowerCase().includes('127.0.0.1');
+    if (!isLocal && !settings.apiKey.trim()) {
+      setSettingsMsg('API key is required for this provider. Each chatbot uses only its own key — add it to enable chat.');
+      return;
+    }
+    if (!settings.model.trim()) {
+      setSettingsMsg('Model is required');
+      return;
+    }
     setSettingsSaving(true);
     setSettingsMsg('');
     try {

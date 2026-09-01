@@ -316,13 +316,10 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
 
     const chunks = await retrieveFromCorpus(chatbotId, message.trim(), 8);
     const settings = getChatbotSettings(chatbotId);
-    // Per-chatbot settings take precedence, then env fallbacks (LLM_* → OPENROUTER → NVIDIA)
-    const envBaseUrl = process.env.LLM_BASE_URL || (process.env.OPENROUTER_API_KEY ? "https://openrouter.ai/api/v1" : "") || (process.env.NVIDIA_API_KEY ? "https://integrate.api.nvidia.com/v1" : "") || "https://api.openai.com/v1";
-    const envApiKey = process.env.LLM_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NVIDIA_API_KEY || "";
-    const envModel = process.env.LLM_MODEL || (process.env.OPENROUTER_API_KEY ? "openai/gpt-4o-mini" : "") || (process.env.NVIDIA_API_KEY ? "meta/llama-3.1-405b-instruct" : "") || "gpt-4o-mini";
-    const modelUrl = settings?.baseUrl || envBaseUrl;
-    const model = settings?.model || envModel;
-    const apiKey = settings?.apiKey || envApiKey;
+    // Strict per-chatbot isolation: never fallback to env or other bots. Each bot must have its own apiKey/baseUrl/model.
+    const modelUrl = settings?.baseUrl || "";
+    const model = settings?.model || "";
+    const apiKey = settings?.apiKey || "";
 
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
@@ -338,11 +335,23 @@ app.post("/api/public/chat/:chatbotId", async (req, res) => {
     try { insertMessage(chatbotId, "user", message.trim(), { ip: visitorIp, userIdentifier: visitorId, model }); } catch { /* ignore */ }
 
     // Allow keyless if a self-hosted baseUrl is explicitly configured (ollama/vllm)
-    const hasProvider = !!apiKey || !!settings?.baseUrl;
+    const isLocalBaseUrl = (u: string) => {
+      const s = u.toLowerCase();
+      return s.includes('localhost') || s.includes('127.0.0.1') || s.includes('ollama') || s.includes('vllm') || s.includes('lmstudio');
+    };
+    const hasProvider = !!apiKey || (isLocalBaseUrl(modelUrl) && !!modelUrl);
     if (!hasProvider) {
       const text = chunks.length
-        ? "An AI provider is not configured yet. Relevant sources were found, but Bolnee will not generate an answer without a model."
-        : (fallbackMessage || "I could not find relevant information in this bot's knowledge base.");
+        ? "An AI provider is not configured for this chatbot. Add an API key in Settings → Provider & model (or configure a local provider like Ollama). Relevant sources were found, but no answer will be generated without a valid provider."
+        : (fallbackMessage || "I could not find relevant information in this bot's knowledge base. Configure an API key in Settings to enable answers.");
+      res.write(`data: ${JSON.stringify({ token: text })}\n\n`);
+      res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
+      res.write("data: [DONE]\n\n");
+      return res.end();
+    }
+
+    if (!modelUrl || !model) {
+      const text = "AI provider is not fully configured for this chatbot (missing model or base URL). Add them in Settings → Provider & model.";
       res.write(`data: ${JSON.stringify({ token: text })}\n\n`);
       res.write(`data: ${JSON.stringify({ sources: chunks.map(({ title, url }) => ({ title, url })) })}\n\n`);
       res.write("data: [DONE]\n\n");
@@ -701,6 +710,22 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
   if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
   if (typeof widgetIcon === "string" && widgetIcon.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon too large" });
+  // Strict per-bot provider validation: require apiKey/model for cloud providers (never fallback to other bots/env)
+  if (apiKey !== undefined || provider !== undefined || model !== undefined || baseUrl !== undefined) {
+    const existing = findChatbot(r.params.id) as unknown as { provider?: string; baseUrl?: string } | undefined;
+    const existingSettings = getChatbotSettings(r.params.id);
+    const newProvider = (provider as string) || existing?.provider || existingSettings?.provider || '';
+    const newBaseUrl = (baseUrl as string) || (existing as { baseUrl?: string })?.baseUrl || existingSettings?.baseUrl || '';
+    const newApiKey = apiKey !== undefined ? String(apiKey) : (existingSettings?.apiKey || '');
+    const newModel = (model as string) || existingSettings?.model || '';
+    const isLocal = newProvider === 'ollama' || newProvider === 'vllm' || newProvider === 'lmstudio' || newBaseUrl.toLowerCase().includes('localhost') || newBaseUrl.toLowerCase().includes('127.0.0.1');
+    if (!isLocal && !newApiKey.trim()) {
+      return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "API key is required for this provider. Each chatbot uses only its own key — it will not use another bot's key." });
+    }
+    if (!isLocal && !newModel.trim()) {
+      return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Model is required" });
+    }
+  }
   // Handle appearance fields (name, accentColor, etc.) plus provider fields
   const appearanceFields = {
     name: (r.body as { name?: unknown })?.name as string | undefined,

@@ -276,6 +276,11 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
       if (baseUrl.trim()) {
         try { new URL(baseUrl.trim()); } catch { setUploadError('Invalid base URL'); return; }
       }
+      const isLocal = provider === 'ollama' || provider === 'vllm' || provider === 'lmstudio' || baseUrl.toLowerCase().includes('localhost') || baseUrl.toLowerCase().includes('127.0.0.1');
+      if (!isLocal && !apiKey.trim()) {
+        setUploadError('API key is required for this provider. Add your API key to continue — each chatbot uses only its own key.');
+        return;
+      }
       setUploadError('');
       await handleBuild();
     }
