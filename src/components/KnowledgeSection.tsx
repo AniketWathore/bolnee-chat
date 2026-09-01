@@ -54,17 +54,49 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
 
   const DEPLOY_URL = window.location.origin;
 
-  const getEmbedCode = () => `<script>
+  const [appearance, setAppearance] = useState({
+    name: 'Customer Bot',
+    avatar: '',
+    widgetIcon: '',
+    accentColor: '#111111',
+    greeting: 'Hi! How can I help?',
+    theme: 'dark' as string,
+  });
+
+  useEffect(() => {
+    fetch(`/api/chatbots/${encodeURIComponent(data.chatbotId)}/appearance`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: unknown) => {
+        if (!d || typeof d !== 'object') return;
+        const obj = d as Record<string, unknown>;
+        setAppearance({
+          name: typeof obj.name === 'string' && obj.name ? String(obj.name) : 'Customer Bot',
+          avatar: typeof obj.avatar === 'string' ? String(obj.avatar) : '',
+          widgetIcon: typeof obj.widgetIcon === 'string' ? String(obj.widgetIcon) : '',
+          accentColor: typeof obj.accentColor === 'string' && obj.accentColor ? String(obj.accentColor) : '#111111',
+          greeting: typeof obj.greeting === 'string' && obj.greeting ? String(obj.greeting) : 'Hi! How can I help?',
+          theme: typeof obj.theme === 'string' && obj.theme ? String(obj.theme) : 'dark',
+        });
+      })
+      .catch(() => {});
+  }, [data.chatbotId]);
+
+  const getEmbedCode = () => {
+    const avatarForEmbed = appearance.avatar ? (appearance.avatar.startsWith('/') ? `${DEPLOY_URL}${appearance.avatar}` : appearance.avatar) : '';
+    const widgetIconForEmbed = appearance.widgetIcon ? (appearance.widgetIcon.startsWith('/') ? `${DEPLOY_URL}${appearance.widgetIcon}` : appearance.widgetIcon) : '';
+    return `<script>
   window.BotConfig = {
-    botName: "Customer Bot",
-    avatar: "",
+    botName: "${appearance.name}",
+    avatar: "${avatarForEmbed}",
+    widgetIcon: "${widgetIconForEmbed}",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${data.chatbotId}",
-    accentColor: "#111111",
-    greeting: "Hi! How can I help?",
-    theme: "light"
+    accentColor: "${appearance.accentColor}",
+    greeting: "${appearance.greeting}",
+    theme: "${appearance.theme}"
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(getEmbedCode());
