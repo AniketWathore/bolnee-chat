@@ -14,6 +14,7 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
 
   const [avatarError, setAvatarError] = useState('');
   const [widgetIconError, setWidgetIconError] = useState('');
+  const [submitError, setSubmitError] = useState('');
 
   // Default widget icon (single)
   const DEFAULT_WIDGET_ICONS = [
@@ -73,8 +74,14 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
     event.preventDefault();
     if (!name.trim()) return;
     setSaving(true);
-    await onCreate(name.trim(), avatar, widgetIcon);
-    setSaving(false);
+    setSubmitError('');
+    try {
+      await onCreate(name.trim(), avatar, widgetIcon);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to create chatbot');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -137,6 +144,7 @@ export default function BotCreationWizard({ onCreate, onCancel }: BotCreationWiz
           <label htmlFor="bot-name" className="font-mono text-[10px] uppercase font-bold tracking-widest opacity-50">Chatbot name</label>
           <input id="bot-name" autoFocus required value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Support Assistant" className="brutal-input" />
         </div>
+        {submitError && <p className="font-mono text-xs text-red-400 bg-red-950/30 border border-red-800 p-3">{submitError}</p>}
         <button disabled={saving || !name.trim()} className="brutal-btn bg-slate-800 text-slate-100 border-slate-700 w-full py-4 flex items-center justify-center gap-3 disabled:opacity-40 cursor-pointer">{saving ? 'Creating...' : 'Continue'} <ArrowRight className="w-4 h-4 pointer-events-none" /></button>
       </form>
     </div>
