@@ -16,5 +16,9 @@ data/*.json
 data/*_website.json
 data/*_corpus.json
 data/*_responses.json
+data/avatars/
+data/widget-icons/
+__pycache__/
+*.pyc
 models/
 !.env.example

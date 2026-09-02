@@ -27,14 +27,20 @@ export default function App() {
   }, []);
 
   const api = async (url: string, options: RequestInit = {}) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('bolnee_token') : null;
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.headers || {}),
       },
     });
-    if (!response.ok) throw new Error((await response.json().catch(()=>({error:'Request failed'}))).error || 'Request failed');
+    if (!response.ok) {
+      const body = await response.json().catch(()=>({error:'Request failed'})) as { error?: string };
+      // Preserve 401 message so wizard can show it instead of hanging on Creating...
+      throw new Error(body.error || `Request failed (${response.status})`);
+    }
     return response.json();
   };
 
@@ -83,25 +89,28 @@ export default function App() {
 
   const uploadSources = async (files: File[]) => {
     if (!selectedBot) return;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('bolnee_token') : null;
     for (const file of files) {
       const form = new FormData();
       form.append('file', file);
       const response = await fetch(`/api/knowledge/sources/${encodeURIComponent(selectedBot._id)}`, {
         method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         body: form,
       });
-      if (!response.ok) throw new Error((await response.json()).error || 'Upload failed');
+      if (!response.ok) throw new Error((await response.json().catch(()=>({error:'Upload failed'}))).error || 'Upload failed');
     }
   };
 
   const addUrlSource = async (url: string) => {
     if (!selectedBot) return;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('bolnee_token') : null;
     const response = await fetch(`/api/knowledge/sources/${encodeURIComponent(selectedBot._id)}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ url }),
     });
-    if (!response.ok) throw new Error((await response.json()).error || 'Website crawl failed');
+    if (!response.ok) throw new Error((await response.json().catch(()=>({error:'Website crawl failed'}))).error || 'Website crawl failed');
   };
 
   const saveBotSettings = async (settings: { provider: string; model: string; apiKey: string; baseUrl?: string }) => {
