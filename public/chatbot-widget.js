@@ -128,6 +128,8 @@
         if (data.greeting) GREETING = data.greeting;
         if (liveAvatar) AVATAR = liveAvatar;
         if (liveWidgetIcon) WIDGET_ICON = liveWidgetIcon;
+        var greetingEl = document.getElementById('_cw_greeting_text');
+        if (greetingEl) greetingEl.textContent = GREETING;
          C = getColors(_isDark);
          injectStyle(C, ACCENT);
          // update already-rendered header/button/window colors if DOM exists
@@ -191,6 +193,7 @@
       '</div>' +
     '</div>');
 
+  fetchLiveAppearance();
   var $ = function(id) { return document.getElementById(id); };
   var bubble  = $('_cw_b'),  win    = $('_cw_w');
   var msgs    = $('_cw_ms'), inp    = $('_cw_i'),  sendBtn = $('_cw_s'), hstatus = $('_cw_hs');
@@ -312,10 +315,11 @@
     // If container already has a greeting (should not happen due to history check), skip
     if (msgs.querySelector('._m')) return;
     if (CHAT_URL) {
-      addMsg('bot', GREETING);
+      var el = addMsg('bot', GREETING);
+      el.querySelector('._mb').id = '_cw_greeting_text';
       return;
     }
-    addMsg('bot', 'This chatbot is not configured with a server chat URL yet.');
+    var el = addMsg('bot', 'This chatbot is not configured with a server chat URL yet.');
   }
 
   function streamText(text, onDone) {

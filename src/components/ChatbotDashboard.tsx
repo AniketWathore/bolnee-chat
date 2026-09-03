@@ -117,17 +117,15 @@ export default function ChatbotDashboard({
   };
 
   const DEPLOY_URL = window.location.origin;
-  const avatarForEmbed = appearance.avatar ? (appearance.avatar.startsWith('/') ? `${DEPLOY_URL}${appearance.avatar}` : appearance.avatar) : "";
-  const widgetIconForEmbed = appearance.widgetIcon ? (appearance.widgetIcon.startsWith('/') ? `${DEPLOY_URL}${appearance.widgetIcon}` : appearance.widgetIcon) : "";
   const embedCode = `<script>
   window.BotConfig = {
     botName: "${appearance.name || chatbot.name}",
-    avatar: "${avatarForEmbed}",
-    widgetIcon: "${widgetIconForEmbed}",
+    avatar: "",
+    widgetIcon: "",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${chatbot._id}",
-    accentColor: "${appearance.accentColor}",
-    greeting: "${appearance.greeting}",
-    theme: "${appearance.theme || 'dark'}"
+    accentColor: "",
+    greeting: "",
+    theme: ""
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;

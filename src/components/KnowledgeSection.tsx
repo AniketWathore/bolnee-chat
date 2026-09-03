@@ -82,17 +82,15 @@ export default function KnowledgeSection({ data, onUploadSources, onAddUrl, onSa
   }, [data.chatbotId]);
 
   const getEmbedCode = () => {
-    const avatarForEmbed = appearance.avatar ? (appearance.avatar.startsWith('/') ? `${DEPLOY_URL}${appearance.avatar}` : appearance.avatar) : '';
-    const widgetIconForEmbed = appearance.widgetIcon ? (appearance.widgetIcon.startsWith('/') ? `${DEPLOY_URL}${appearance.widgetIcon}` : appearance.widgetIcon) : '';
     return `<script>
   window.BotConfig = {
     botName: "${appearance.name}",
-    avatar: "${avatarForEmbed}",
-    widgetIcon: "${widgetIconForEmbed}",
+    avatar: "",
+    widgetIcon: "",
     chatUrl: "${DEPLOY_URL}/api/public/chat/${data.chatbotId}",
-    accentColor: "${appearance.accentColor}",
-    greeting: "${appearance.greeting}",
-    theme: "${appearance.theme}"
+    accentColor: "",
+    greeting: "",
+    theme: ""
   };
 </script>
 <script src="${DEPLOY_URL}/chatbot-widget.js" async></script>`;
