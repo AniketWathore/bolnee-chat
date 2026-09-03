@@ -130,6 +130,20 @@
         if (liveWidgetIcon) WIDGET_ICON = liveWidgetIcon;
         var greetingEl = document.getElementById('_cw_greeting_text');
         if (greetingEl) greetingEl.textContent = GREETING;
+        try {
+          if (HISTORY_KEY) {
+            var rawHist = localStorage.getItem(HISTORY_KEY);
+            if (rawHist) {
+              var arrHist = JSON.parse(rawHist);
+              if (arrHist && arrHist.length && arrHist[0].who === 'bot') {
+                if (arrHist[0].text !== GREETING) {
+                  arrHist[0].text = GREETING;
+                  localStorage.setItem(HISTORY_KEY, JSON.stringify(arrHist));
+                }
+              }
+            }
+          }
+        } catch(e) {}
          C = getColors(_isDark);
          injectStyle(C, ACCENT);
          // update already-rendered header/button/window colors if DOM exists
@@ -181,8 +195,11 @@
       '<div id="_cw_w">' +
         '<div id="_cw_h">' +
           '<div id="_cw_av">\uD83E\uDD16</div>' +
-          '<div><div id="_cw_hn">' + BOT_NAME + '</div><div id="_cw_hs">\u25CF Online</div></div>' +
+          '<div style="flex:1"><div id="_cw_hn">' + BOT_NAME + '</div><div id="_cw_hs">\u25CF Online</div></div>' +
+          '<button id="_cw_new" title="New chat" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;margin-left:6px">+ New</button>' +
+          '<button id="_cw_hist" title="History" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">☰</button>' +
         '</div>' +
+        '<div id="_cw_hist_panel" style="display:none;flex-direction:column;background:' + C.winBg + ';border-bottom:1px solid ' + C.winBorder + ';max-height:200px;overflow-y:auto"></div>' +
         '<div id="_cw_ms"></div>' +
         '<div id="_cw_ia">' +
           '<textarea id="_cw_i" placeholder="Type a message\u2026" rows="1" disabled></textarea>' +
@@ -197,13 +214,19 @@
   var $ = function(id) { return document.getElementById(id); };
   var bubble  = $('_cw_b'),  win    = $('_cw_w');
   var msgs    = $('_cw_ms'), inp    = $('_cw_i'),  sendBtn = $('_cw_s'), hstatus = $('_cw_hs');
+  var newBtn = $('_cw_new');
+  var histBtn = $('_cw_hist');
+  var histPanel = $('_cw_hist_panel');
+  var CHAT_HISTORY_KEY = BOT_ID ? 'bolnee_history_' + BOT_ID : null;
+  var chatHistoryList = [];
+  try { if (CHAT_HISTORY_KEY) chatHistoryList = JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY) || '[]'); } catch(e) { chatHistoryList = []; }
 
   var isOpen       = false;
   var ready        = false;
   var waiting      = false;
   var engine       = null;
 
-  var baseUrl = (function() {
+var baseUrl = (function() {
     var scripts = document.getElementsByTagName('script');
     for (var i = 0; i < scripts.length; i++) {
       var src = scripts[i].src;
@@ -214,7 +237,90 @@
     return '/public/';
   })();
 
-  // Show avatar image if provided (data URL or http URL)
+  function saveCurrentToHistory() {
+    try {
+      if (!msgs.querySelector('._m')) return;
+      var nodes = msgs.querySelectorAll('._m');
+      var arr = [];
+      for (var i=0;i<nodes.length;i++) {
+        var n = nodes[i];
+        if (n.id === '_cwt') continue;
+        var who = n.classList.contains('u') ? 'user' : 'bot';
+        var txt = n.querySelector('._mb'); txt = txt ? txt.textContent : '';
+        arr.push({who: who, text: txt});
+      }
+      if (!arr.length) return;
+      chatHistoryList.push({id: Date.now(), preview: arr[arr.length-1].text.slice(0,40), messages: arr, at: new Date().toLocaleString()});
+      if (chatHistoryList.length > 20) chatHistoryList.shift();
+      if (CHAT_HISTORY_KEY) localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistoryList));
+    } catch(e) {}
+  }
+  function startNewChat() {
+    try {
+      saveCurrentToHistory();
+      msgs.innerHTML = '';
+      try { localStorage.removeItem(HISTORY_KEY); localStorage.removeItem(GREETED_KEY); } catch(e) {}
+      engine = null;
+      ready = false;
+      boot();
+      try { saveHistory(); } catch(e) {}
+      if (histPanel) histPanel.style.display = 'none';
+    } catch(e) {}
+  }
+  function renderHistoryPanel() {
+    if (!histPanel) return;
+    if (histPanel.style.display === 'flex') { histPanel.style.display = 'none'; return; }
+    histPanel.innerHTML = '';
+    var head = document.createElement('div');
+    head.style.cssText = 'padding:8px 12px;font-size:12px;font-weight:600;border-bottom:1px solid ' + C.winBorder + ';display:flex;justify-content:space-between;align-items:center;background:' + C.winBg + ';color:' + C.botText;
+    head.innerHTML = '<span>History (' + chatHistoryList.length + ')</span><button id="_cw_hist_close" style="background:transparent;border:none;cursor:pointer;font-size:14px;color:' + C.botText + '">✕</button>';
+    histPanel.appendChild(head);
+    var closeBtn = head.querySelector('#_cw_hist_close');
+    if (closeBtn) closeBtn.onclick = function(){ histPanel.style.display='none'; };
+    if (!chatHistoryList.length) {
+      var empty = document.createElement('div');
+      empty.style.cssText = 'padding:16px;text-align:center;font-size:12px;color:' + C.label + ';';
+      empty.textContent = 'No previous chats';
+      histPanel.appendChild(empty);
+    } else {
+      for (var i=chatHistoryList.length-1;i>=0;i--) {
+        (function(idx){
+          var item = chatHistoryList[idx];
+          var row = document.createElement('div');
+          row.style.cssText = 'padding:10px 12px;border-bottom:1px solid ' + C.winBorder + ';cursor:pointer;font-size:12px;color:' + C.botText + ';';
+          row.innerHTML = '<div style="font-weight:600;font-size:11px;color:' + C.label + '">' + item.at + '</div><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px">' + (item.preview || 'Chat') + '</div>';
+          row.onclick = function(){
+            try {
+              msgs.innerHTML = '';
+              for (var j=0;j<item.messages.length;j++) {
+                var m = item.messages[j];
+                var d = document.createElement('div');
+                d.className = '_m ' + (m.who === 'user' ? 'u' : 'b');
+                var label = document.createElement('div');
+                label.className = '_ml';
+                label.textContent = m.who === 'user' ? 'You' : BOT_NAME;
+                var bubble2 = document.createElement('div');
+                bubble2.className = '_mb';
+                bubble2.textContent = m.text || '';
+                d.appendChild(label);
+                d.appendChild(bubble2);
+                msgs.appendChild(d);
+              }
+              msgs.scrollTop = msgs.scrollHeight;
+              histPanel.style.display = 'none';
+              try { localStorage.setItem(HISTORY_KEY, JSON.stringify(item.messages)); if (item.messages.length) localStorage.setItem(GREETED_KEY,'1'); } catch(e) {}
+            } catch(e){}
+          };
+          histPanel.appendChild(row);
+        })(i);
+      }
+    }
+    histPanel.style.display = 'flex';
+  }
+  if (newBtn) newBtn.addEventListener('click', function(e){ e.stopPropagation(); startNewChat(); });
+  if (histBtn) histBtn.addEventListener('click', function(e){ e.stopPropagation(); renderHistoryPanel(); });
+
+// Show avatar image if provided (data URL or http URL)
   try {
     var avEl = document.getElementById('_cw_av');
     if (avEl && AVATAR) {
