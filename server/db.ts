@@ -96,7 +96,16 @@ for (const statement of [
 }
 
 function getEncryptionKey(): Buffer {
-  const secret = process.env.JWT_SECRET || "development-secret-change-me";
+  const secret = process.env.ENCRYPTION_KEY || process.env.JWT_SECRET || "development-secret-change-me";
+  // Use HKDF if ENCRYPTION_KEY is set (more secure), otherwise fallback to SHA256 for backward compat
+  if (process.env.ENCRYPTION_KEY) {
+    try {
+      // @ts-ignore - hkdfSync may not be in older @types
+      return (crypto as unknown as { hkdfSync: (a:string,b:string,c:string,d:string,n:number)=>Buffer }).hkdfSync("sha256", secret, "bolnee-encryption-salt", "", 32);
+    } catch {
+      return crypto.createHash("sha256").update(secret).digest();
+    }
+  }
   return crypto.createHash("sha256").update(secret).digest();
 }
 

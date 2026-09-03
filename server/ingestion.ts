@@ -45,6 +45,19 @@ function htmlToText(html: string): string {
 function isPrivateIp(hostname: string): boolean {
   const h = hostname.toLowerCase().trim();
   if (h === "localhost" || h === "::1" || h === "0.0.0.0") return true;
+  // Block decimal/hex/octal encodings like 2130706433 (=127.0.0.1), 0x7f.0.0.1, 0177.0.0.1
+  if (/^\d+$/.test(h)) {
+    const n = Number(h);
+    if (!Number.isNaN(n) && n >= 0 && n <= 0xFFFFFFFF) {
+      const ip = `${(n >>> 24) & 0xFF}.${(n >>> 16) & 0xFF}.${(n >>> 8) & 0xFF}.${n & 0xFF}`;
+      return isPrivateIp(ip);
+    }
+  }
+  if (/^0x[0-9a-f]+\.[0-9a-f.]+/i.test(h) || /^0[0-7]+\.[0-9.]+/.test(h)) return true;
+  if (h.includes(":")) {
+    const lower = h.toLowerCase();
+    if (lower === "::1" || lower.startsWith("fc") || lower.startsWith("fd") || lower.startsWith("fe80") || lower.includes("127.0.0.1") || lower.includes("10.") || lower.includes("192.168.")) return true;
+  }
   if (net.isIP(h)) {
     if (net.isIPv4(h)) {
       const parts = h.split(".").map(Number);
@@ -83,12 +96,26 @@ async function fetchWithTimeout(url: string, timeoutMs = FETCH_TIMEOUT_MS): Prom
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "BolneeBot/1.0 (+https://github.com/bolnee)" },
-      signal: controller.signal,
-      redirect: "follow",
-    } as RequestInit);
-    return res;
+    // Use manual redirect so we can re-validate each redirect target for SSRF
+    let currentUrl = url;
+    for (let i = 0; i < 5; i++) {
+      const res = await fetch(currentUrl, {
+        headers: { "User-Agent": "BolneeBot/1.0 (+https://github.com/bolnee)" },
+        signal: controller.signal,
+        redirect: "manual",
+      } as RequestInit);
+      if (res.status >= 300 && res.status < 400) {
+        const loc = res.headers.get("location");
+        if (!loc) return res;
+        const nextUrl = new URL(loc, currentUrl).href;
+        const err = validateUrlForSSRF(nextUrl);
+        if (err) throw new Error(`Redirect blocked: ${err}`);
+        currentUrl = nextUrl;
+        continue;
+      }
+      return res;
+    }
+    throw new Error("Too many redirects");
   } finally {
     clearTimeout(timer);
   }
@@ -403,6 +430,10 @@ export async function ingestFile(sourceId: string, chatbotId: string, buffer: Bu
       await parser.destroy();
     } else {
       text = buffer.toString("utf8");
+    }
+    if (text.length > 1_000_000) {
+      console.warn(`[ingestFile] Truncating large file ${filename} from ${text.length} to 1M chars to prevent OOM`);
+      text = text.slice(0, 1_000_000);
     }
     if (!cleanText(text)) {
       updateSource(sourceId, "empty", "File contains no extractable text");

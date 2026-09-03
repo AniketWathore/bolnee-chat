@@ -73,9 +73,9 @@ async function storeWidgetIcon(chatbotId: string, dataUrl: string): Promise<stri
     if (!dataUrl) return "";
     if (dataUrl.startsWith("/api/public/widget-icon/")) return dataUrl;
     if (/^https?:\/\//.test(dataUrl)) return dataUrl;
-    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml));base64,(.+)$/);
+    const match = dataUrl.match(/^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/);
     if (!match) return dataUrl;
-    const ext = match[2] === "jpeg" ? "jpg" : match[2] === "svg+xml" ? "svg" : match[2];
+    const ext = match[2] === "jpeg" ? "jpg" : match[2];
     const base64 = match[3];
     const buffer = Buffer.from(base64, "base64");
     if (buffer.length > 1 * 1024 * 1024) throw new Error("Widget icon too large (max 1 MB)");
@@ -99,6 +99,9 @@ function validateEnv() {
   }
   if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 16) {
     console.warn("[env] JWT_SECRET is short; use a long random secret in production");
+  }
+  if (process.env.NODE_ENV === "production" && DISABLE_AUTH) {
+    console.warn("[security] DISABLE_AUTH=true in production — all /api/* endpoints are anonymous. Set DISABLE_AUTH=false and configure JWT_SECRET via secrets.");
   }
 }
 validateEnv();
@@ -186,7 +189,7 @@ const authenticate = (req: unknown, res: unknown, next: unknown) => {
   if (!token) return (s.status(401) as unknown as { json:(o:unknown)=>void }).json({ error: "Unauthorized" });
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ["HS256"] });
     r.user = decoded;
     n();
   } catch {
@@ -469,7 +472,7 @@ app.get("/api/public/knowledge/:chatbotId", async (req, res) => {
     }
     if (await fs.pathExists(filePath)) {
       const data = await fs.readJson(filePath);
-      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader('Cache-Control', 'private, no-store');
       return (res as unknown as { json:(o:unknown)=>void}).json(data);
     } else {
       return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Knowledge data not found" });
@@ -486,7 +489,7 @@ app.get("/api/public/corpus/:chatbotId", async (req, res) => {
     const filePath = path.join(DATA_DIR, `${chatbotId}_corpus.json`);
     if (await fs.pathExists(filePath)) {
       const data = await fs.readJson(filePath);
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Cache-Control', 'private, no-store');
       return (res as unknown as { json:(o:unknown)=>void}).json(data);
     } else {
       return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(404).json({ error: "Corpus not found" });
@@ -582,7 +585,7 @@ app.post("/api/auth/register", async (req, res) => {
     };
     insertUser(newUser);
 
-    const token = jwt.sign({ userId: newUser.id, email: newUser.email, name: newUser.name }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ userId: newUser.id, email: newUser.email, name: newUser.name }, JWT_SECRET, { expiresIn: "1h" });
     return (res as unknown as { json:(o:unknown)=>void}).json({ token, user: { id: newUser.id, email: newUser.email, name: newUser.name } });
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Registration failed" });
@@ -601,7 +604,7 @@ app.post("/api/auth/login", async (req, res) => {
       return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(401).json({ error: "Invalid credentials" });
     }
     
-    const token = jwt.sign({ userId: user.id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ userId: user.id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: "1h" });
     return (res as unknown as { json:(o:unknown)=>void}).json({ token, user: { id: user.id, email: user.email, name: user.name } });
   } catch {
     return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(500).json({ error: "Login failed" });
@@ -704,7 +707,11 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
   if (baseUrl !== undefined && typeof baseUrl !== "string") return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "baseUrl must be a string" });
   if (typeof baseUrl === "string" && baseUrl.trim() && !isSafeBaseUrl(baseUrl.trim())) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid baseUrl" });
   if (typeof avatar === "string" && avatar.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar too large" });
+  if (typeof avatar === "string" && avatar && !(avatar.startsWith("data:image/") || avatar.startsWith("/api/public/avatar/") || /^https?:\/\//.test(avatar))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar must be an image data URL or http(s) URL or /api/..." });
+  if (typeof avatar === "string" && /["'<>]/.test(avatar)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Avatar contains invalid characters" });
   if (typeof widgetIcon === "string" && widgetIcon.length > 3 * 1024 * 1024) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon too large" });
+  if (typeof widgetIcon === "string" && widgetIcon && !(widgetIcon.startsWith("data:image/") || widgetIcon.startsWith("/api/public/widget-icon/") || /^https?:\/\//.test(widgetIcon))) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon must be an image data URL or http(s) URL or /api/..." });
+  if (typeof widgetIcon === "string" && /["'<>]/.test(widgetIcon)) return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Widget icon contains invalid characters" });
   // Strict per-bot provider validation: require apiKey/model for cloud providers (never fallback to other bots/env)
   if (apiKey !== undefined || provider !== undefined || model !== undefined || baseUrl !== undefined) {
     const existing = findChatbot(r.params.id) as unknown as { provider?: string; baseUrl?: string } | undefined;
@@ -731,6 +738,18 @@ app.patch("/api/chatbots/:id", authenticate, async (req: unknown, res) => {
     fallbackMessage: (r.body as { fallbackMessage?: unknown })?.fallbackMessage as string | undefined,
     widgetIcon: (r.body as { widgetIcon?: unknown })?.widgetIcon as string | undefined,
   };
+  if (appearanceFields.name !== undefined && (typeof appearanceFields.name !== "string" || appearanceFields.name.length > 80 || /[<>"]/.test(appearanceFields.name))) {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid chatbot name" });
+  }
+  if (appearanceFields.greeting !== undefined && (typeof appearanceFields.greeting !== "string" || appearanceFields.greeting.length > 500 || /[<>]/.test(appearanceFields.greeting))) {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid greeting" });
+  }
+  if (appearanceFields.accentColor !== undefined && typeof appearanceFields.accentColor === "string" && !/^#[0-9a-fA-F]{3,8}$/.test(appearanceFields.accentColor) && appearanceFields.accentColor !== "") {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid accent color" });
+  }
+  if (appearanceFields.theme !== undefined && typeof appearanceFields.theme === "string" && !["light","dark","auto"].includes(appearanceFields.theme) && appearanceFields.theme !== "") {
+    return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(400).json({ error: "Invalid theme" });
+  }
   // Convert data URL avatar to file URL
   let avatarToStore = avatar as string | undefined;
   if (typeof avatarToStore === "string" && avatarToStore.startsWith("data:image/")) {
@@ -1015,7 +1034,11 @@ app.get('/models/*', async (req: unknown, res) => {
   try {
     const r = req as { params:string[] };
     const modelPath = r.params[0];
-    const localPath = path.join(process.cwd(), 'models', modelPath);
+    const modelsDir = path.resolve(path.join(process.cwd(), 'models'));
+    const localPath = path.resolve(path.join(modelsDir, modelPath));
+    if (!localPath.startsWith(modelsDir + path.sep) && localPath !== modelsDir) {
+      return (res as unknown as { status:(n:number)=>{json:(o:unknown)=>void}}).status(403).json({ error: 'Forbidden' });
+    }
     if (await fs.pathExists(localPath)) {
       (res as unknown as { set:(k:string,v:string)=>void }).set('Cache-Control', 'public, max-age=2592000, immutable');
       (res as unknown as { set:(k:string,v:string)=>void }).set('Content-Type', 'application/octet-stream');
