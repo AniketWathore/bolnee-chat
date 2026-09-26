@@ -9,7 +9,6 @@
 <p align="center">
   <a href="https://github.com/AniketWathore/bolnee-chat"><img src="https://img.shields.io/badge/GitHub-Bolnee--Chat-0A0A0A?style=flat-square&logo=github&logoColor=white" alt="GitHub" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License: MIT" /></a>
-  <a href="https://github.com/AniketWathore/bolnee-chat/releases"><img src="https://img.shields.io/github/v/release/AniketWathore/bolnee-chat?style=flat-square&logo=github" alt="Release" /></a>
   <img src="https://img.shields.io/badge/Node-18%2B-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node 18+" />
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.10+" />
 </p>
